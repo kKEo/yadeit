@@ -1,0 +1,195 @@
+@CHARSET "UTF-8";
+
+#ticketList{
+	float: left;
+	width: 250px;
+	background-color: rgba(245,240,240,.2);
+}
+
+#ticketListHeader{
+	/* background-color: rgba(210,200,200, 1);*/
+	color: #638383;
+	font-size: 16pt;
+	padding: 5px;
+	margin-bottom: 5px;
+	
+}
+
+#ticketListHeader a {
+	text-decoration: none;
+	padding: 3px;
+	font-size: 8pt;
+	color: #638383;
+}
+
+#moreFiltersPanel {
+	padding-top: 6px;
+}
+
+#moreFiltersPanel span{
+	display: inline-block;
+	/* border: 1px dashed #eadaea; */
+	margin: 2px 5px;
+}
+
+
+#ticketListHeader span{
+	font-size: x-small;
+}
+
+#ticketListTitle {
+	
+}
+
+#ticketView{
+	width: 600px;
+	margin-left: 42px;
+	float: left;
+}
+
+.ticketListItem{
+	padding: 10px 10px;
+	border-bottom: 1px solid rgba(200,200,200, 0.71);
+	border-radius: 10px;
+	cursor: pointer;
+	color: #731373;
+    font-weight: bold;
+}
+
+.over {
+	background: rgba(245, 240, 240, 0.4);
+}
+
+div.ticketDetails{
+	font-size: x-small;
+	color: #a8a8a8;
+	/* text-align: right; */
+	padding-top: 5px;
+	font-weight: normal;
+}
+
+.ticketListItem .odd{
+	
+}
+
+#ticketHeaderTitle {
+	background: rgba(255, 255, 255, 0.5);
+	border: 1px solid #E6E6E6;
+	color: #dea123;
+	font-size: larger;
+	padding: 11px;
+}
+
+.ticketStat{
+	font-size: x-small;
+	padding: 5px;
+	padding-top: 10px;
+	color: #dadada;
+}
+
+.ticketStat a{
+	text-decoration: none;
+	color: #bababa;
+}
+
+.ticketBody{
+	background: url('../images/ticketBg.png') repeat-x;
+	padding: 6px 10px;
+	margin-top: 10px;
+	border-top: 1px solid rgba(220,230,230, 0.71);
+	border-radius: 10px;
+}
+
+#ticketAttachments{
+	width: 300px;
+	float: left;
+	
+}
+
+#ticketComments {
+	margin-top: 15px;
+}
+
+.ticketCommentHeader{
+	font-size: x-small;
+	margin-bottom: 10px;
+}
+
+div.ticketComment {
+	padding: 10px;
+	margin-left: 80px;
+	margin-bottom: 10px;
+	background: #fdfdfd;
+	border: 1px solid #fbfbfb;
+	border-radius: 10px;
+}
+
+.ticketCommentBody{
+	padding-left: 20px;	
+}
+
+#ticketFooter {
+	text-align: right;
+}
+
+#refresh, #prev, #next {
+	text-decoration: none;
+	padding: 3px;
+	display: block-inline;
+}
+
+#ticketHeaderTitle #title{
+	color: #638383;
+    display: inline-block;
+    padding: 8px;
+}
+
+#editIssue {
+	width: 16px;
+	height: 16px;
+	background: url('../js/ctxmenu/images/page_white_edit.png') no-repeat;
+	display: inline-block; 
+	/* display: none; */
+	cursor: pointer;
+}
+
+ins {
+	background: #8f8;
+	padding: 2px;
+}
+
+del {
+	background: #f88;
+	padding: 2px;
+}
+
+#ticketDiff{
+	clear: both;
+	text-align: left;
+}
+
+#ticketHistory{
+	float: left;
+    margin-left: 10px;
+}
+
+#attachments{
+	margin-bottom: 10px;
+}
+
+.attachment {
+	padding: 5px;
+	border-bottom: 1px solid #dadada; 
+}
+
+.disabled {
+	color: #dadada;
+	cursor: default;
+}
+
+.disabled:HOVER {
+	color: #dadada;
+}
+
+
+
