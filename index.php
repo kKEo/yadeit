@@ -1,6 +1,6 @@
 <?php
 
-$yii='framework/yii.php';
+$yii='/home/krma/Downloads/PHP/Yii/yii-1110/framework/yii.php';
 $config=dirname(__FILE__).'/protected/config/main.php';
 
 defined('YII_DEBUG') or define('YII_DEBUG',true);

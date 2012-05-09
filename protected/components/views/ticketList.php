@@ -54,8 +54,10 @@ var refresh = function(f,p){
 			if (typeof(data[i].subject)=== "undefined") continue;
 		
 			var item = $("<div id=\"item"+data[i].id+"\" class=\"ticketListItem\">"
-			  +data[i].subject+"<div class=\"ticketDetails\">"+data[i].project.name+" <br/> "+format(data[i].created)+
-			  "<span style=\"float: right;\"> "+stars(data[i].priority)+" / "+stars(data[i].status)+"</span></div></div>");
+			  +data[i].subject+"<div class=\"ticketDetails\">"
+			  +"<span style=\"float: right; text-align: right\"> "+data[i].assignee.username+" <br/>"+stars(data[i].priority)+" / "+stars(data[i].status)+"</span>"
+			  +data[i].project.name+" <br/> "+format(data[i].created)
+			  +"</div></div>");
 			item.css("display","none");
 			item.appendTo("#ticketItems");
 			item.hover(

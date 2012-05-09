@@ -15,9 +15,39 @@
 }
 </style>
 
-
 <?php Yii::app()->clientScript->registerScript('view-ticket', 
 '
+
+registerCloseIssue = function(id){
+	$("#closeIssue").bind("click", function(){
+	
+		$("#issueCloseForm > #issueId").attr("value",id);
+		$("#issueCloseForm > #issueComment").attr("value","");
+		
+		$("#issueCloseDialog").dialog({
+			modal: true,
+			minWidth: 400,
+			minHeight: 200,
+			buttons: {
+				Zamknij: function(){
+					$.post("'.$this->createUrl('//ticket/close').'",
+						$("#issueCloseForm").serialize(),
+						function(data){
+							viewTicket({"id":id});
+						},
+						"json"
+					);
+					$(this).dialog("close");
+				},
+				Anuluj: function(){
+					console.log("Cancel");
+					$(this).dialog("close");
+				}
+			}
+		});
+    });
+}
+
 viewTicket = function(item){
 	
 	if (typeof item.id === "undefined"){
@@ -26,9 +56,9 @@ viewTicket = function(item){
 
 	issueId = item.id.replace("item","");
 	
-	$.post(
-		"'.$this->createUrl('//ticket/get', array('id'=>'TICKET_ID')).'".replace("TICKET_ID",issueId), 
-		"",
+	$.getJSON(
+		"'.$this->createUrl('//ticket/get').'", 
+		{"id":issueId},
 		function(data) {
 			$("#ticketHeaderTitle > #title").html("#"+issueId+": "+data.subject);
 			$("#ticketBody").html(data.description);
@@ -45,7 +75,7 @@ viewTicket = function(item){
 			            	"'.$this->createUrl('//ticket/set').'"
 			            	,{"id":issueId, "attr":"priority", "value":option}
 			            	,function(data){
-								$("#priority").html(data.name);
+			            		viewTicket({"id":issueId});
 							}
 			            	,"json");
 			        },
@@ -53,7 +83,7 @@ viewTicket = function(item){
 			    });
 			
 			
-			$("#status").html(data.status);
+			$("#status").html(data.statusText);
 			
 			 $.contextMenu({
 			        selector: "#status", 
@@ -66,7 +96,7 @@ viewTicket = function(item){
 			            	"'.$this->createUrl('//ticket/set').'"
 			            	,{"id":issueId, "attr":"status", "value":option}
 			            	,function(data){
-								$("#status").html(data.name);
+								viewTicket({"id":issueId});
 							}
 			            	,"json");
 
@@ -88,9 +118,7 @@ viewTicket = function(item){
 			            	"'.$this->createUrl('//ticket/assign').'"
 			            	,{"iid":issueId, "uid":key.match(/\d+/)[0]}
 			            	,function(data){
-			            		if  (data.status == 0) {
-									$("#assignedTo").html(data.name);
-								}
+			            		viewTicket({"id":issueId});
 							}
 			            	,"json"
 			            ); 
@@ -106,6 +134,15 @@ viewTicket = function(item){
 			$("#ticketView").fadeIn();
 			
 			refreshAttachments();
+			
+			if (data.status < 5) {
+				$("#editIssue").show();
+				$("#closeIssue").show();
+				registerCloseIssue(issueId);
+			} else {
+				$("#editIssue").hide();
+				$("#closeIssue").hide();
+			}
 		},
 		"json"
 	);
@@ -113,41 +150,19 @@ viewTicket = function(item){
 	ticketHistory(issueId);
 } 
 
-//$("#ticketHeaderTitle").hover(function(){$(this).find("#editIssue").css("display","inline-block")}, function(){$(this).find("#editIssue").css("display","none")});
 $("#editIssue").bind("click", function(e){ showAddDialog(e) });
 
 ')?>
 
-<div id="ticketView" style="display:none">
-	<div id="ticketHeader">
-		<div id="ticketHeaderTitle">
-		<span id="title">#10000: Dodać widget umożliwiający przypisanie kategorii do zdjęcia</span>
-		<span id="editIssue"></span>
-		<br/>
-		<span class="ticketStat">Priorytet: <a id="priority" href="">normalny</a></span>
-		<span class="ticketStat">Status: <a id="status" href="">w trakcie</a></span>
-		<span class="ticketStat">Zgłoszony przez: <a id="reportedBy" href="">krma</a></span>
-		<span class="ticketStat">Przypisany do: <a id="assignedTo" href="">krma</a></span>
-		</div>
-	</div>
-	<div id="ticketBody" class="ticketBody">
-		Widget powinien wyswietlac drzewo kategorii. Kategorie juz przypisane do zdjecia nie powinny pojawiac sie w drzewku.<br/>
-<br/>
-Widget powinien zawierac dwie akcje:<br/>
- - onChoose - wywolywane po wybraniu kategorii<br/>
- - onSuccess - wywolywane po pomyslnym zakonceniu akcji onChoose<br/>
-	</div>
-	
-	<div id="ticketAttachments" class="ticketBody">
-		<?php $this->widget('TicketAttachments', array(
-			'getIdCallback'=>'function(){return $("#ticketHeaderTitle > #title").text().match(/\d+/)}'
-		)); ?>
-	</div>
-		<?php $this->widget('TicketHistory'); ?>	
-	<div id="ticketFooter">
-	</div>
-	
-</div>
+	<?php 
+		$this->renderPartial('ticketPanels');
+	?>
+
+	<?php $this->widget('TicketAttachments', array(
+			'getIdCallback'=>'function(){return $("#ticketHeaderTitle > #title").text().match(/\d+/)}',
+			'containerId'=>'ticketAttachments',
+	)); ?>
+	<?php $this->widget('TicketHistory'); ?>	
 
 <?php 
 	Yii::app()->clientScript->registerCoreScript('jquery');

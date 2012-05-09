@@ -23,9 +23,9 @@
 	#filter-manager-paginator{height: 10px;}
 	#filter-manager-next.disabled { color: #dadada; cursor: default;}
 	#filter-manager-prev.disabled { color: #dadada; cursor: default;}
+	.hint {font-size: x-small; color: #aeaeae; margin: 0 0 0.5em;}
 	#<?php echo $linkId; ?> {float: right;}
 </style>
-
 
 <div id="filter-edit-dialog" title="Edytuj filter" style="display:none;">
 	<form id="filter-edit-form">
@@ -35,7 +35,10 @@
 		<label>Opis</label><br/>
 		<textarea id="filterDesc" name="Filter[description]" cols="35" rows="2"></textarea><br/>
 		<label>Warunek</label><br/>
-		<input id="filterCondition" type="text" name="Filter[condition]" size="30"/><br/>
+		<input id="filterCondition" type="text" name="Filter[condition]" size="40"/><br/>
+		<p class="hint">
+			Stałe: READY, INPROGRESS, WAITING, HANGED, CLOSED, UID
+		</p>
 		<label>Sortowanie</label><br/>
 		<input id="filterOrderBy" type="text" name="Filter[orderBy]" size="30"/><br/>
 	</form>

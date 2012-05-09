@@ -4,9 +4,7 @@ class TicketHistory extends CWidget {
 	public $ticketId;
 	
 	public function run() {
-		echo '<div id="ticketHistory" class="ticketBody">Zmiany: </div>';
-		echo '<div style="clear:both"></div>';
-		echo '<div id="ticketDiff" class="ticketBody"></div>';
+
 		
 		Yii::app()->clientScript->registerScript('ticket-history', '
 

@@ -149,7 +149,14 @@ div.ticketComment {
 	height: 16px;
 	background: url('../js/ctxmenu/images/page_white_edit.png') no-repeat;
 	display: inline-block; 
-	/* display: none; */
+	cursor: pointer;
+}
+
+#closeIssue {
+	width: 16px;
+	height: 16px;
+	background: url('../js/ctxmenu/images/page_white_delete.png') no-repeat;
+	display: inline-block; 
 	cursor: pointer;
 }
 

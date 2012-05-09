@@ -26,14 +26,14 @@ class Ticket extends CActiveRecord {
 
 	public function beforeSave(){
 		if (parent::beforeSave()){
-				
+
 			if ($this->isNewRecord){
 				$this->projectId = 4;
 				$this->categoryId = 0;
 				$this->authorId = Yii::app()->user->id;
 				$this->created = $this->updated = time();
 			}
-				
+
 			return true;
 		}
 		return false;
@@ -41,10 +41,11 @@ class Ticket extends CActiveRecord {
 
 	public static function getStatuses(){
 		return array(
-			'v0'=>array('name'=>'zrobiony', 'icon'=>'edit'),
-			'v1'=>array('name'=>'realizowany', 'icon'=>'edit'),
-			'v2'=>array('name'=>'oczekujący', 'icon'=>'edit'),
-			'v3'=>array('name'=>'zawieszony', 'icon'=>'edit'),	
+			'v0'=>array('name'=>'gotowe', 'icon'=>'edit'),
+			'v1'=>array('name'=>'realizowane', 'icon'=>'edit'),
+			'v2'=>array('name'=>'oczekujące', 'icon'=>'edit'),
+			'v3'=>array('name'=>'zawieszone', 'icon'=>'edit'),	
+			'v5'=>array('name'=>'zamknięte', 'icon'=>'edit'),	
 			);
 	}
 
@@ -57,8 +58,9 @@ class Ticket extends CActiveRecord {
 		return array(
 			'v0'=>array('name'=>'niski'),
 			'v1'=>array('name'=>'normalny'),
-			'v2'=>array('name'=>'wysoki'),
-			'v3'=>array('name'=>'b.wysoki'),
+			'v2'=>array('name'=>'średni'),
+			'v3'=>array('name'=>'wysoki'),
+			'v4'=>array('name'=>'b.wysoki'),
 			);
 	}
 
@@ -68,8 +70,14 @@ class Ticket extends CActiveRecord {
 	}
 
 	public function getIterator(){
-		$attributes=$this->getAttributes();
+		$attributes = $this->getAttributes();
 		$attributes['project'] = $this->getRelated('project')->getAttributes();
+		$assignee = $this->getRelated('assignee');
+		if ($assignee !== null) {
+			$attributes['assignee'] = $assignee->getAttributes();
+		} else {
+			$attributes['assignee'] = array('username'=>'brak');
+		}
 
 		return new CMapIterator($attributes);
 	}
@@ -81,6 +89,6 @@ class Ticket extends CActiveRecord {
 		       join tbl_user u 
 		         on t.updatedBy = u.id 	
 		      where t.pid = '.$id);
-		return $dataProvider->getData();
+			return $dataProvider->getData();
 	}
 }

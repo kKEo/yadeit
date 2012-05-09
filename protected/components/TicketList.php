@@ -17,7 +17,7 @@ var showAddDialog = function(e){
 	var isNew = typeof(e) !== "undefined" && e.currentTarget.id === "addNew";
 
 	$("#add-dialog").dialog({
-		title: (isNew)?"Dodaj nowy ticket":"Edycja ticketa",
+		title: (isNew)?"Dodaj nowe zadanie":"Edycja zadania",
 		modal: true,
 		minWidth: 800,
 		minHeight: 500,

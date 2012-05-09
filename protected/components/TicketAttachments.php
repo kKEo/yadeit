@@ -2,16 +2,14 @@
 class TicketAttachments extends CWidget {
 	
 	public $getIdCallback;
+	public $containerId = 'ticketAttachments';
 
 	public function run() {
 		
-		//CHtml::image('images/buttons/attachments.png')
-		echo '<h4 name="id">Zalaczniki</h4>';
-		echo '<div id="attachments"></div>';
-		
 		// Refresh attachments list
 		Yii::app()->clientScript->registerScript('attachments', 
-'refreshAttachments = function(){
+'
+refreshAttachments = function(){
 
 	var id = ('.$this->getIdCallback.')();
 	
@@ -38,8 +36,6 @@ class TicketAttachments extends CWidget {
 }
 ');
 
-		
-		
 		$this->widget('ext.EAjaxUpload.EAjaxUpload',
          	array(
                        'id'=>'uploadFile',
