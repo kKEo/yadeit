@@ -15,6 +15,12 @@ class Comment extends CActiveRecord {
 		);
 	}
 	
+	public function relations(){
+		return array(
+			'user'=>array(CActiveRecord::BELONGS_TO, 'User', 'userId'),
+		);
+	}		
+	
 	public function beforeSave() {
 		
 		if (parent::beforeSave()) {
@@ -28,6 +34,18 @@ class Comment extends CActiveRecord {
 		}
 		
 		return false;
+	}
+	
+	public function getIterator(){
+		$attributes = $this->getAttributes();
+		$user = $this->getRelated('user');
+		if ($user !== null) {
+			$attributes['user'] = $user->getAttributes();
+		} else {
+			$attributes['user'] = array('username'=>'brak');
+		}
+
+		return new CMapIterator($attributes);
 	}
 	
 }

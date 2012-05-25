@@ -152,11 +152,20 @@ class TicketController extends Controller {
 
 		if ($ticket->update(array($attr))){
 				
+			$commentText = 'Zmiana ';
 			if ($attr === 'priority') {
 				$p = Ticket::getPriorities();
+				$commentText.=' priorytetu na ';
 			} else {
 				$p = Ticket::getStatuses();
+				$commentText.=' statusu na ';
 			}
+			
+			$comment = new Comment;
+			$comment->itemId = $id;
+			$comment->comment = $commentText.'"'.$p['v'.$value]['name'].'".';
+			$comment->save();
+			
 			echo CJSON::encode($p['v'.$value]);
 		} else {
 			echo CJSON::encode($ticket->getErrors());
@@ -181,6 +190,22 @@ class TicketController extends Controller {
 		}
 
 		echo CJSON::encode($res);
+	}
+	
+	public function actionComments($issueId) {
+		
+		$dataProvider = new CActiveDataProvider('Comment');
+		
+		
+		$dataProvider->setCriteria(array(
+			'condition'=>'itemId = '.$issueId,
+			'with'=>array('user'),
+			));
+		$dataProvider->getCriteria()->together = true;
+		$comments = $dataProvider->getData();
+		
+		//Comment::model()->findAllByAttributes(array('itemId'=>$issueId));
+		echo CJSON::encode($comments);
 	}
 
 	public function actionUpdate(){
@@ -217,27 +242,28 @@ class TicketController extends Controller {
 		echo CJSON::encode($res);
 	}
 
-	public function actionClose(){
+	public function actionComment(){
 
 		$res = array('status'=>1);
 		if (isset($_POST['Issue'])){
-			$model = Ticket::model()->findByPk($_POST['Issue']['id']);
-			$model->status = 5;
+			$itemId = $_POST['Issue']['id'];
+			//$model = Ticket::model()->findByPk($_POST['Issue']['id']);
+			//$model->status = 5;
 				
 			$commentText = CHtml::encode($_POST['Issue']['comment']);
 				
-			if ($model->update(array('status'))) {
+			//if ($model->update(array('status'))) {
 				$res['status'] = 0;
-				if (strlen($commentText) > 0) {
+				//if (strlen($commentText) > 0) {
 					$comment = new Comment;
-					$comment->itemId = $model->id;
+					$comment->itemId = $itemId;
 					$comment->comment = $commentText;
 
 					if ($comment->save()) {
 						$res['comment']=$comment->attributes;
 					}
-				}
-			}
+//				}
+//			}
 		}
 
 		echo CJSON::encode($res);

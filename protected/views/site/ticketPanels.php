@@ -33,11 +33,11 @@
 </div>
 
 <!-- ISSUE RELATED DIALOGS -->
-<div id="issueCloseDialog" title="Zamknij zadanie" style="display:none">
-	<form id="issueCloseForm">
+<div id="issueCommentDialog" title="Dodaj komentarz" style="display:none">
+	<form id="issueCommentForm">
 		<input id="issueId" type="hidden" name="Issue[id]"/>
 		<label>Komentarz</label><br/>
-		<textarea id="issueComment" name="Issue[comment]" cols="35" rows="2"></textarea>
+		<textarea id="issueComment" name="Issue[comment]" cols="52" rows="7"></textarea>
 	</form>
 </div>
 

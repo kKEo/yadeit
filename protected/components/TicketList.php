@@ -5,8 +5,12 @@ class TicketList extends CWidget {
 	
 	public function init(){
 		Yii::app()->getClientScript()->registerCoreScript( 'jquery.ui' );
-		Yii::app()->getClientScript()->registerCssFile('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css');
-		
+		//Yii::app()->getClientScript()->registerCssFile('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css');
+
+		$coreUrl = Yii::app()->getClientScript()->getCoreScriptUrl();
+		Yii::app()->getClientScript()->registerCssFile($coreUrl.'/jui/css/base/jquery-ui.css');
+		Yii::app()->getClientScript()->registerCssFile('css/jquery-ui.css');
+			
 		Yii::app()->clientScript->registerScriptFile('js/cleditor/jquery.cleditor.min.js');
 		Yii::app()->clientScript->registerCssFile('js/cleditor/jquery.cleditor.css');
 	
@@ -17,7 +21,8 @@ var showAddDialog = function(e){
 	var isNew = typeof(e) !== "undefined" && e.currentTarget.id === "addNew";
 
 	$("#add-dialog").dialog({
-		title: (isNew)?"Dodaj nowe zadanie":"Edycja zadania",
+		//title: (isNew)?"<strong>Dodaj</strong> nowe zadanie":"Edycja zadania",
+		title: "<img src=\"http://localhost/~krma/cr/images/graphic/headerPromoted.png\"/>",
 		modal: true,
 		minWidth: 800,
 		minHeight: 500,

@@ -18,20 +18,20 @@
 <?php Yii::app()->clientScript->registerScript('view-ticket', 
 '
 
-registerCloseIssue = function(id){
+registerCommentIssue = function(id){
 	$("#closeIssue").bind("click", function(){
 	
-		$("#issueCloseForm > #issueId").attr("value",id);
-		$("#issueCloseForm > #issueComment").attr("value","");
+		$("#issueCommentForm > #issueId").attr("value",id);
+		$("#issueCommentForm > #issueComment").attr("value","");
 		
-		$("#issueCloseDialog").dialog({
+		$("#issueCommentDialog").dialog({
 			modal: true,
-			minWidth: 400,
-			minHeight: 200,
+			minWidth: 540,
+			minHeight: 300,
 			buttons: {
 				Zamknij: function(){
-					$.post("'.$this->createUrl('//ticket/close').'",
-						$("#issueCloseForm").serialize(),
+					$.post("'.$this->createUrl('//ticket/comment').'",
+						$("#issueCommentForm").serialize(),
 						function(data){
 							viewTicket({"id":id});
 						},
@@ -138,16 +138,19 @@ viewTicket = function(item){
 			if (data.status < 5) {
 				$("#editIssue").show();
 				$("#closeIssue").show();
-				registerCloseIssue(issueId);
+				registerCommentIssue(issueId);
 			} else {
 				$("#editIssue").hide();
 				$("#closeIssue").hide();
 			}
+			
+			ticketComments(issueId);
 		},
 		"json"
 	);
 	
 	ticketHistory(issueId);
+	
 } 
 
 $("#editIssue").bind("click", function(e){ showAddDialog(e) });
@@ -162,7 +165,9 @@ $("#editIssue").bind("click", function(e){ showAddDialog(e) });
 			'getIdCallback'=>'function(){return $("#ticketHeaderTitle > #title").text().match(/\d+/)}',
 			'containerId'=>'ticketAttachments',
 	)); ?>
-	<?php $this->widget('TicketHistory'); ?>	
+	<?php $this->widget('TicketHistory'); ?>
+	
+	<?php $this->widget('TicketComments'); ?>	
 
 <?php 
 	Yii::app()->clientScript->registerCoreScript('jquery');

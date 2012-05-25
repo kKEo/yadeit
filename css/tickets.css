@@ -12,7 +12,6 @@
 	font-size: 16pt;
 	padding: 5px;
 	margin-bottom: 5px;
-	
 }
 
 #ticketListHeader a {
@@ -155,7 +154,7 @@ div.ticketComment {
 #closeIssue {
 	width: 16px;
 	height: 16px;
-	background: url('../js/ctxmenu/images/page_white_delete.png') no-repeat;
+	background: url('../js/ctxmenu/images/page_white_paste.png') no-repeat;
 	display: inline-block; 
 	cursor: pointer;
 }
@@ -198,5 +197,16 @@ del {
 	color: #dadada;
 }
 
+#commentsTitle{
+	margin-top: 10px;
+	margin-bottom: 5px; 
+}
 
+.commentItem{
+	padding-left: 10px;
+}
+
+.commentText{
+	padding: 5px 0px 5px 20px;
+}
 
