@@ -1,0 +1,24 @@
+.ui-dialog .ui-dialog-title {
+	margin: 0.1em 0 0.4em 20px;
+}
+
+.ui-widget-header {
+	/* background: url("images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #CCCCCC; */
+	background: url("../images/dialog/titleBg.png") no-repeat;
+	background-position: bottom right;
+	border: 0px;
+	/*margin-right: 15px;*/
+}
+
+.ui-dialog .ui-dialog-content {
+	background: url("../images/dialog/contentBg.png") repeat-x;
+	background-position: bottom;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	border: 0;
+    margin: 0;
+    padding: 0.3em 1em 0.5em 0.4em;
+    text-align: left;
+	background: #e5ecf2;
+}
