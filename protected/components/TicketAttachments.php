@@ -24,7 +24,8 @@ refreshAttachments = function(){
 			$.each(data, function(idx,el){
 				var $el = $("<div class=\"attachment\"></div>");
 				if (el.contentType.match(/^image/) !== null) {
-					$el.html("<img src=\""+baseUrl+el.path+"\" width=140></img>");
+					var imgPath = baseUrl+el.path;
+					$el.html("<a href=\""+baseUrl+el.path+"\" target=\"_blank\"><img src=\""+imgPath+"\" width=140></img></a>");
 				} else {
 					$el.html("<a href=\""+baseUrl+el.path+"\">"+el.path+"<a>");
 				}

@@ -5,7 +5,6 @@ class TicketList extends CWidget {
 	
 	public function init(){
 		Yii::app()->getClientScript()->registerCoreScript( 'jquery.ui' );
-		//Yii::app()->getClientScript()->registerCssFile('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css');
 
 		$coreUrl = Yii::app()->getClientScript()->getCoreScriptUrl();
 		Yii::app()->getClientScript()->registerCssFile($coreUrl.'/jui/css/base/jquery-ui.css');
