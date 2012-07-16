@@ -65,14 +65,41 @@ class DefaultController extends Controller {
 			
 			$model = Section::model()->findByPk($_POST['Section']['id']);
 			
-			$model->attributes = $_POST['Section'];
-			
-			if ($model->update(array('title', 'content', 'position'))) {
-				$ret['status'] = 0;
-				$ret['message'] = 'Updated successfully';
+			if (!$model) {
+
+				$type = Yii::app()->request->getPost('Section');
+	
+				$model = null;
+				switch ($type['contentType']) {
+					
+					case 'Text':
+						$model = new TextSection();		 
+						break;
+					
+					default:
+						throw new Exception('Type not found: '.$type['contentType']);
+				}
+
+				$model->attributes = $_POST['Section'];
+				
+				if ($model->save()) {
+					$ret['status'] = 0;
+					$ret['message'] = 'Successfully added.';
+				} else {
+					$ret['status'] = 1;
+					$ret['errors'] = $this->getErrors();
+				}
+				
 			} else {
-				$ret['status'] = 1;
-				$ret['errors'] = $model->getErrors();
+				$model->attributes = $_POST['Section'];
+				
+				if ($model->update(array('title', 'content', 'position'))) {
+					$ret['status'] = 0;
+					$ret['message'] = 'Updated successfully';
+				} else {
+					$ret['status'] = 1;
+					$ret['errors'] = $model->getErrors();
+				}
 			}
 		}
 		
