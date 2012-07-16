@@ -8,7 +8,7 @@ class WikiModule extends CWebModule {
 			'wiki.models.*',	
 		));
 		
-		$assets = Yii::getPathOfAlias('wiki.assets');
+		$assets = Yii::getPathOfAlias('wiki.resources');
 			
 		if (YII_DEBUG) {
 			$baseUrl = Yii::app()->assetManager->publish($assets, false, -1, true);
