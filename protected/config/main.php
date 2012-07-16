@@ -20,14 +20,31 @@ return array(
 
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
-		/*
 		'gii'=>array(
 			'class'=>'system.gii.GiiModule',
-			'password'=>'Enter Your Password Here',
-		 	// If removed, Gii defaults to localhost only. Edit carefully to taste.
+			'password'=>'letmein',
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
-		*/
+		'webshell'=>array(
+			'class'=>'ext.yiiext.modules.webshell.WebShellModule',
+			'exitUrl' => '/',
+			'wtermOptions' => array('PS1' => '%',),
+			'commands' => array(
+				'test' => array('js:function(){return "Hello, world!";}', 'Just a test.'),
+			),
+			//'checkAccessCallback'=>function(){return Yii::app()->user->isA('admin');},
+			'yiicCommandMap' => array(
+				'migrate'=>array(
+					'class'=>'system.cli.commands.MigrateCommand',
+					'defaultAction'=>'list',
+					'interactive'=>false,
+					),
+			),
+			'ipFilters'=>array('127.0.0.1','::1','89.73.114.243','195.117.57.148'),
+		),
+		'wiki'=> array(
+			'class'=>'application.modules.wiki.WikiModule',
+		),	
 	),
 
 	// application components

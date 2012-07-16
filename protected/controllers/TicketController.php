@@ -221,12 +221,13 @@ class TicketController extends Controller {
 				
 			$model->attributes = $_POST['Ticket'];
 			$res['model'] = $model->attributes;
-			if (!$model->validate()){
-				$res['status'] = 3;
-				$res['error'] = $model->getErrors();
-			} else
+
 			if ($old->save()){
-				if ($model->update(array('subject','description'))){
+				$forUpdate = array('subject');
+				if (strlen($model->description)>0) {
+					$forUpdate[] = 'description';
+				}
+				if ($model->update($forUpdate)){
 					$res['status'] = 0;
 				} else {
 					// failed to update entry
