@@ -1,0 +1,235 @@
+#content {
+	position: relative;
+}
+
+#admin-module-menu {
+	padding-top: 15px;
+}
+
+#admin-module-menu a {
+	padding: 5px 10px;
+	margin: 0px 5px;
+	background: #eaeaea;
+	border: 1px solid #dadada;
+	text-decoration: none;
+}
+
+.wikiSection {
+	padding: 10px 3px;
+	margin-bottom: 10px;
+	width: 730px;
+	position: relative;
+	/* color: #000;*/
+}
+
+#article-update-container .wikiSection{
+	border-bottom: 1px solid #dadada;
+}
+
+.wikiSection .title {
+	font-weight: bold;
+	margin-bottom: 2px;
+	background: #eaeaea;
+	border-bottom: 2px solid #dadada;
+	padding-top: 5px;
+	padding-left: 5px;
+}
+
+.wikiSection .content{
+	padding-left: 10px;
+}
+
+.wikiSection h1 {
+	font-size: 1.3em;
+	border-bottom: 2px solid #aeaeae;
+}
+
+.wikiSection h2 {
+	font-size: 1.2em;
+	border-bottom: 1px solid #aeaeae;
+	margin-left: 10px;
+	margin-top: 30px;
+}
+
+.sectionFooter {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	text-align: right; 
+	font-size: x-small;
+	
+}
+
+h3 a {
+	text-decoration: none;
+	padding: 0 10px;
+	font-size: small;
+}
+
+.sectionFooter a {
+	text-decoration: none;
+}
+
+#articles-list-content .sorter {
+	margin: 0px;
+	padding: 5px;
+	background: #FAFBFD;
+}
+
+#article-actions {
+	display: inline-block;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	border: 1px solid #dea123;
+	padding: 5px;
+}
+
+#article-actions a {
+	padding: 0px 10px;
+}
+
+#article-view-title {
+	font-size: 18px; 
+	font-weight: bold; 
+	margin-bottom: 15px; 
+	border-bottom: 1px solid #eaeaea; 
+	color: #204A87;
+}
+
+#article-view-title a {
+	padding: 0px 10px;
+	font-size: small;
+}
+
+#article-view-title-desc {
+	font-size: x-small; 
+	color: #aeaeae;
+	background: #FAFBFD;
+	padding: 5px;
+	padding-bottom: 2px;
+}
+
+#article-view-toc {
+	float: left;
+	width: 170px;
+}
+
+#article-view-toc ul {
+	padding-left: 10px;
+}
+
+#article-view-author {
+	padding: 10px;
+	text-align: center;
+	font-size: small;
+}
+
+#article-view-author h3 {
+	font-size: small;
+}
+
+#article-view-content {
+	float: right; 
+	width: 735px; 
+	border-left: 1px dashed #bdbdbd; 
+	padding-left: 10px;
+}
+
+#text-section-content-preview {
+	display:none; 
+	width: 600; 
+	height: 400px;
+	position: relative;
+	border: 1px solid #dadada;
+	padding: 6px;
+	overflow: scroll;
+}
+
+a#text-section-preview {
+	float: right;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: small;
+	padding: 0px 5px;
+}
+
+a#text-section-preview:HOVER {
+	background: #eaeaea;
+}
+
+#preview-close {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	padding: 2px;
+}
+
+.article-item {
+	padding: 15px;
+	overflow: hidden;
+	position: relative;
+	color: #6f6f6f;
+	border-bottom: 1px solid #f1f1f1;
+}
+
+.article-item.even {
+	/* background: #f8f8f8;*/
+}
+
+.article-item-menu {
+	/* position: absolute;
+	bottom: 5px;
+	right: 5px;
+	*/
+	margin: 10px;
+	font-size: x-small;
+	font-weight: bold;
+	margin-bottom:5px;
+}
+
+.article-item-title{
+	font-size: larger;
+}
+
+.article-item-content{
+	position: relative;
+	margin-right: 120px;
+}
+
+.article-item-abstract {
+	padding-left: 5px;
+	padding-top: 0px;
+	font-size: x-small;
+	
+}
+
+.article-item-footer {
+	font-size: x-small;
+	text-align: right;
+	padding-right: 120px;
+}
+
+.article-item-footer span {
+	height: 20px;
+	padding-left: 20px; 
+	padding-top: 2px;
+	background: url('comments.png') no-repeat;
+	display: inline-block;
+}
+
+.article-item-logo {
+	float: right;
+	width: 75px;
+	height: 60px;
+	margin-right: 20px;
+}
+
+#table-of-content {
+	margin-top: 10px;
+}
+
+#table-of-content h4{
+	margin: 0px;
+	text-align: center;
+}

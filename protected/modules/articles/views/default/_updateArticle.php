@@ -1,4 +1,4 @@
-<h3><?php echo $model->title; ?> </h3>
+<div id="article-update-container">
 
 <div id="article-new-text-dialog" style="display:none;">
 	<form id="article-new-text-form">
@@ -6,23 +6,38 @@
 		<input type="hidden" id="text-section-articleId" name="Section[articleId]" value="<?php echo $model->id?>"/>
 		Title: <input type="text" id="text-section-title" name="Section[title]" size="40"/> <br/>
 		<input type="hidden" id="text-section-type" name="Section[contentType]" value="Text"/>
-		Content: <br/>
-		<textarea id="text-section-content" rows="10" cols="65" name="Section[content]"></textarea><br/>
-		Position: <input type="text" id="text-section-position" name="Section[position]" size="4"/> <br/>
-		<br/>
+		
+		<div style="clear: both;">
+		Treść: 
+			<a id="text-section-preview" href="#">Podgląd</a>
+		</div>
+		<textarea id="text-section-content" rows="22" cols="84" name="Section[content]"></textarea>
+		<div id="text-section-content-preview" class="wikiSection"></div>
+		<div>
+		Position: <input type="text" id="text-section-position" name="Section[position]" size="4"/>
+		Status: <?php echo CHtml::dropDownList('Section[status]', '0', array(Section::DRAFT => 'Robocze', Section::PUBLISHED => 'Opublikowane'), array('id'=>'text-section-status'))?>
+		</div>
 		<input id="text-section-submit" type="submit" value="Wyslij"/>
 	</form>
 </div>
 
+<div id="article-view-content">
 <?php 
 
 foreach ($sections as $section) {
 	
 	$this->renderPartial('_renderSection'.$section['contentType'], array(
-		'section'=>$section,	
+		'section'=>$section,
+		'isUpdate'=>true,	
 	));
 	
-}
+}?>
+</div>
+<?php 
+
+//$this->widget('articles.components.PreviewWidget', array(
+//	'itemId'=>$model->id
+//	));
 
 Yii::app()->getClientScript()->registerCoreScript('jquery.ui');
 $coreUrl = Yii::app()->getClientScript()->getCoreScriptUrl();
@@ -42,8 +57,9 @@ var submitFormHandler = function(url){
 		$.post(url,
 			$("#article-new-text-form").serialize(),
 			function(data){
-				console.log(data);
 				textDialog.dialog("close");
+				
+				window.location.href="";
 			},
 			"json"
 		);
@@ -51,7 +67,31 @@ var submitFormHandler = function(url){
 	});
 }  
 
-$("<a href=\"#\">Add paragraph</a>").appendTo(articlesActions).bind("click", function(){
+var previewHandler = function() {
+
+	$("#text-section-preview").unbind("click").bind("click", function() {
+		var $content = $("#text-section-content");
+		var $preview = $("#text-section-content-preview");
+		var previewLink = $(this);
+		
+		if ($content.css("display") !== "none") {
+			var url = "'.$this->createUrl('previewSection').'";
+			$.post(url,{"c":$content.val()}, function(data){
+				$preview.html(data).show();
+				$content.hide();
+				previewLink.text("Powrót");
+			});
+		} else {
+			$preview.hide();	
+			$content.show();
+			previewLink.text("Podgląd");
+		}
+		return false;
+	});
+	
+}
+
+$("<a href=\"#\">Dodaj sekcje</a>").appendTo(articlesActions).bind("click", function(){
 	submitFormHandler("'.$this->createUrl('addSection').'");
 	showDialog();
 	return false;
@@ -69,24 +109,26 @@ var showDialog = function(id) {
 			$("#text-section-title").attr("value", data["title"]);
 			$("#text-section-content").attr("value", data["content"]);
 			$("#text-section-position").attr("value", data["position"]);
+			$("#text-section-status").attr("value", data["status"]);
 		});
 	}
 	
 	textDialog.dialog({
 		title: isNew?"Nowy paragraf":"Edytuj paragraf",
-		width: 600, 
-		height: 400, 
+		width: 820, 
+		height: 600, 
 		modal: true,
 	});
 	
 	submitFormHandler("'.$this->createUrl('updateSection').'");
 	
+	previewHandler();
 }
 
 var refreshActions = function(){
 
 	$(".sectionFooter").find(".editLink").unbind("click").bind("click", function(){
-		var id = $(this).parent().parent().attr("id").match(/\d+/)[0];
+		var id = $(this).parent().attr("id").match(/\d+/)[0];
 		showDialog(id);
 		
 		return false;
@@ -99,4 +141,8 @@ refreshActions();
 
 
 ?>
-<div id="article-actions"></div>
+<div id="article-actions">
+	<?php echo CHtml::link('Zarządzanie artykułami',array('admin'))?>
+	<?php echo CHtml::link('Artykuł',array('view', 'id'=>$model->id))?>
+</div>
+</div>

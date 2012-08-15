@@ -1,5 +1,5 @@
 <?php
-class WikiModule extends CWebModule {
+class ArticlesModule extends CWebModule {
 	
 	public $baseScriptUrl;
 	
@@ -8,7 +8,7 @@ class WikiModule extends CWebModule {
 			'wiki.models.*',	
 		));
 		
-		$assets = Yii::getPathOfAlias('wiki.resources');
+		$assets = Yii::getPathOfAlias('wiki.assets');
 			
 		if (YII_DEBUG) {
 			$baseUrl = Yii::app()->assetManager->publish($assets, false, -1, true);

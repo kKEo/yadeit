@@ -8,11 +8,16 @@
  * @property string $title
  * @property string $abstract
  * @property string $tags
+ * @property integer $status
  * @property integer $createdBy
  * @property integer $created
  */
 class Article extends CActiveRecord
 {
+	const DRAFT = 0;
+	const PUBLISHED = 1;
+	const REMOVED = 2;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -51,12 +56,12 @@ class Article extends CActiveRecord
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+	public function relations() {
 		return array(
-			);
+			'user'=>array(self::BELONGS_TO, 'User', 'createdBy'),
+			'sections'=>array(self::HAS_MANY, 'Section', 'articleId'),
+			'publishedSections'=>array(self::HAS_MANY, 'Section', 'articleId', 'condition'=>' status ='.self::PUBLISHED)
+		);
 	}
 
 	/**
@@ -108,5 +113,14 @@ class Article extends CActiveRecord
 			return true;
 		}
 		return false;
+	}
+	
+	public function isAllowed () {
+		return true;
+	}
+	
+	public function removeArticle(){
+		$this->status = self::REMOVED;
+		return $this->update(array('status'));
 	}
 }

@@ -1,0 +1,100 @@
+#content {
+	position: relative;
+}
+
+.wikiSection {
+	padding: 10px 3px;
+	margin-bottom: 10px;
+	width: 525px;
+	position: relative;
+}
+
+#article-update-container .wikiSection{
+	border-bottom: 1px solid #dadada;
+}
+
+.wikiSection .title {
+	font-weight: bold;
+	margin-bottom: 2px;
+	background: #eaeaea;
+	border-bottom: 2px solid #dadada;
+	padding-top: 5px;
+	padding-left: 5px;
+}
+
+.wikiSection .content{
+	padding-left: 10px;
+}
+
+.wikiSection h1 {
+	font-size: 1.3em;
+	border-bottom: 2px solid #aeaeae;
+}
+
+.wikiSection h2 {
+	font-size: 1.2em;
+	border-bottom: 1px solid #aeaeae;
+	margin-left: 10px;
+	margin-top: 30px;
+}
+
+.sectionFooter {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	text-align: right; 
+	font-size: x-small;
+	
+}
+
+h3 a {
+	text-decoration: none;
+	padding: 0 10px;
+	font-size: small;
+}
+
+.sectionFooter a {
+	text-decoration: none;
+}
+
+#article-actions {
+	display: inline-block;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	border: 1px solid #dea123;
+	padding: 5px;
+}
+
+#article-actions a {
+	padding: 0px 10px;
+}
+
+#text-section-content-preview {
+	display:none; 
+	width: 600; 
+	height: 400px;
+	position: relative;
+	border: 1px solid #dadada;
+	padding: 6px;
+	overflow: scroll;
+}
+
+a#text-section-preview {
+	float: right;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: small;
+	padding: 0px 5px;
+}
+
+a#text-section-preview:HOVER {
+	background: #eaeaea;
+}
+
+#preview-close {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	padding: 2px;
+}

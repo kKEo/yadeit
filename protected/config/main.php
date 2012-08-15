@@ -42,15 +42,24 @@ return array(
 			),
 			'ipFilters'=>array('127.0.0.1','::1','89.73.114.243','195.117.57.148'),
 		),
-		'wiki'=> array(
-			'class'=>'application.modules.wiki.WikiModule',
-		),	
+		'articles'=> array(
+			'class'=>'application.modules.articles.ArticlesModule',
+		),
+		'mailing' => array(
+//			'class' => 'application.modules.mailing.MailingModule',
+			'smtpHost'=>'smtp.easywebsite.pl',
+			'smtpLogin'=>'test@easywebsite.pl',
+			'smtpPassword'=>'centrum321',
+			'smtpPort'=>'587',
+			'ipFilters'=>array('127.0.0.1','::1','89.73.114.243', '83.142.184.91'),
+		),
+		'events',
 	),
 
 	// application components
 	'components'=>array(
 		'user'=>array(
-			// enable cookie-based authentication
+			'class'=>'SWebUser',
 			'allowAutoLogin'=>true,
 		),
 		// uncomment the following to enable URLs in path-format

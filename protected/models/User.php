@@ -21,6 +21,13 @@ class User extends CActiveRecord {
 		
 		return $array;
 	}
-
 	
+	public function getAvatar(){
+		return null;
+	}
+	
+	public function getDisplayedName(){
+		return $this->username;
+	}
+
 }

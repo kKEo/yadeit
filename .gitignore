@@ -1,4 +1,5 @@
 /assets/
 protected/runtime/
-protected/data/
+protected/data/testdrive.db
 themes/
+upload

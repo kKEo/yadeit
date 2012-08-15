@@ -1,6 +1,8 @@
 <?php
 class DefaultController extends Controller {
 
+	public $defaultAction = 'Admin';
+	
 	public function filters()
 	{
 		return array(
@@ -19,16 +21,50 @@ class DefaultController extends Controller {
 		);
 	}
 	
-	public function actionIndex() {
+	public function actionPreviewSection(){
+		$content = Yii::app()->request->getParam('c');		
+		$this->beginWidget('CMarkdown');
+		echo $content;
+		$this->endWidget();
+	}
+	
+	public function actionAdmin() {
 		
 		$dataProvider = new CActiveDataProvider('Article');
 		
-		$this->render('index', array(
+		$cri = $dataProvider->getCriteria();
+		$cri->condition = ' status < '.Article::REMOVED;
+		
+		$this->render('admin', array(
 			'dataProvider'=>$dataProvider,	
 		));
 	}
 	
 	public function actionView() {
+		
+		$id = Yii::app()->request->getParam("id");
+		
+		$article = Article::model()->findByPk($id);
+		
+		if ($article && !$article->isAllowed()){
+			throw new Exception('Nie masz uprawnien do tego artykulu.');
+		}
+		
+		$cri = new CDbCriteria();
+		$cri->select = array('id', 'title', 'contentType', 'content', 'position', 'status');
+		$cri->condition = ' articleId = '.$id.' and status = '.Article::PUBLISHED;
+		$cri->order = 'position, after';
+		
+		$sections = Section::model()->findAll($cri);
+		
+		$this->render('view', array(
+			'article'=>$article,
+			'sections'=>$sections,
+		));
+		
+	}
+	
+	public function actionUpdate() {
 		
 		$id = Yii::app()->request->getQuery("id");
 		
@@ -36,16 +72,20 @@ class DefaultController extends Controller {
 		
 		if ($id !== null) {
 			$model = Article::model()->findByPk($id);
+			
+			if (!$model->isAllowed()){
+				throw new Exception('Nie masz uprawnien do tego artykulu.');
+			}
 		}
 		
 		$cri = new CDbCriteria();
-		$cri->select = array('id', 'title', 'contentType', 'content', 'position');
+		$cri->select = array('id', 'title', 'contentType', 'content', 'position', 'status');
 		$cri->condition = ' articleId = '.$id;
 		$cri->order = 'position, after';
 		
 		$sections = Section::model()->findAll($cri);
 		
-		$this->render('view', array(
+		$this->render('update', array(
 			'model'=>$model,
 			'sections'=>$sections,
 		));
@@ -93,8 +133,9 @@ class DefaultController extends Controller {
 			} else {
 				$model->attributes = $_POST['Section'];
 				
-				if ($model->update(array('title', 'content', 'position'))) {
+				if ($model->update(array('title', 'content', 'position', 'status'))) {
 					$ret['status'] = 0;
+					$ret['attributes'] = $model->attributes;
 					$ret['message'] = 'Updated successfully';
 				} else {
 					$ret['status'] = 1;
@@ -140,23 +181,62 @@ class DefaultController extends Controller {
 		
 	}
 	
+	public function actionArticle($id){
+		$model = Article::model()->findByPk($id);
+		echo CJSON::encode($model->attributes);
+	}
+	
 	public function actionNewArticle() {
 		
-		$model = new Article();
 		$ret = array();
 		
 		if (isset($_POST['Article'])) {
-			$model->attributes = $_POST['Article'];	
-			if ($model->save()){
-				$ret['status'] = 0;
-				$ret['message'] = 'Saved successfully';
-			} else {
-				$ret['status'] = 1;
-				$ret['errors'] = $model->getErrors();
+			if (isset($_POST['Article']['id'])){
+				$id = CHtml::encode($_POST['Article']['id']);
+				$model = Article::model()->findByPk($id);
+				
+				if (!$model){
+					$model = new Article();
+					$model->attributes = $_POST['Article'];	
+					$ret['error']='Article not found.';
+					if ($model->save()){
+						$ret['status'] = 0;
+						$ret['message'] = 'Saved successfully';
+					} else {
+						$ret['status'] = 1;
+						$ret['errors'] = $model->getErrors();
+					}
+				} else {
+					if ($model->update('title', 'abstract', 'status')) {
+						$ret['status'] = 0;
+						$ret['message'] = 'Updated successfully';
+					} else {
+						$ret['status'] = 1;
+						$ret['errors'] = $model->getErrors();
+					}
+					
+				}
 			}
+		} else {
+			$ret['status'] = 501;
+			$ret['message'] = 'Wrong request';
 		}
 		
 		echo CJSON::encode($ret);
+	}
+	
+	public function actionDelete($id) {
+		
+		$article = Article::model()->findByPk($id);
+		
+		$sections = $article->section;
+		
+		foreach ($sections as $section) {
+			$section->removeSection();
+		}
+		
+		$article->removeArticle();
+		
 	}
 	
 	public function actionNewSection() {
