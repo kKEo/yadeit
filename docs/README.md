@@ -11,6 +11,7 @@ The user guide is a GitBook space (`guide/user/.gitbook.yaml`) that mdBook can
 also build:
 
 ```bash
+make help                         # all Makefile commands
 make docs-site                    # landing page and guide at http://localhost:8000
 make docs-build                   # only build into site/
 mdbook serve docs/guide/user      # live-reloading preview of the guide alone

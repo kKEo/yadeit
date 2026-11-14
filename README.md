@@ -23,6 +23,7 @@ This is a rewrite. The original 2012 Yii application is kept under the git tag `
 ## Quick start with Docker
 
 ```sh
+make help                                # every command with a short description
 make app-up                              # builds and starts the whole app: http://localhost:8080
 make app-operator EMAIL=you@example.com  # after signing up: access to the Operator area
 make app-logs                            # outgoing email is only logged: find the confirmation link here

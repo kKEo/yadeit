@@ -1,18 +1,13 @@
-# Yadeit: running the app and the documentation locally.
-#
-# The whole app in Docker (the production image, PostgreSQL, worker, scheduler, backups):
-#   make app-up                 build, start and wait until it answers: http://localhost:8080
-#   make app-up HTTP_PORT=9000  on another port
-#   make app-operator EMAIL=you@example.com   make that account an operator
-#   make app-logs | app-ps | app-shell | app-down | app-reset
-#
-# Only the database in Docker, with the Laravel and Vite dev servers on the host:
-#   make db-up                  PostgreSQL (make db-up DB=mariadb for MariaDB)
-#   make db-down
-#
-# The documentation site:
-#   make docs-site              build everything and serve it on http://localhost:8000
-#   make docs-site PORT=9000    on another port
+# Yadeit: running the app and the documentation locally. Start with:  make help
+
+.DEFAULT_GOAL := help
+
+.PHONY: help
+help: ## Show this list of commands
+	@awk 'BEGIN { FS = ":.*## "; printf "\nUsage: make \033[36m<target>\033[0m [VAR=value]\n" } \
+	  /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5); next } \
+	  /^[a-zA-Z0-9_-]+:.*## / { printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+	@printf '\nVariables: HTTP_PORT (default 8080), DB (db or mariadb), EMAIL (for app-operator), PORT (for docs-site).\n\n'
 
 HTTP_PORT ?= 8080
 DB        ?= db
@@ -25,7 +20,7 @@ SITE      := site
 
 .PHONY: app-up app-down app-reset app-logs app-ps app-shell app-operator db-up db-down docs-build docs-site
 
-## Settings for a local trial, generated once with fresh secrets. Mail is only logged, not sent.
+# Settings for a local trial, generated once with fresh secrets. Mail is only logged, not sent.
 $(ENV_DOCKER):
 	@command -v openssl >/dev/null || { echo "openssl is needed to generate secrets"; exit 1; }
 	@{ \
@@ -53,51 +48,47 @@ $(ENV_DOCKER):
 	} > $(ENV_DOCKER)
 	@echo "Wrote $(ENV_DOCKER) with new secrets."
 
-## Build the image, start every service and wait until the web app is healthy.
-app-up: $(ENV_DOCKER)
+##@ The whole app in Docker (production image, PostgreSQL, worker, scheduler, backups)
+app-up: $(ENV_DOCKER) ## Build and start the whole app, wait until healthy
 	$(APP_COMPOSE) up -d --build
 	$(APP_COMPOSE) up -d --wait app
 	@echo ""
 	@echo "Yadeit is running at http://localhost:$(HTTP_PORT)"
 	@echo "Sign-up emails are written to the log: make app-logs, then look for the confirmation link."
 
-## Stop the stack. Data is kept.
-app-down:
+app-down: ## Stop the app, keeping its data
 	$(APP_COMPOSE) down
 
-## Stop the stack and DELETE its database, uploads and backups.
-app-reset:
+app-reset: ## Stop the app and DELETE its database, uploads and backups
 	$(APP_COMPOSE) down --volumes
 	@echo "Database, uploads and backups of the local stack are gone. $(ENV_DOCKER) was kept."
 
-app-logs:
+app-logs: ## Follow the logs of app, worker and scheduler (sign-up emails land here)
 	$(APP_COMPOSE) logs -f --tail=100 app worker scheduler
 
-app-ps:
+app-ps: ## Show the state of the services
 	$(APP_COMPOSE) ps
 
-app-shell:
+app-shell: ## Open a shell in the app container
 	$(APP_COMPOSE) exec app sh
 
-## Give an account access to the Operator area: make app-operator EMAIL=you@example.com
-app-operator:
+app-operator: ## Make an account an operator: make app-operator EMAIL=you@example.com
 	@test -n "$(EMAIL)" || { echo "Usage: make app-operator EMAIL=you@example.com"; exit 1; }
 	$(APP_COMPOSE) exec app php artisan operator:grant $(EMAIL)
 
-## Only the development database; run the backend and frontend on the host (see README).
-db-up:
+##@ Development database only, with the backend and frontend on the host (see README)
+db-up: ## Start only the development database (DB=mariadb for MariaDB)
 	docker compose up -d $(DB)
 
-db-down:
+db-down: ## Stop the development database
 	docker compose stop $(DB)
 
-## Build the user guide with mdBook and put the landing page at the site root.
-docs-build:
+##@ Documentation
+docs-build: ## Build the user guide and the landing page into site/
 	@command -v mdbook >/dev/null || { echo "mdbook is not installed: https://rust-lang.github.io/mdBook/guide/installation.html"; exit 1; }
 	mdbook build docs/guide/user
 	cp docs/guide/index.html $(SITE)/index.html
 
-## Serve the built site locally: landing page at /, user guide at /user/.
-docs-site: docs-build
+docs-site: docs-build ## Build, then serve the docs on http://localhost:8000 (PORT=9000 to change)
 	@echo "Documentation at http://localhost:$(DOCS_PORT)/  (Ctrl+C to stop)"
 	python3 -m http.server $(DOCS_PORT) --bind 127.0.0.1 --directory $(SITE)
