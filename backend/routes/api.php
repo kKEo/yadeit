@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SessionController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\InboxController;
@@ -149,6 +150,10 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
         });
 
         Route::get('audit', [AuditLogController::class, 'index'])->name('audit.index');
+
+        Route::get('billing', [BillingController::class, 'show'])->name('billing.show');
+        Route::post('billing/checkout', [BillingController::class, 'checkout'])->name('billing.checkout');
+        Route::post('billing/portal', [BillingController::class, 'portal'])->name('billing.portal');
 
         Route::get('ai', [AiController::class, 'status'])->name('ai.status');
         Route::put('ai', [AiController::class, 'configure'])->name('ai.configure');

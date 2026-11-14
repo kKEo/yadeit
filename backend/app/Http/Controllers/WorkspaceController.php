@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Actions\ProvisionWorkspace;
 use App\Enums\WorkspaceRole;
+use App\Exceptions\ApiException;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Membership;
 use App\Models\Workspace;
+use App\Services\Billing;
 use App\Support\CurrentWorkspace;
+use App\Support\Plans;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -58,6 +61,11 @@ class WorkspaceController extends Controller
     public function destroy(Workspace $workspace, CurrentWorkspace $current): Response
     {
         $current->requireRole(WorkspaceRole::Owner);
+
+        // Deleting must not leave a subscription behind that keeps charging.
+        if (Plans::billingEnabled() && $workspace->subscribed(Billing::SUBSCRIPTION) && ! $workspace->planSubscription()?->canceled()) {
+            throw new ApiException(409, 'active_subscription', 'This workspace has a paid plan. Cancel it under Settings → Manage billing, then delete the workspace.');
+        }
 
         $workspace->delete();
 

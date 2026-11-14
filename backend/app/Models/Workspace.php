@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Laravel\Cashier\Billable;
 
 /**
  * @property bool $ai_enabled
@@ -23,8 +24,29 @@ use Illuminate\Support\Str;
 #[Hidden(['ai_api_key'])]
 class Workspace extends Model
 {
+    use Billable;
+
     /** @use HasFactory<WorkspaceFactory> */
     use HasFactory;
+
+    /** Stripe knows the workspace by its name and reaches its first owner. */
+    public function stripeName(): string
+    {
+        return $this->name;
+    }
+
+    /** The paid plan at Stripe, when there is one. */
+    public function planSubscription(): ?PlanSubscription
+    {
+        $subscription = $this->subscription('default');
+
+        return $subscription instanceof PlanSubscription ? $subscription : null;
+    }
+
+    public function stripeEmail(): ?string
+    {
+        return User::query()->whereIn('id', $this->memberships()->where('role', 'owner')->select('user_id'))->orderBy('id')->value('email');
+    }
 
     /** @var array<string, mixed> */
     protected $attributes = ['ai_enabled' => false, 'plan' => 'free'];
@@ -33,7 +55,7 @@ class Workspace extends Model
     protected function casts(): array
     {
         // The workspace's own provider key is stored encrypted and never serialised.
-        return ['ai_enabled' => 'boolean', 'ai_api_key' => 'encrypted', 'suspended_at' => 'datetime'];
+        return ['ai_enabled' => 'boolean', 'ai_api_key' => 'encrypted', 'suspended_at' => 'datetime', 'trial_ends_at' => 'datetime'];
     }
 
     /** Slugs that would collide with application routes. */

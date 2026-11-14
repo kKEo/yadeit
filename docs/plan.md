@@ -224,7 +224,7 @@ Goal: run it as a public service.
   - Waiting/sent, details, send now, delete
 - [x] Build announcement broadcasts
   - Recipient filter, preview, confirmation
-- [ ] Add plans, limits and Stripe billing
+- [x] Add plans, limits and Stripe billing
   - Laravel Cashier; agent seats free
 - [ ] Add the landing page, legal pages, data export and account deletion
 - [ ] Verify operations: a broadcast reaches the mail log, a plan limit blocks correctly, an export downloads

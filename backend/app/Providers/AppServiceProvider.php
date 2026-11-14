@@ -4,7 +4,10 @@ namespace App\Providers;
 
 use App\Ai\AiProvider;
 use App\Ai\AnthropicProvider;
+use App\Models\PlanSubscription;
+use App\Models\PlanSubscriptionItem;
 use App\Models\WorkItem;
+use App\Models\Workspace;
 use App\Support\CurrentWorkspace;
 use App\Support\UnknownFields;
 use Dedoc\Scramble\Scramble;
@@ -19,6 +22,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Cashier\Cashier;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,6 +38,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // The workspace pays, not the person.
+        Cashier::useCustomerModel(Workspace::class);
+        Cashier::useSubscriptionModel(PlanSubscription::class);
+        Cashier::useSubscriptionItemModel(PlanSubscriptionItem::class);
+
         RateLimiter::for('auth', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
         RateLimiter::for('public-feedback', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
         RateLimiter::for('mcp', fn (Request $request) => Limit::perMinute(120)->by($request->user()?->currentAccessToken()?->id ?: $request->ip()));

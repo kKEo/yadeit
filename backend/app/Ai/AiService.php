@@ -6,6 +6,7 @@ use App\Exceptions\ApiException;
 use App\Models\AiUsage;
 use App\Models\User;
 use App\Models\Workspace;
+use App\Support\Plans;
 
 /**
  * The only way the application talks to a model. It refuses before any
@@ -61,12 +62,16 @@ class AiService
             ->selectRaw('COALESCE(SUM(input_tokens), 0) + COALESCE(SUM(output_tokens), 0) AS total')
             ->value('total');
 
+        $limit = (int) ($workspace->ai_monthly_token_limit ?? config('ai.monthly_token_limit'));
+        $planLimit = Plans::aiTokens($workspace);
+
         return [
             'enabled' => (bool) $workspace->ai_enabled,
             'configured' => $this->key($workspace) !== null,
             'has_own_key' => $workspace->ai_api_key !== null,
             'used_tokens' => (int) $used,
-            'monthly_token_limit' => (int) ($workspace->ai_monthly_token_limit ?? config('ai.monthly_token_limit')),
+            // The plan caps the allowance when the installation pays for the tokens.
+            'monthly_token_limit' => $planLimit === null ? $limit : min($limit, $planLimit),
             'model' => (string) config('ai.model'),
         ];
     }

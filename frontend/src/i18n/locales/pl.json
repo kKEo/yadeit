@@ -1165,5 +1165,21 @@
         "broadcast_sent": "Operator wysłał ogłoszenie"
       }
     }
+  },
+  "billing": {
+    "title": "Plan",
+    "description": "Na co pozwala plan tej przestrzeni roboczej i ile z niego wykorzystano.",
+    "members": "Osoby",
+    "projects": "Projekty",
+    "usedOf": "{used} z {limit}",
+    "unlimited": "{used}, bez limitu",
+    "membersNote": "Otwarte zaproszenia liczą się jak osoby. Agenci są bezpłatni i nigdy się nie liczą.",
+    "aiNote": " Wbudowane AI: {n} tokenów miesięcznie, chyba że przestrzeń używa własnego klucza dostawcy.",
+    "endsAt": "Płatny plan został anulowany i działa do {date}.",
+    "moveTo": "Przejdź na plan {plan}",
+    "manage": "Zarządzaj płatnościami",
+    "ownersOnly": "Plan może zmienić tylko właściciel.",
+    "returnedSuccess": "Dziękujemy. Plan zmieni się, gdy tylko płatność zostanie potwierdzona, zwykle w ciągu minuty.",
+    "returnedCancelled": "Płatność nie została dokończona. Nic się nie zmieniło."
   }
 }

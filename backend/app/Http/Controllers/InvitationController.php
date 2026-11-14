@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Workspace;
 use App\Notifications\WorkspaceInvitation;
 use App\Support\CurrentWorkspace;
+use App\Support\Plans;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -48,6 +49,8 @@ class InvitationController extends Controller
         ]);
 
         $role = WorkspaceRole::from($data['role'] ?? WorkspaceRole::Member->value);
+
+        Plans::ensureRoom($workspace, 'members');
 
         if ($role === WorkspaceRole::Owner && $current->role() !== WorkspaceRole::Owner) {
             throw new AccessDeniedHttpException('Only an owner can invite another owner.');

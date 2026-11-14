@@ -97,6 +97,15 @@ Optional help from a Claude model: drafting an item from one sentence, proposing
 - An announcement becomes one waiting message per person. `php artisan mail:send-waiting` (scheduled every minute, 100 messages a run) sends them; a message that fails three times stays failed until an operator sends it by hand. Waiting messages can be sent now or deleted on the Email screen.
 - The scheduler has to run for this: `php artisan schedule:work` in development, cron in production.
 
+## Plans and billing
+
+- Plans live in `backend/config/plans.php`: per plan a limit on people, on projects and on built-in AI tokens a month (`null` means no limit). Agents are free and never count as people; open invitations do count.
+- Limits apply only with `PLAN_LIMITS=true`. Without it nothing is held back, which is the right setting for a self-hosted installation without paid plans. A request over the limit gets `402 plan_limit_reached` with the limit and the usage in `error.details`.
+- Paid plans go through Stripe with Laravel Cashier; the workspace is the customer and a plan is one price per workspace, not per seat. Set `STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET` and `STRIPE_PRICE_TEAM` (the id of a recurring price), and point a Stripe webhook at `/stripe/webhook` with the `customer.subscription.*` events. Owners then find "Move to Team" and "Manage billing" under Settings → Plan; the workspace's plan follows the subscription as Stripe reports it.
+- Operators can put a workspace on a plan by hand in the Operator area, for example for a customer who pays by invoice.
+- A workspace with a running paid plan cannot be deleted until the plan is cancelled, so that nothing keeps charging.
+- Not verified here: the live calls to Stripe (checkout, portal, signed webhooks) need real test keys. The limits, the plan following a subscription and the refusal paths are covered by tests.
+
 ## Realtime
 
 Open browsers refresh themselves when something changes. The API sends small signals (identifiers only, never content) through Laravel Reverb; the web app then re-reads through the API. Copy the `REVERB_*` values from `backend/.env` into `frontend/.env.local` as `VITE_REVERB_APP_KEY`, `VITE_REVERB_HOST`, `VITE_REVERB_PORT` and `VITE_REVERB_SCHEME`. Without them the app works, just without live updates.

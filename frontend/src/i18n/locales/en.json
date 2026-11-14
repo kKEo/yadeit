@@ -1165,5 +1165,21 @@
         "broadcast_sent": "Operator sent an announcement"
       }
     }
+  },
+  "billing": {
+    "title": "Plan",
+    "description": "What this workspace's plan allows and how much of it is used.",
+    "members": "People",
+    "projects": "Projects",
+    "usedOf": "{used} of {limit}",
+    "unlimited": "{used}, no limit",
+    "membersNote": "Open invitations count as people. Agents are free and never count.",
+    "aiNote": " Built-in AI: {n} tokens a month, unless the workspace uses its own provider key.",
+    "endsAt": "The paid plan was cancelled and runs until {date}.",
+    "moveTo": "Move to {plan}",
+    "manage": "Manage billing",
+    "ownersOnly": "Only an owner can change the plan.",
+    "returnedSuccess": "Thank you. The plan changes as soon as the payment is confirmed, usually within a minute.",
+    "returnedCancelled": "The payment was not completed. Nothing has changed."
   }
 }

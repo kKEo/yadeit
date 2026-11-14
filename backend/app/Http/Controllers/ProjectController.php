@@ -11,6 +11,7 @@ use App\Models\State;
 use App\Models\Workspace;
 use App\Services\CycleScheduler;
 use App\Support\CurrentWorkspace;
+use App\Support\Plans;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -44,6 +45,8 @@ class ProjectController extends Controller
             'description' => ['nullable', 'string', 'max:2000'],
         ], ['key.regex' => 'The key must be 2 to 10 letters or digits and start with a letter, for example WEB.']);
 
+        Plans::ensureRoom($workspace, 'projects');
+
         $project = $create->handle($workspace, $request->user(), $data['key'], $data['name'], $data['description'] ?? null);
 
         return response()->json(['data' => $this->present($project, withWorkflow: true)], 201);
@@ -70,6 +73,11 @@ class ProjectController extends Controller
         ]);
 
         if (array_key_exists('archived', $data)) {
+            // Bringing a project back takes a place on the plan, like creating one.
+            if (! $data['archived'] && $project->archived_at !== null) {
+                Plans::ensureRoom($workspace, 'projects');
+            }
+
             $project->archived_at = $data['archived'] ? ($project->archived_at ?? now()) : null;
         }
 

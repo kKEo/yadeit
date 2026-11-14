@@ -29,6 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // The workspace must be known before tenant models are bound from the route.
         $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class, 'token.scope' => EnforceTokenScope::class, 'active' => EnsureAccountActive::class, 'operator' => EnsureOperator::class]);
+        // Stripe posts its webhooks without a session.
+        $middleware->preventRequestForgery(except: ['stripe/*']);
         // Every API request passes the audit trail, which records the ones on its list.
         $middleware->appendToGroup('api', AuditTrail::class);
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolveWorkspace::class);

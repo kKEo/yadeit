@@ -582,3 +582,31 @@ export interface BroadcastPreview {
   recipients: number
   sample: string[]
 }
+
+// ── Plans and billing ────────────────────────────────────────────────────────
+
+export interface PlanLimits {
+  /** People, open invitations included; agents never count. null means no limit. */
+  members: number | null
+  projects: number | null
+  ai_tokens: number | null
+}
+
+export interface PlanOption extends PlanLimits {
+  key: string
+  name: string
+  /** Can be bought here: Stripe is set up and the plan has a price. */
+  purchasable: boolean
+}
+
+export interface BillingStatus {
+  plan: string
+  /** Off on installations without paid plans: limits then refuse nothing. */
+  limits_enforced: boolean
+  billing_enabled: boolean
+  limits: PlanLimits
+  usage: { members: number; projects: number }
+  plans: PlanOption[]
+  subscription: { status: string; ends_at: string | null } | null
+  has_billing_account: boolean
+}

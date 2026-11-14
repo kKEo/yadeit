@@ -8,6 +8,7 @@
         "php": "^8.3",
         "anthropic-ai/sdk": "^1.8",
         "dedoc/scramble": "^0.13.53",
+        "laravel/cashier": "^16.10",
         "laravel/framework": "^13.17",
         "laravel/mcp": "^1.2",
         "laravel/reverb": "^1.13",

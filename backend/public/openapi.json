@@ -783,7 +783,7 @@
                                                     "type": "integer"
                                                 },
                                                 "monthly_token_limit": {
-                                                    "type": "integer"
+                                                    "description": "The plan caps the allowance when the installation pays for the tokens."
                                                 },
                                                 "model": {
                                                     "type": "string"
@@ -885,7 +885,7 @@
                                                     "type": "integer"
                                                 },
                                                 "monthly_token_limit": {
-                                                    "type": "integer"
+                                                    "description": "The plan caps the allowance when the installation pays for the tokens."
                                                 },
                                                 "model": {
                                                     "type": "string"
@@ -1650,6 +1650,312 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/billing": {
+            "get": {
+                "operationId": "billing.show",
+                "summary": "The plan with its limits and the current usage. For admins and owners",
+                "tags": [
+                    "Billing"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "plan": {
+                                                    "type": "string"
+                                                },
+                                                "limits_enforced": {
+                                                    "type": "boolean",
+                                                    "description": "Off on installations without paid plans: the limits are then shown nowhere and refuse nothing."
+                                                },
+                                                "billing_enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "limits": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "members": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "projects": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ai_tokens": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "members",
+                                                        "projects",
+                                                        "ai_tokens"
+                                                    ]
+                                                },
+                                                "usage": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "members": {
+                                                            "type": "integer",
+                                                            "description": "People only, open invitations included: an agent is not a seat."
+                                                        },
+                                                        "projects": {
+                                                            "type": "integer",
+                                                            "minimum": 0
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "members",
+                                                        "projects"
+                                                    ]
+                                                },
+                                                "plans": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "members": {
+                                                                "type": "string"
+                                                            },
+                                                            "projects": {
+                                                                "type": "string"
+                                                            },
+                                                            "ai_tokens": {
+                                                                "type": "string"
+                                                            },
+                                                            "purchasable": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "name",
+                                                            "members",
+                                                            "projects",
+                                                            "ai_tokens",
+                                                            "purchasable"
+                                                        ]
+                                                    }
+                                                },
+                                                "subscription": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "status": {
+                                                            "type": "string"
+                                                        },
+                                                        "ends_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time",
+                                                            "description": "Set when the plan was cancelled and runs until this date."
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "status",
+                                                        "ends_at"
+                                                    ]
+                                                },
+                                                "has_billing_account": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "plan",
+                                                "limits_enforced",
+                                                "billing_enabled",
+                                                "limits",
+                                                "usage",
+                                                "plans",
+                                                "subscription",
+                                                "has_billing_account"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/billing/checkout": {
+            "post": {
+                "operationId": "billing.checkout",
+                "summary": "Starts buying a plan: answers with the address of the payment page. Owners only",
+                "tags": [
+                    "Billing"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "plan": {
+                                        "type": "string",
+                                        "enum": [
+                                            "free",
+                                            "team"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "plan"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/billing/portal": {
+            "post": {
+                "operationId": "billing.portal",
+                "summary": "The address of the billing portal: invoices, payment method, cancelling. Owners only",
+                "tags": [
+                    "Billing"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
