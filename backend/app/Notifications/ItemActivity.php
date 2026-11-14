@@ -40,6 +40,7 @@ class ItemActivity extends Notification implements ShouldQueue
             'assigned' => "{$who} assigned {$this->itemKey} to you",
             'commented' => "{$who} commented on {$this->itemKey}",
             'input_requested' => "{$who} needs your input on {$this->itemKey}",
+            'run_failed' => "{$who} could not finish {$this->itemKey}",
             'submitted_for_review' => "{$who} submitted {$this->itemKey} for review",
             'state_changed' => "{$who} changed the state of {$this->itemKey}",
             default => "{$who} updated {$this->itemKey}",

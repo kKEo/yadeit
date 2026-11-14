@@ -16,6 +16,7 @@ import Button from '@/components/ui/Button.vue'
 import Skeleton from '@/components/ui/Skeleton.vue'
 import Tabs from '@/components/ui/Tabs.vue'
 import ItemActivity from './ItemActivity.vue'
+import ItemRuns from './ItemRuns.vue'
 import ItemAttachments from './ItemAttachments.vue'
 import ItemChecklist from './ItemChecklist.vue'
 import ItemChildren from './ItemChildren.vue'
@@ -122,10 +123,12 @@ const notFound = () => detail.error.value instanceof ApiError && detail.error.va
             :tabs="[
               { value: 'comments', label: t('items.comments.title', { n: detail.data.value.comment_count }) },
               { value: 'activity', label: t('items.activity.title') },
+              ...(showRuns ? [{ value: 'runs', label: t('items.runs.title') }] : []),
             ]"
           >
             <template #comments><ItemComments :item-key="itemKey" /></template>
             <template #activity><ItemActivity v-if="tab === 'activity'" :item-key="itemKey" /></template>
+            <template #runs><ItemRuns v-if="tab === 'runs'" :item-key="itemKey" /></template>
           </Tabs>
         </div>
         <aside v-if="variant === 'page'" class="lg:sticky lg:top-0 lg:self-start">

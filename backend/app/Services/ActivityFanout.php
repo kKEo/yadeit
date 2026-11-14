@@ -74,7 +74,7 @@ class ActivityFanout
         }
 
         // An agent's question or finished work goes to the people who answer for it.
-        if ($event === 'input_requested' || $event === 'submitted_for_review') {
+        if (in_array($event, ['input_requested', 'submitted_for_review', 'run_failed'], true)) {
             $owners = [$item->assignee_id, $item->delegate?->owner_id, User::find($actorId)?->owner_id];
 
             $audience = $followers()->merge($owners)->filter()->unique()

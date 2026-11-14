@@ -4,20 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Enums\ItemKind;
 use App\Enums\Priority;
+use App\Enums\RunEntryType;
 use App\Enums\StateGroup;
 use App\Enums\WorkspaceRole;
 use App\Exceptions\ApiException;
 use App\Http\Presenters\ItemPresenter;
 use App\Models\Activity;
+use App\Models\AgentRun;
 use App\Models\Project;
 use App\Models\WorkItem;
 use App\Models\Workspace;
+use App\Services\AgentRuns;
 use App\Services\WorkItemWriter;
 use App\Support\CurrentWorkspace;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -204,6 +208,54 @@ class WorkItemController extends Controller
         $data = $request->validate(['summary' => ['sometimes', 'nullable', 'string', 'max:50000']]);
 
         return $this->respond($this->writer->submitForReview($item, $request->user(), $data['summary'] ?? null), $request);
+    }
+
+    /** The log of every agent run on the item, newest run first, each with its entries in order. */
+    public function runs(Request $request, Workspace $workspace, WorkItem $item): JsonResponse
+    {
+        $runs = AgentRun::query()->where('work_item_id', $item->id)->with(['agent', 'entries'])->orderByDesc('id')->limit(20)->get();
+
+        return response()->json(['data' => $runs->map(fn (AgentRun $run) => $run->summary())]);
+    }
+
+    /**
+     * For agents: notes progress on an item you hold. `thought` for a plan or
+     * reasoning, `action` for something done, `error` when you cannot go on
+     * (this ends the run as failed). Use ask for questions and
+     * submit-for-review for the result. Log meaningful steps, not every command.
+     */
+    public function log(Request $request, Workspace $workspace, WorkItem $item, CurrentWorkspace $current, AgentRuns $runs): JsonResponse
+    {
+        $current->requireRole(WorkspaceRole::Member);
+        $agent = $request->user();
+
+        if (! $agent->isAgent()) {
+            throw new ApiException(403, 'agents_only', 'Only agents keep a run log. People write comments.');
+        }
+
+        if ($item->delegate_id !== $agent->id) {
+            throw new ApiException(409, 'not_claimed_by_you', "You do not hold {$item->key}. Claim it first: POST items/{$item->key}/claim.");
+        }
+
+        $data = $request->validate([
+            'type' => ['required', Rule::in(RunEntryType::loggable())],
+            'body' => ['required', 'string', 'max:20000'],
+        ]);
+
+        $type = RunEntryType::from($data['type']);
+
+        $run = DB::transaction(function () use ($runs, $item, $agent, $type, $data): AgentRun {
+            $run = $runs->record($item, $agent, $type, $data['body']);
+
+            // A failed run is news for the people who answer for the item.
+            if ($type === RunEntryType::Error) {
+                $item->recordActivity('run_failed', $agent->id);
+            }
+
+            return $run ?? throw new ApiException(403, 'agents_only', 'Only agents keep a run log.');
+        });
+
+        return response()->json(['data' => $run->load(['agent', 'entries'])->summary()], 201);
     }
 
     private function respond(WorkItem $item, Request $request): JsonResponse

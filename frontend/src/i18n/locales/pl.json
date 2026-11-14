@@ -201,7 +201,28 @@
     "noDelegate": "Bez agenta",
     "needsInput": "Czeka na odpowiedź",
     "markAnswered": "Oznacz jako wyjaśnione",
-    "delegatedTo": "Powierzone agentowi {name}"
+    "delegatedTo": "Powierzone agentowi {name}",
+    "runs": {
+      "title": "Praca agentów",
+      "empty": "Żaden agent jeszcze nie pracował nad tym zadaniem.",
+      "noEntries": "Brak wpisów.",
+      "started": "rozpoczęto {when}",
+      "status": {
+        "active": "Pracuje",
+        "awaiting_input": "Czeka na odpowiedź",
+        "completed": "Przekazano",
+        "failed": "Niepowodzenie",
+        "stopped": "Zatrzymano",
+        "stale": "Brak oznak życia"
+      },
+      "type": {
+        "thought": "Myśl",
+        "action": "Działanie",
+        "question": "Pytanie",
+        "response": "Wynik",
+        "error": "Błąd"
+      }
+    }
   },
   "register": {
     "title": "Załóż konto",
@@ -456,7 +477,8 @@
       "released": "{actor} oddał(a) zadanie",
       "input_requested": "{actor} zadał(a) pytanie i czeka na odpowiedź",
       "input_provided": "{actor} odpowiedział(a) na pytanie",
-      "submitted_for_review": "{actor} przekazał(a) pracę do przeglądu"
+      "submitted_for_review": "{actor} przekazał(a) pracę do przeglądu",
+      "run_failed": "{actor} nie zdołał(a) dokończyć pracy"
     },
     "needsInputOn": "{actor} oznaczył(a) zadanie jako czekające na odpowiedź",
     "needsInputOff": "{actor} oznaczył(a) pytanie jako wyjaśnione"
@@ -601,7 +623,8 @@
       "state_changed": "{actor} zmienił(a) stan",
       "state_changed_to": "{actor} zmienił(a) stan z „{from}” na „{to}”",
       "input_requested": "{actor} potrzebuje Twojej odpowiedzi",
-      "submitted_for_review": "{actor} przekazał(a) pracę do Twojego przeglądu"
+      "submitted_for_review": "{actor} przekazał(a) pracę do Twojego przeglądu",
+      "run_failed": "{actor} nie zdołał(a) dokończyć pracy"
     }
   },
   "agents": {

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\Priority;
+use App\Enums\RunEntryType;
 use App\Enums\StateGroup;
 use App\Enums\UserType;
 use App\Exceptions\ApiException;
@@ -24,6 +25,8 @@ use Illuminate\Validation\ValidationException;
  */
 class WorkItemWriter
 {
+    public function __construct(private AgentRuns $runs) {}
+
     /** @param  array<string, mixed>  $data */
     public function create(Project $project, array $data, User $actor): WorkItem
     {
@@ -131,6 +134,10 @@ class WorkItemWriter
                 $delegate = $this->resolveDelegate($project, $data['delegate'], $actor);
 
                 if ($delegate?->id !== $item->delegate_id) {
+                    if ($item->delegate_id !== null) {
+                        $this->runs->stop($item, $item->delegate_id);
+                    }
+
                     $changes['delegate'] = ['from' => $item->delegate?->name, 'to' => $delegate?->name];
                     $item->delegate_id = $delegate?->id;
                 }
@@ -139,6 +146,10 @@ class WorkItemWriter
             if (array_key_exists('needs_input', $data) && (bool) $data['needs_input'] !== $item->needs_input) {
                 $changes['needs_input'] = ['from' => $item->needs_input, 'to' => (bool) $data['needs_input']];
                 $item->needs_input = (bool) $data['needs_input'];
+
+                if (! $item->needs_input) {
+                    $this->runs->resume($item);
+                }
             }
 
             if (array_key_exists('parent', $data)) {
@@ -231,6 +242,10 @@ class WorkItemWriter
                 $item->needs_input = false;
             }
 
+            if ($actor->isAgent()) {
+                $this->runs->open($item, $actor);
+            }
+
             return $this->commit($item, 'claimed', $actor, $changes);
         });
     }
@@ -247,6 +262,10 @@ class WorkItemWriter
             }
 
             $item->setAttribute($field, null);
+
+            if ($actor->isAgent()) {
+                $this->runs->stop($item, $actor->id);
+            }
 
             return $this->commit($item, 'released', $actor, [
                 $actor->isAgent() ? 'delegate' : 'assignee' => ['from' => $actor->name, 'to' => null],
@@ -272,6 +291,8 @@ class WorkItemWriter
                 $changes['needs_input'] = ['from' => false, 'to' => true];
                 $item->needs_input = true;
             }
+
+            $this->runs->record($item, $actor, RunEntryType::Question, $question);
 
             return $this->commit($item, 'input_requested', $actor, $changes);
         });
@@ -315,6 +336,8 @@ class WorkItemWriter
                 $changes['comment_id'] = $comment->id;
             }
 
+            $this->runs->record($item, $actor, RunEntryType::Response, trim((string) $summary) !== '' ? (string) $summary : 'Submitted for review.');
+
             return $this->commit($item, 'submitted_for_review', $actor, $changes);
         });
     }
@@ -327,6 +350,7 @@ class WorkItemWriter
 
             if ($item->needs_input) {
                 $item->needs_input = false;
+                $this->runs->resume($item);
                 $this->commit($item, 'input_provided', $actor, ['needs_input' => ['from' => true, 'to' => false]]);
             }
         });

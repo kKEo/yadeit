@@ -126,6 +126,8 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::post('claim', [WorkItemController::class, 'claim'])->name('items.claim');
             Route::delete('claim', [WorkItemController::class, 'release'])->name('items.release');
             Route::post('ask', [WorkItemController::class, 'ask'])->name('items.ask');
+            Route::get('runs', [WorkItemController::class, 'runs'])->name('items.runs');
+            Route::post('log', [WorkItemController::class, 'log'])->name('items.log');
             Route::post('submit-for-review', [WorkItemController::class, 'submitForReview'])->name('items.submit-for-review');
             Route::put('subscription', [WorkItemController::class, 'subscribe'])->name('items.subscribe');
             Route::delete('subscription', [WorkItemController::class, 'unsubscribe'])->name('items.unsubscribe');

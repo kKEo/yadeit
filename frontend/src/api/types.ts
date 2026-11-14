@@ -136,7 +136,23 @@ export interface SaveViewRequest extends Partial<ViewState> { name?: string; is_
 
 // ── Inbox ────────────────────────────────────────────────────────────────────
 
-export type InboxEvent = 'assigned' | 'commented' | 'state_changed' | 'input_requested' | 'submitted_for_review'
+export type InboxEvent = 'assigned' | 'commented' | 'state_changed' | 'input_requested' | 'submitted_for_review' | 'run_failed'
+
+export type RunStatus = 'active' | 'awaiting_input' | 'completed' | 'failed' | 'stopped'
+export type RunEntryType = 'thought' | 'action' | 'question' | 'response' | 'error'
+export interface RunEntry { id: number; type: RunEntryType; body: string; created_at: string }
+/** One stretch of an agent's work on an item, with its log. */
+export interface AgentRun {
+  id: number
+  agent: UserRef | null
+  status: RunStatus
+  /** Still active but silent for a while. */
+  stale: boolean
+  started_at: string
+  last_activity_at: string
+  ended_at: string | null
+  entries: RunEntry[]
+}
 export interface InboxEntry {
   id: number
   event: InboxEvent

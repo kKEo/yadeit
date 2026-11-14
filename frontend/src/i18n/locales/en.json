@@ -201,7 +201,28 @@
     "noDelegate": "No agent",
     "needsInput": "Needs input",
     "markAnswered": "Mark as answered",
-    "delegatedTo": "Delegated to {name}"
+    "delegatedTo": "Delegated to {name}",
+    "runs": {
+      "title": "Agent runs",
+      "empty": "No agent has worked on this item yet.",
+      "noEntries": "Nothing logged yet.",
+      "started": "started {when}",
+      "status": {
+        "active": "Working",
+        "awaiting_input": "Waiting for an answer",
+        "completed": "Submitted",
+        "failed": "Failed",
+        "stopped": "Stopped",
+        "stale": "No sign of life"
+      },
+      "type": {
+        "thought": "Thought",
+        "action": "Action",
+        "question": "Question",
+        "response": "Result",
+        "error": "Error"
+      }
+    }
   },
   "register": {
     "title": "Create your account",
@@ -456,7 +477,8 @@
       "released": "{actor} gave the item back",
       "input_requested": "{actor} asked a question and is waiting for an answer",
       "input_provided": "{actor} answered the question",
-      "submitted_for_review": "{actor} submitted the work for review"
+      "submitted_for_review": "{actor} submitted the work for review",
+      "run_failed": "{actor} could not finish the work"
     },
     "needsInputOn": "{actor} marked the item as needing input",
     "needsInputOff": "{actor} marked the question as answered"
@@ -601,7 +623,8 @@
       "state_changed": "{actor} changed the state",
       "state_changed_to": "{actor} changed the state from {from} to {to}",
       "input_requested": "{actor} needs your input",
-      "submitted_for_review": "{actor} submitted work for your review"
+      "submitted_for_review": "{actor} submitted work for your review",
+      "run_failed": "{actor} could not finish the work"
     }
   },
   "agents": {

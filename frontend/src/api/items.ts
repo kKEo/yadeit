@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { API_BASE_PATH, request, workspacePath } from './client'
 import type {
-  ActivityEntry, Attachment, ChecklistEntry, Comment, CreateItemRequest, Item, ItemDetail, ItemLink,
+  ActivityEntry, AgentRun, Attachment, ChecklistEntry, Comment, CreateItemRequest, Item, ItemDetail, ItemLink,
   ItemResponse, LinkKind, ListItemsParams, ListResponse, RelationType, UpdateItemRequest,
 } from './types'
 
@@ -74,6 +74,10 @@ export async function updateComment(slug: string, key: string, id: number, body:
 
 export async function deleteComment(slug: string, key: string, id: number): Promise<void> {
   await request<void>('DELETE', `${itemPath(slug, key)}/comments/${id}`)
+}
+
+export async function listRuns(slug: string, key: string): Promise<AgentRun[]> {
+  return (await request<ItemResponse<AgentRun[]>>('GET', `${itemPath(slug, key)}/runs`)).data
 }
 
 export function listActivity(slug: string, key: string): Promise<ListResponse<ActivityEntry>> {

@@ -76,6 +76,20 @@ export function useItemActivity(itemKey: MaybeRefOrGetter<string>, enabled: Mayb
   })
 }
 
+/** Agent runs on the item, newest first. */
+export function useItemRuns(itemKey: MaybeRefOrGetter<string>, enabled: MaybeRefOrGetter<boolean> = true) {
+  const slug = useSlug()
+  return useQuery(() => {
+    const key = toValue(itemKey)
+    const workspace = slug.value
+    return {
+      key: keys.itemRuns(workspace, key),
+      query: () => api.listRuns(workspace, key),
+      enabled: toValue(enabled) && key !== '' && workspace !== '',
+    }
+  })
+}
+
 /** Title search for the command palette; `q` should already be debounced. */
 export function useItemSearch(q: MaybeRefOrGetter<string>) {
   const slug = useSlug()
