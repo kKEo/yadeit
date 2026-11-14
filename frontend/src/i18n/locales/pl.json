@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "Yadeit"
+  },
+  "common": {
+    "back": "Wstecz",
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "delete": "Usuń",
+    "language": "Język",
+    "refresh": "Odśwież",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "signOut": "Wyloguj się"
+  },
+  "locale": {
+    "en": "English",
+    "pl": "Polski"
+  },
+  "auth": {
+    "title": "Logowanie",
+    "description": "Podaj adres e-mail i hasło, aby kontynuować.",
+    "email": "E-mail",
+    "emailPlaceholder": "ty{'@'}example.com",
+    "password": "Hasło",
+    "submit": "Zaloguj się",
+    "submitting": "Logowanie…"
+  },
+  "state": {
+    "backlog": "Backlog",
+    "unstarted": "Do zrobienia",
+    "started": "W toku",
+    "completed": "Ukończone",
+    "cancelled": "Anulowane"
+  },
+  "priority": {
+    "none": "Brak priorytetu",
+    "low": "Niski",
+    "medium": "Średni",
+    "high": "Wysoki",
+    "urgent": "Pilny"
+  },
+  "items": {
+    "title": "Zadania",
+    "count": "Nie wczytano zadań | Wczytano {n} zadanie | Wczytano {n} zadania | Wczytano {n} zadań",
+    "new": "Nowe zadanie",
+    "filterAll": "Wszystkie",
+    "loadMore": "Wczytaj więcej",
+    "empty": "Nie znaleziono żadnych zadań.",
+    "emptyCta": "Utwórz pierwsze",
+    "unassigned": "Nieprzypisane",
+    "noDescription": "Brak opisu.",
+    "fields": {
+      "key": "Klucz",
+      "title": "Tytuł",
+      "description": "Opis",
+      "state": "Stan",
+      "priority": "Priorytet",
+      "assignee": "Osoba przypisana",
+      "updatedAt": "Zaktualizowano"
+    },
+    "create": {
+      "title": "Nowe zadanie",
+      "description": "Wymagany jest tylko tytuł.",
+      "titlePlaceholder": "Krótkie podsumowanie pracy",
+      "descriptionPlaceholder": "Szczegóły (obsługiwany Markdown)",
+      "submit": "Utwórz zadanie",
+      "submitting": "Tworzenie…"
+    },
+    "detail": {
+      "details": "Szczegóły",
+      "actions": "Akcje",
+      "changeState": "Zmień stan",
+      "tabDescription": "Opis",
+      "tabEdit": "Edycja",
+      "deleteItem": "Usuń zadanie",
+      "deleteTitle": "Usunąć {key}?",
+      "deleteDescription": "Zadanie zostanie trwale usunięte. Tej operacji nie można cofnąć.",
+      "deleting": "Usuwanie…",
+      "saved": "Zmiany zostały zapisane."
+    }
+  },
+  "errors": {
+    "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+    "login": "Nie udało się zalogować.",
+    "fetchList": "Nie udało się wczytać zadań.",
+    "fetchOne": "Nie udało się wczytać zadania.",
+    "create": "Nie udało się utworzyć zadania.",
+    "update": "Nie udało się zaktualizować zadania.",
+    "delete": "Nie udało się usunąć zadania."
+  }
+}

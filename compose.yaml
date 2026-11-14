@@ -1,0 +1,21 @@
+# Local development services. The Laravel and Vite dev servers run on the host.
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: yadeit
+      POSTGRES_PASSWORD: yadeit
+      POSTGRES_DB: yadeit
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yadeit -d yadeit"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  db-data:

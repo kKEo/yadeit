@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "Yadeit"
+  },
+  "common": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "language": "Language",
+    "refresh": "Refresh",
+    "save": "Save",
+    "saving": "Saving…",
+    "signOut": "Sign out"
+  },
+  "locale": {
+    "en": "English",
+    "pl": "Polski"
+  },
+  "auth": {
+    "title": "Sign in",
+    "description": "Enter your email and password to continue.",
+    "email": "Email",
+    "emailPlaceholder": "you{'@'}example.com",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…"
+  },
+  "state": {
+    "backlog": "Backlog",
+    "unstarted": "To do",
+    "started": "In progress",
+    "completed": "Done",
+    "cancelled": "Cancelled"
+  },
+  "priority": {
+    "none": "No priority",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "urgent": "Urgent"
+  },
+  "items": {
+    "title": "Work items",
+    "count": "No items loaded | {n} item loaded | {n} items loaded",
+    "new": "New item",
+    "filterAll": "All",
+    "loadMore": "Load more",
+    "empty": "No work items found.",
+    "emptyCta": "Create the first one",
+    "unassigned": "Unassigned",
+    "noDescription": "No description.",
+    "fields": {
+      "key": "Key",
+      "title": "Title",
+      "description": "Description",
+      "state": "State",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "updatedAt": "Updated"
+    },
+    "create": {
+      "title": "New work item",
+      "description": "Only the title is required.",
+      "titlePlaceholder": "Short summary of the work",
+      "descriptionPlaceholder": "Details (Markdown supported)",
+      "submit": "Create item",
+      "submitting": "Creating…"
+    },
+    "detail": {
+      "details": "Details",
+      "actions": "Actions",
+      "changeState": "Change state",
+      "tabDescription": "Description",
+      "tabEdit": "Edit",
+      "deleteItem": "Delete item",
+      "deleteTitle": "Delete {key}?",
+      "deleteDescription": "This permanently removes the work item. This action cannot be undone.",
+      "deleting": "Deleting…",
+      "saved": "Changes saved."
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "login": "Could not sign in.",
+    "fetchList": "Failed to load work items.",
+    "fetchOne": "Failed to load the work item.",
+    "create": "Failed to create the work item.",
+    "update": "Failed to update the work item.",
+    "delete": "Failed to delete the work item."
+  }
+}

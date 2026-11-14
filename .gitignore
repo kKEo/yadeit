@@ -1,5 +1,5 @@
-/assets/
-protected/runtime/
-protected/data/testdrive.db
-themes/
-upload
+.DS_Store
+.idea/
+.vscode/
+.claude/
+*.local
