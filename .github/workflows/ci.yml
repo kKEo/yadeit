@@ -106,3 +106,44 @@ jobs:
         run: npm run build
       - name: Tests
         run: npm run test
+
+  # The documentation site: the landing page above the user guide (make docs-build).
+  # Built on every push and pull request, so a broken SUMMARY.md fails the check.
+  docs:
+    runs-on: ubuntu-latest
+    env:
+      MDBOOK_VERSION: '0.5.4'
+      MDBOOK_SHA256: 3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mdBook
+        run: |
+          curl -sSfL -o mdbook.tar.gz "https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          echo "${MDBOOK_SHA256}  mdbook.tar.gz" | sha256sum --check
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf mdbook.tar.gz -C "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Build the site
+        run: make docs-build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  # Publishes the site to GitHub Pages from master only.
+  # Needs Settings → Pages → Source: "GitHub Actions" in the repository.
+  docs-deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: docs
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
