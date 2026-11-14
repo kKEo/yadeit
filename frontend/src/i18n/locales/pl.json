@@ -533,7 +533,7 @@
   "commands": {
     "title": "Paleta poleceń",
     "open": "Szukaj lub uruchom…",
-    "placeholder": "Wpisz polecenie albo szukaj zadań…",
+    "placeholder": "Wpisz polecenie albo szukaj zadań, komentarzy i stron…",
     "empty": "Brak pasujących poleceń i zadań.",
     "searching": "Wyszukiwanie…",
     "copyFailed": "Nie udało się skopiować do schowka.",
@@ -560,7 +560,9 @@
       "navigate": "Przejdź do",
       "views": "Widoki",
       "workspaces": "Przestrzenie robocze",
-      "items": "Zadania"
+      "items": "Zadania",
+      "comments": "Komentarze",
+      "pages": "Strony"
     }
   },
   "shortcuts": {

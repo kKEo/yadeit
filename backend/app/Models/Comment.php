@@ -24,6 +24,12 @@ class Comment extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /** @return BelongsTo<WorkItem, $this> */
+    public function item(): BelongsTo
+    {
+        return $this->belongsTo(WorkItem::class, 'work_item_id');
+    }
+
     /** @return array<string, mixed> */
     public function summary(): array
     {

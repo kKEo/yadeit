@@ -419,3 +419,9 @@ export interface SavePageRequest {
   public?: boolean
   expected_version?: number
 }
+
+/** One hit of the workspace search. */
+export type SearchResult =
+  | { type: 'item'; key: string; title: string; state: StateRef; snippet: string | null }
+  | { type: 'comment'; key: string; title: string; author: string | null; snippet: string | null }
+  | { type: 'page'; id: number; title: string; status: 'draft' | 'published'; project: string | null; snippet: string | null }

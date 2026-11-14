@@ -2,10 +2,13 @@
 import { computed, nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { refDebounced } from '@vueuse/core'
-import { Search } from '@lucide/vue'
+import { FileText, MessageSquare, Search } from '@lucide/vue'
 import { useCommands, type Command } from '@/composables/useCommands'
 import { useItemPeek } from '@/composables/useItemPeek'
-import { useItemSearch } from '@/queries/items'
+import { useRouter } from 'vue-router'
+import type { SearchResult } from '@/api/types'
+import { useSearch } from '@/queries/items'
+import { useSlug } from '@/queries/keys'
 import { useUiStore } from '@/stores/ui'
 import Dialog from '@/components/ui/Dialog.vue'
 import Kbd from '@/components/ui/Kbd.vue'
@@ -19,20 +22,28 @@ const { open: openItem } = useItemPeek()
 
 const query = ref('')
 const debounced = refDebounced(query, 200)
-const search = useItemSearch(() => (ui.paletteOpen ? debounced.value : ''))
+const search = useSearch(() => (ui.paletteOpen ? debounced.value : ''))
+const router = useRouter()
+const slug = useSlug()
 const active = ref(0)
 const list = ref<HTMLElement | null>(null)
 
-interface Row { id: string; group: string; command?: Command; item?: NonNullable<typeof search.data.value>[number]; run: () => void }
+interface Row { id: string; group: string; command?: Command; hit?: SearchResult; run: () => void }
+
+function hitRow(hit: SearchResult, index: number): Row {
+  if (hit.type === 'page') {
+    return { id: `page-${hit.id}`, group: t('commands.group.pages'), hit, run: () => void router.push({ name: 'doc', params: { slug: slug.value, id: hit.id } }) }
+  }
+  const group = hit.type === 'item' ? t('commands.group.items') : t('commands.group.comments')
+  return { id: `${hit.type}-${hit.key}-${index}`, group, hit, run: () => void openItem(hit.key) }
+}
 
 const rows = computed<Row[]>(() => {
   const term = query.value.trim().toLowerCase()
   const matching = term ? commands.value.filter((c) => c.label.toLowerCase().includes(term)) : commands.value
   const result: Row[] = matching.map((command) => ({ id: command.id, group: t(command.group), command, run: command.run }))
   if (term && debounced.value.trim().toLowerCase() === term) {
-    for (const item of search.data.value ?? []) {
-      result.push({ id: `item-result-${item.key}`, group: t('commands.group.items'), item, run: () => void openItem(item.key) })
-    }
+    result.push(...(search.data.value ?? []).map(hitRow))
   }
   return result
 })
@@ -81,10 +92,14 @@ function onKeydown(event: KeyboardEvent) {
           class="flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm data-[active=true]:bg-accent data-[active=true]:text-accent-foreground"
           @mousemove="active = index" @click="run(row)"
         >
-          <template v-if="row.item">
-            <StateDot :state="row.item.state" />
-            <span class="shrink-0 font-mono text-xs text-muted-foreground">{{ row.item.key }}</span>
-            <span class="min-w-0 flex-1 truncate">{{ row.item.title }}</span>
+          <template v-if="row.hit">
+            <StateDot v-if="row.hit.type === 'item'" :state="row.hit.state" />
+            <component :is="row.hit.type === 'page' ? FileText : MessageSquare" v-else class="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <span v-if="row.hit.type !== 'page'" class="shrink-0 font-mono text-xs text-muted-foreground">{{ row.hit.key }}</span>
+            <span class="min-w-0 flex-1">
+              <span class="block truncate">{{ row.hit.title }}</span>
+              <span v-if="row.hit.snippet" class="block truncate text-xs text-muted-foreground">{{ row.hit.snippet }}</span>
+            </span>
           </template>
           <template v-else-if="row.command">
             <component :is="row.command.icon" v-if="row.command.icon" class="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />

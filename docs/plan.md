@@ -180,7 +180,7 @@ Goal: time-boxed planning and written knowledge next to the work.
 - [x] Build the sub-item view and blocked indicators
 - [x] Build docs
   - Markdown pages per project and workspace, draft/published, optional public link
-- [ ] Build full-text search
+- [x] Build full-text search
   - Items, comments and docs
 - [ ] Add the stale-item decay setting
 - [ ] Verify planning: a cycle rolls unfinished items over, a published doc opens signed out, search finds all three content types

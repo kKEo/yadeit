@@ -16,6 +16,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SavedViewController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\WorkItemController;
@@ -115,6 +116,8 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::patch('labels/{label}', [LabelController::class, 'update'])->whereNumber('label')->name('labels.update');
             Route::delete('labels/{label}', [LabelController::class, 'destroy'])->whereNumber('label')->name('labels.destroy');
         });
+
+        Route::get('search', SearchController::class)->name('search');
 
         Route::get('pages', [PageController::class, 'index'])->name('pages.index');
         Route::post('pages', [PageController::class, 'store'])->name('pages.store');

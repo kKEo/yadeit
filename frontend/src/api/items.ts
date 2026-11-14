@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { API_BASE_PATH, request, workspacePath } from './client'
 import type {
-  ActivityEntry, AgentRun, Attachment, ChecklistEntry, Comment, CreateItemRequest, Item, ItemDetail, ItemLink,
+  ActivityEntry, AgentRun, Attachment, SearchResult, ChecklistEntry, Comment, CreateItemRequest, Item, ItemDetail, ItemLink,
   ItemResponse, LinkKind, ListItemsParams, ListResponse, RelationType, UpdateItemRequest,
 } from './types'
 
@@ -74,6 +74,11 @@ export async function updateComment(slug: string, key: string, id: number, body:
 
 export async function deleteComment(slug: string, key: string, id: number): Promise<void> {
   await request<void>('DELETE', `${itemPath(slug, key)}/comments/${id}`)
+}
+
+/** Items, comments and pages that contain every word of `q`. */
+export async function search(slug: string, q: string): Promise<SearchResult[]> {
+  return (await request<ItemResponse<SearchResult[]>>('GET', `/workspaces/${encodeURIComponent(slug)}/search?q=${encodeURIComponent(q)}&limit=6`)).data
 }
 
 export async function listRuns(slug: string, key: string): Promise<AgentRun[]> {

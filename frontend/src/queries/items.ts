@@ -90,16 +90,16 @@ export function useItemRuns(itemKey: MaybeRefOrGetter<string>, enabled: MaybeRef
   })
 }
 
-/** Title search for the command palette; `q` should already be debounced. */
-export function useItemSearch(q: MaybeRefOrGetter<string>) {
+/** Workspace search for the command palette; `q` should already be debounced. The API wants at least two characters. */
+export function useSearch(q: MaybeRefOrGetter<string>) {
   const slug = useSlug()
   return useQuery(() => {
     const term = toValue(q).trim()
     const workspace = slug.value
     return {
       key: keys.itemSearch(workspace, term),
-      query: async () => (await api.listItems(workspace, { q: term, limit: 8 })).data,
-      enabled: term !== '' && workspace !== '',
+      query: () => api.search(workspace, term),
+      enabled: term.length >= 2 && workspace !== '',
     }
   })
 }

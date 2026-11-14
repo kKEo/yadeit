@@ -533,7 +533,7 @@
   "commands": {
     "title": "Command palette",
     "open": "Search or run…",
-    "placeholder": "Type a command or search items…",
+    "placeholder": "Type a command, or search items, comments and pages…",
     "empty": "No commands or items match.",
     "searching": "Searching…",
     "copyFailed": "Could not copy to the clipboard.",
@@ -560,7 +560,9 @@
       "navigate": "Go to",
       "views": "Views",
       "workspaces": "Workspaces",
-      "items": "Items"
+      "items": "Items",
+      "comments": "Comments",
+      "pages": "Pages"
     }
   },
   "shortcuts": {
