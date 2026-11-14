@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AiController;
 use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\ItemPartsController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\MeController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PublicFeedbackController;
@@ -66,7 +68,17 @@ Route::prefix('public/feedback/{token}')->where(['token' => '[A-Za-z0-9]{20,64}'
 Route::get('invitations/{token}', [InvitationController::class, 'preview'])
     ->middleware('throttle:auth')->name('invitations.preview');
 
-Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->group(function () {
+    // The operator area: the people who run the installation.
+    Route::prefix('admin')->middleware('operator')->group(function () {
+        Route::get('overview', [OperatorController::class, 'overview'])->name('admin.overview');
+        Route::get('workspaces', [OperatorController::class, 'workspaces'])->name('admin.workspaces.index');
+        Route::patch('workspaces/{id}', [OperatorController::class, 'updateWorkspace'])->whereNumber('id')->name('admin.workspaces.update');
+        Route::get('users', [OperatorController::class, 'users'])->name('admin.users.index');
+        Route::patch('users/{id}', [OperatorController::class, 'updateUser'])->whereNumber('id')->name('admin.users.update');
+        Route::get('audit', [OperatorController::class, 'audit'])->name('admin.audit');
+    });
+
     Route::get('me', [MeController::class, 'show'])->name('me.show');
     Route::patch('me', [MeController::class, 'update'])->name('me.update');
 
@@ -126,6 +138,8 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::patch('labels/{label}', [LabelController::class, 'update'])->whereNumber('label')->name('labels.update');
             Route::delete('labels/{label}', [LabelController::class, 'destroy'])->whereNumber('label')->name('labels.destroy');
         });
+
+        Route::get('audit', [AuditLogController::class, 'index'])->name('audit.index');
 
         Route::get('ai', [AiController::class, 'status'])->name('ai.status');
         Route::put('ai', [AiController::class, 'configure'])->name('ai.configure');

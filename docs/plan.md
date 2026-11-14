@@ -216,9 +216,9 @@ Goal: helpful AI inside the app, always as confirmable suggestions.
 
 Goal: run it as a public service.
 
-- [ ] Build the instance admin area
+- [x] Build the instance admin area
   - Workspaces, users, suspension
-- [ ] Build the audit event log
+- [x] Build the audit event log
   - Views for workspace admins and for the operator
 - [ ] Build the outgoing mail log and queue screen
   - Waiting/sent, details, send now, delete

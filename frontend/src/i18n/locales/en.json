@@ -337,7 +337,8 @@
     "feedback": "Feedback"
   },
   "userMenu": {
-    "label": "Account menu"
+    "label": "Account menu",
+    "operator": "Operator area"
   },
   "role": {
     "owner": "Owner",
@@ -942,6 +943,169 @@
       "save": "Save",
       "saving": "Saving…",
       "saved": "Saved."
+    }
+  },
+  "admin": {
+    "title": "Operator area",
+    "back": "Back to the app",
+    "search": "Search",
+    "more": "Load more",
+    "created": "Created",
+    "suspend": "Suspend",
+    "restore": "Restore",
+    "nav": {
+      "workspaces": "Workspaces",
+      "users": "People",
+      "audit": "Audit log"
+    },
+    "status": {
+      "label": "Status",
+      "all": "All",
+      "active": "Active",
+      "suspended": "Suspended"
+    },
+    "plan": {
+      "free": "Free",
+      "team": "Team"
+    },
+    "overview": {
+      "workspaces": "Workspaces",
+      "suspended_workspaces": "Suspended",
+      "people": "People",
+      "agents": "Agents",
+      "items": "Items",
+      "signups_last_7_days": "Sign-ups, last 7 days"
+    },
+    "workspaces": {
+      "title": "Workspaces",
+      "search": "Name or web address",
+      "empty": "No workspace matches.",
+      "name": "Workspace",
+      "plan": "Plan",
+      "planOf": "Plan of {workspace}",
+      "members": "Members",
+      "items": "Items",
+      "suspendTitle": "Suspend {workspace}?",
+      "suspendDescription": "Its members and agents lose access until you restore it. Nothing is deleted."
+    },
+    "users": {
+      "title": "People",
+      "search": "Name or email",
+      "empty": "Nobody matches.",
+      "name": "Person",
+      "workspaces": "Workspaces",
+      "operator": "Operator",
+      "unverified": "Email not verified",
+      "suspendTitle": "Suspend {name}?",
+      "suspendDescription": "They are signed out everywhere, their tokens are revoked and their agents stop working. Nothing is deleted."
+    },
+    "audit": {
+      "title": "Audit log",
+      "workspace": "Workspace web address",
+      "action": "Action starts with, e.g. member."
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "description": "Who changed access, sharing and settings, and who deleted what. Work on items is in each item's own history.",
+    "filter": "Show",
+    "empty": "Nothing recorded yet.",
+    "more": "Load more",
+    "when": "When",
+    "who": "Who",
+    "what": "What",
+    "details": "Details",
+    "workspace": "Workspace",
+    "ip": "Address",
+    "agent": "Agent",
+    "nobody": "Not signed in",
+    "viaToken": "with token “{token}”",
+    "area": {
+      "all": "Everything",
+      "member": "Members",
+      "invitation": "Invitations",
+      "agent": "Agents",
+      "token": "Tokens",
+      "webhook": "Webhooks",
+      "project": "Projects",
+      "workflow": "Workflow",
+      "page": "Docs",
+      "item": "Items",
+      "ai": "AI",
+      "workspace": "Workspace"
+    },
+    "action": {
+      "account": {
+        "signed_in": "Signed in",
+        "signed_out": "Signed out",
+        "sign_in_failed": "Sign-in failed",
+        "registered": "Registered",
+        "password_reset": "Reset the password",
+        "deleted": "Deleted the account",
+        "exported": "Exported personal data"
+      },
+      "invitation": {
+        "accepted": "Accepted an invitation",
+        "sent": "Invited someone",
+        "withdrawn": "Withdrew an invitation"
+      },
+      "workspace": {
+        "created": "Created the workspace",
+        "updated": "Changed workspace settings",
+        "deleted": "Deleted the workspace",
+        "exported": "Exported the workspace"
+      },
+      "member": {
+        "role_changed": "Changed a member's role",
+        "removed": "Removed a member"
+      },
+      "agent": {
+        "created": "Created an agent",
+        "updated": "Changed an agent",
+        "removed": "Removed an agent"
+      },
+      "token": {
+        "created": "Created an access token",
+        "revoked": "Revoked an access token"
+      },
+      "webhook": {
+        "created": "Created a webhook",
+        "updated": "Changed a webhook",
+        "deleted": "Deleted a webhook"
+      },
+      "project": {
+        "created": "Created a project",
+        "updated": "Changed a project",
+        "deleted": "Deleted a project"
+      },
+      "feedback_form": {
+        "changed": "Changed the public feedback form"
+      },
+      "workflow": {
+        "state_added": "Added a state",
+        "state_changed": "Changed a state",
+        "state_removed": "Removed a state"
+      },
+      "ai": {
+        "settings_changed": "Changed AI settings"
+      },
+      "billing": {
+        "checkout_started": "Started a plan change"
+      },
+      "page": {
+        "deleted": "Deleted a page",
+        "sharing_changed": "Changed how a page is shared"
+      },
+      "item": {
+        "deleted": "Deleted an item"
+      },
+      "operator": {
+        "workspace_changed": "Operator changed a workspace",
+        "user_changed": "Operator changed an account",
+        "mail_sent_now": "Operator sent a waiting email",
+        "mail_deleted": "Operator deleted an email",
+        "broadcast_sent": "Operator sent an announcement"
+      }
     }
   }
 }

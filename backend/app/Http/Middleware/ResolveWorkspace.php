@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\ApiException;
 use App\Models\Workspace;
 use App\Support\CurrentWorkspace;
 use Closure;
@@ -33,6 +34,10 @@ class ResolveWorkspace
 
         if (! $workspace || ! $membership) {
             throw new NotFoundHttpException('Workspace not found.');
+        }
+
+        if ($workspace->suspended_at !== null) {
+            throw new ApiException(403, 'workspace_suspended', 'This workspace is suspended. Contact whoever runs this installation.');
         }
 
         $this->current->set($workspace, $membership);

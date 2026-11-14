@@ -9,6 +9,7 @@ import { isValidSlug } from '@/lib/slug'
 import { useWorkspaceStore } from '@/stores/workspace'
 import ConfirmDialog from '@/components/app/ConfirmDialog.vue'
 import FormField from '@/components/app/FormField.vue'
+import AuditSection from '@/components/app/AuditSection.vue'
 import AiSettingsSection from '@/components/app/AiSettingsSection.vue'
 import WebhooksSection from '@/components/app/WebhooksSection.vue'
 import Alert from '@/components/ui/Alert.vue'
@@ -71,7 +72,7 @@ async function confirmDelete() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-2xl space-y-6">
+  <div class="mx-auto max-w-3xl space-y-6">
     <h1 class="text-2xl font-semibold tracking-tight">{{ t('settings.title') }}</h1>
 
     <Card>
@@ -108,6 +109,8 @@ async function confirmDelete() {
     <AiSettingsSection v-if="canEdit" />
 
     <WebhooksSection v-if="canEdit" />
+
+    <AuditSection v-if="canEdit" />
 
     <Card v-if="canDelete" class="border-destructive/50">
       <CardHeader>

@@ -9,10 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
  * @property bool $ai_enabled
+ * @property string $plan
+ * @property Carbon|null $suspended_at
  * @property string|null $ai_api_key
  * @property int|null $ai_monthly_token_limit
  */
@@ -24,13 +27,13 @@ class Workspace extends Model
     use HasFactory;
 
     /** @var array<string, mixed> */
-    protected $attributes = ['ai_enabled' => false];
+    protected $attributes = ['ai_enabled' => false, 'plan' => 'free'];
 
     /** @return array<string, string> */
     protected function casts(): array
     {
         // The workspace's own provider key is stored encrypted and never serialised.
-        return ['ai_enabled' => 'boolean', 'ai_api_key' => 'encrypted'];
+        return ['ai_enabled' => 'boolean', 'ai_api_key' => 'encrypted', 'suspended_at' => 'datetime'];
     }
 
     /** Slugs that would collide with application routes. */

@@ -83,6 +83,12 @@ Optional help from a Claude model: drafting an item from one sentence, proposing
 - **Who:** members and admins. Guests and agents cannot use it.
 - If the model declines a request, the API retries it on its default fallback model.
 
+## Operator area and audit log
+
+- An operator is a person who runs the installation. The role is granted from the command line only: `php artisan operator:grant someone@example.com` (`--revoke` takes it away).
+- Operators get an "Operator area" entry in the account menu (`/admin`): every workspace and person in outline (names, counts, dates, never content), with suspension and the plan. A suspended workspace is closed to its members and agents; a suspended person is signed out, loses their tokens and their agents stop. Nothing is deleted.
+- The audit log records who changed access, sharing and settings and who deleted what, plus sign-ins and failed sign-ins. Workspace admins see their workspace's log under Settings (`GET /api/v1/workspaces/{slug}/audit`); operators see all of it, with addresses (`GET /api/v1/admin/audit`). Secrets and long texts never enter the log. Which requests are recorded is one list in `backend/app/Http/Middleware/AuditTrail.php`.
+
 ## Realtime
 
 Open browsers refresh themselves when something changes. The API sends small signals (identifiers only, never content) through Laravel Reverb; the web app then re-reads through the API. Copy the `REVERB_*` values from `backend/.env` into `frontend/.env.local` as `VITE_REVERB_APP_KEY`, `VITE_REVERB_HOST`, `VITE_REVERB_PORT` and `VITE_REVERB_SCHEME`. Without them the app works, just without live updates.

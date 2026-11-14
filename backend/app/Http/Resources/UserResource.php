@@ -21,6 +21,8 @@ class UserResource extends JsonResource
             'locale' => $this->locale,
             'email_verified' => $this->hasVerifiedEmail(),
             'email_notifications' => $this->email_notifications,
+            // Runs the installation; sees the operator area.
+            'is_operator' => (bool) $this->is_operator,
             'created_at' => $this->created_at,
         ];
     }

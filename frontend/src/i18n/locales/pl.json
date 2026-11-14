@@ -337,7 +337,8 @@
     "feedback": "Opinie"
   },
   "userMenu": {
-    "label": "Menu konta"
+    "label": "Menu konta",
+    "operator": "Panel operatora"
   },
   "role": {
     "owner": "Właściciel",
@@ -942,6 +943,169 @@
       "save": "Zapisz",
       "saving": "Zapisywanie…",
       "saved": "Zapisano."
+    }
+  },
+  "admin": {
+    "title": "Panel operatora",
+    "back": "Wróć do aplikacji",
+    "search": "Szukaj",
+    "more": "Wczytaj więcej",
+    "created": "Utworzono",
+    "suspend": "Zawieś",
+    "restore": "Przywróć",
+    "nav": {
+      "workspaces": "Przestrzenie robocze",
+      "users": "Osoby",
+      "audit": "Dziennik zdarzeń"
+    },
+    "status": {
+      "label": "Stan",
+      "all": "Wszystkie",
+      "active": "Aktywne",
+      "suspended": "Zawieszone"
+    },
+    "plan": {
+      "free": "Darmowy",
+      "team": "Zespół"
+    },
+    "overview": {
+      "workspaces": "Przestrzenie robocze",
+      "suspended_workspaces": "Zawieszone",
+      "people": "Osoby",
+      "agents": "Agenci",
+      "items": "Zadania",
+      "signups_last_7_days": "Rejestracje z 7 dni"
+    },
+    "workspaces": {
+      "title": "Przestrzenie robocze",
+      "search": "Nazwa lub adres",
+      "empty": "Żadna przestrzeń robocza nie pasuje.",
+      "name": "Przestrzeń robocza",
+      "plan": "Plan",
+      "planOf": "Plan przestrzeni {workspace}",
+      "members": "Członkowie",
+      "items": "Zadania",
+      "suspendTitle": "Zawiesić przestrzeń {workspace}?",
+      "suspendDescription": "Jej członkowie i agenci stracą dostęp do czasu przywrócenia. Nic nie zostanie usunięte."
+    },
+    "users": {
+      "title": "Osoby",
+      "search": "Imię lub e-mail",
+      "empty": "Nikt nie pasuje.",
+      "name": "Osoba",
+      "workspaces": "Przestrzenie",
+      "operator": "Operator",
+      "unverified": "E-mail niepotwierdzony",
+      "suspendTitle": "Zawiesić konto: {name}?",
+      "suspendDescription": "Ta osoba zostanie wszędzie wylogowana, jej tokeny zostaną unieważnione, a jej agenci przestaną działać. Nic nie zostanie usunięte."
+    },
+    "audit": {
+      "title": "Dziennik zdarzeń",
+      "workspace": "Adres przestrzeni roboczej",
+      "action": "Początek nazwy zdarzenia, np. member."
+    }
+  },
+  "audit": {
+    "title": "Dziennik zdarzeń",
+    "description": "Kto zmieniał dostęp, udostępnianie i ustawienia oraz kto co usunął. Praca nad zadaniami jest w historii każdego zadania.",
+    "filter": "Pokaż",
+    "empty": "Nic jeszcze nie zapisano.",
+    "more": "Wczytaj więcej",
+    "when": "Kiedy",
+    "who": "Kto",
+    "what": "Co",
+    "details": "Szczegóły",
+    "workspace": "Przestrzeń robocza",
+    "ip": "Adres",
+    "agent": "Agent",
+    "nobody": "Bez logowania",
+    "viaToken": "tokenem „{token}”",
+    "area": {
+      "all": "Wszystko",
+      "member": "Członkowie",
+      "invitation": "Zaproszenia",
+      "agent": "Agenci",
+      "token": "Tokeny",
+      "webhook": "Webhooki",
+      "project": "Projekty",
+      "workflow": "Stany",
+      "page": "Dokumenty",
+      "item": "Zadania",
+      "ai": "AI",
+      "workspace": "Przestrzeń robocza"
+    },
+    "action": {
+      "account": {
+        "signed_in": "Logowanie",
+        "signed_out": "Wylogowanie",
+        "sign_in_failed": "Nieudane logowanie",
+        "registered": "Rejestracja",
+        "password_reset": "Zmiana hasła po resecie",
+        "deleted": "Usunięcie konta",
+        "exported": "Eksport danych osobowych"
+      },
+      "invitation": {
+        "accepted": "Przyjęcie zaproszenia",
+        "sent": "Wysłanie zaproszenia",
+        "withdrawn": "Wycofanie zaproszenia"
+      },
+      "workspace": {
+        "created": "Utworzenie przestrzeni roboczej",
+        "updated": "Zmiana ustawień przestrzeni roboczej",
+        "deleted": "Usunięcie przestrzeni roboczej",
+        "exported": "Eksport przestrzeni roboczej"
+      },
+      "member": {
+        "role_changed": "Zmiana roli członka",
+        "removed": "Usunięcie członka"
+      },
+      "agent": {
+        "created": "Utworzenie agenta",
+        "updated": "Zmiana agenta",
+        "removed": "Usunięcie agenta"
+      },
+      "token": {
+        "created": "Utworzenie tokenu dostępu",
+        "revoked": "Unieważnienie tokenu dostępu"
+      },
+      "webhook": {
+        "created": "Utworzenie webhooka",
+        "updated": "Zmiana webhooka",
+        "deleted": "Usunięcie webhooka"
+      },
+      "project": {
+        "created": "Utworzenie projektu",
+        "updated": "Zmiana projektu",
+        "deleted": "Usunięcie projektu"
+      },
+      "feedback_form": {
+        "changed": "Zmiana publicznego formularza opinii"
+      },
+      "workflow": {
+        "state_added": "Dodanie stanu",
+        "state_changed": "Zmiana stanu",
+        "state_removed": "Usunięcie stanu"
+      },
+      "ai": {
+        "settings_changed": "Zmiana ustawień AI"
+      },
+      "billing": {
+        "checkout_started": "Rozpoczęcie zmiany planu"
+      },
+      "page": {
+        "deleted": "Usunięcie strony",
+        "sharing_changed": "Zmiana udostępniania strony"
+      },
+      "item": {
+        "deleted": "Usunięcie zadania"
+      },
+      "operator": {
+        "workspace_changed": "Operator zmienił przestrzeń roboczą",
+        "user_changed": "Operator zmienił konto",
+        "mail_sent_now": "Operator wysłał oczekującą wiadomość",
+        "mail_deleted": "Operator usunął wiadomość",
+        "broadcast_sent": "Operator wysłał ogłoszenie"
+      }
     }
   }
 }

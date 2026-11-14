@@ -93,6 +93,17 @@ const router = createRouter({
       ],
     },
     {
+      // The operator area; the API hides it from everyone else as well.
+      path: '/admin',
+      component: () => import('@/layouts/AdminLayout.vue'),
+      meta: { operator: true },
+      children: [
+        { path: '', name: 'admin', component: () => import('@/views/admin/AdminWorkspacesView.vue') },
+        { path: 'users', name: 'admin-users', component: () => import('@/views/admin/AdminUsersView.vue') },
+        { path: 'audit', name: 'admin-audit', component: () => import('@/views/admin/AdminAuditView.vue') },
+      ],
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/',
     },
@@ -109,6 +120,7 @@ router.beforeEach(async (to): Promise<RouteLocationRaw | undefined> => {
     return { name: 'login', query: to.fullPath === '/' ? {} : { redirect: to.fullPath } }
   }
   if (to.meta.guestOnly) return { name: 'home' }
+  if (to.meta.operator && !auth.user.is_operator) return { name: 'home' }
   if (to.name === 'home') {
     const first = auth.user.workspaces[0]
     return first ? { name: 'workspace', params: { slug: first.slug } } : { name: 'welcome' }

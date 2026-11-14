@@ -205,6 +205,8 @@ export interface User {
   locale: string
   email_verified: boolean
   email_notifications: boolean
+  /** Runs the installation and sees the operator area. */
+  is_operator: boolean
   created_at: string
 }
 
@@ -474,4 +476,58 @@ export interface AiTriageSuggestion {
   priority: Priority
   labels: string[]
   reason: string
+}
+
+// ── Operator area and audit log ──────────────────────────────────────────────
+
+/** One page of a list that continues with `next_cursor`. */
+export interface CursorPage<T> {
+  data: T[]
+  next_cursor: string | null
+}
+
+export interface AdminOverview {
+  workspaces: number
+  suspended_workspaces: number
+  people: number
+  agents: number
+  items: number
+  signups_last_7_days: number
+}
+
+export interface AdminWorkspace {
+  id: number
+  name: string
+  slug: string
+  plan: string
+  members: number
+  items: number
+  suspended_at: string | null
+  created_at: string
+}
+
+export interface AdminUser {
+  id: number
+  name: string
+  email: string
+  email_verified: boolean
+  is_operator: boolean
+  workspaces: number
+  suspended_at: string | null
+  created_at: string
+}
+
+export interface AuditEntry {
+  id: number
+  /** A dotted code such as `member.role_changed`. */
+  action: string
+  subject: string | null
+  details: Record<string, unknown> | null
+  actor: { id: number; name: string; type: 'human' | 'agent' } | null
+  /** The name of the access token, when the request came with one. */
+  token: string | null
+  created_at: string
+  /** Operator view only. */
+  workspace?: string | null
+  ip?: string | null
 }

@@ -8,7 +8,7 @@ import DropdownMenu from '@/components/ui/DropdownMenu.vue'
 import DropdownMenuItem from '@/components/ui/DropdownMenuItem.vue'
 import DropdownMenuLabel from '@/components/ui/DropdownMenuLabel.vue'
 import DropdownMenuSeparator from '@/components/ui/DropdownMenuSeparator.vue'
-import { CircleUser, Keyboard, LogOut, UserCog } from '@lucide/vue'
+import { CircleUser, Keyboard, LogOut, ShieldCheck, UserCog } from '@lucide/vue'
 
 const auth = useAuthStore()
 const ui = useUiStore()
@@ -39,6 +39,9 @@ async function signOut() {
     </DropdownMenuItem>
     <DropdownMenuItem @select="ui.shortcutsHelpOpen = true">
       <Keyboard class="h-4 w-4" />{{ t('shortcuts.title') }}
+    </DropdownMenuItem>
+    <DropdownMenuItem v-if="auth.user.is_operator" @select="router.push({ name: 'admin' })">
+      <ShieldCheck class="h-4 w-4" />{{ t('userMenu.operator') }}
     </DropdownMenuItem>
     <DropdownMenuSeparator />
     <DropdownMenuItem @select="signOut">

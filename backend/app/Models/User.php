@@ -12,10 +12,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property UserType $type
+ * @property bool $is_operator
+ * @property Carbon|null $suspended_at
  * @property-read User|null $owner
  */
 #[Fillable(['name', 'email', 'password', 'locale', 'email_notifications'])]
@@ -42,6 +45,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'email_notifications' => 'boolean',
             'type' => UserType::class,
+            'is_operator' => 'boolean',
+            'suspended_at' => 'datetime',
         ];
     }
 

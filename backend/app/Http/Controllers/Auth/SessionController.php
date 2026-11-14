@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -35,6 +36,12 @@ class SessionController extends Controller
             throw ValidationException::withMessages([
                 'email' => ['These credentials do not match our records.'],
             ]);
+        }
+
+        if (Auth::guard('web')->user()?->suspended_at !== null) {
+            Auth::guard('web')->logout();
+
+            throw new ApiException(403, 'account_suspended', 'This account is suspended. Contact whoever runs this installation.');
         }
 
         $request->session()->regenerate();

@@ -20,7 +20,7 @@ export function makeWorkspace(overrides: Partial<Workspace> = {}): Workspace {
 
 export function makeMe(overrides: Partial<Me> = {}): Me {
   return {
-    id: 7, name: 'Ada', email: 'ada@example.com', locale: 'en', email_verified: true, email_notifications: true,
+    id: 7, name: 'Ada', email: 'ada@example.com', locale: 'en', email_verified: true, email_notifications: true, is_operator: false,
     created_at: '2026-01-01T00:00:00Z', workspaces: [], ...overrides,
   }
 }
@@ -49,6 +49,9 @@ export function makeTestRouter(): Router {
       { path: '/f/:token', name: 'public-feedback', component: blank },
       { path: '/w/:slug/feedback', name: 'feedback', component: blank },
       { path: '/w/:slug/settings', name: 'workspace-settings', component: blank },
+      { path: '/admin', name: 'admin', component: blank },
+      { path: '/admin/users', name: 'admin-users', component: blank },
+      { path: '/admin/audit', name: 'admin-audit', component: blank },
     ],
   })
 }

@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\ApiErrorRenderer;
+use App\Http\Middleware\AuditTrail;
 use App\Http\Middleware\EnforceTokenScope;
+use App\Http\Middleware\EnsureAccountActive;
+use App\Http\Middleware\EnsureOperator;
 use App\Http\Middleware\Idempotency;
 use App\Http\Middleware\ResolveWorkspace;
 use Illuminate\Foundation\Application;
@@ -25,7 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
 
         // The workspace must be known before tenant models are bound from the route.
-        $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class, 'token.scope' => EnforceTokenScope::class]);
+        $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class, 'token.scope' => EnforceTokenScope::class, 'active' => EnsureAccountActive::class, 'operator' => EnsureOperator::class]);
+        // Every API request passes the audit trail, which records the ones on its list.
+        $middleware->appendToGroup('api', AuditTrail::class);
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolveWorkspace::class);
         // Token limits also apply before binding, so out-of-scope projects and items are simply not found.
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: EnforceTokenScope::class);
