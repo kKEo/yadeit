@@ -163,8 +163,11 @@
         "url": "Link",
         "pr": "Pull request",
         "branch": "Gałąź",
-        "design": "Projekt graficzny"
-      }
+        "design": "Projekt graficzny",
+        "auto": "Wykryj"
+      },
+      "showPreview": "Pokaż podgląd",
+      "hidePreview": "Ukryj podgląd"
     },
     "relations": {
       "title": "Powiązania",
@@ -180,7 +183,10 @@
       "uploading": "Przesyłanie…",
       "download": "Pobierz {name}",
       "remove": "Usuń {name}",
-      "empty": "Brak załączników."
+      "empty": "Brak załączników.",
+      "view": "Zobacz {name}",
+      "previous": "Poprzedni obraz",
+      "next": "Następny obraz"
     },
     "children": {
       "title": "Zadania podrzędne",
@@ -570,7 +576,8 @@
       "items": "Zadania",
       "comments": "Komentarze",
       "pages": "Strony"
-    }
+    },
+    "designWork": "Pokaż prace projektowe"
   },
   "shortcuts": {
     "title": "Skróty klawiszowe",

@@ -163,8 +163,11 @@
         "url": "Link",
         "pr": "Pull request",
         "branch": "Branch",
-        "design": "Design"
-      }
+        "design": "Design",
+        "auto": "Detect"
+      },
+      "showPreview": "Show preview",
+      "hidePreview": "Hide preview"
     },
     "relations": {
       "title": "Relations",
@@ -180,7 +183,10 @@
       "uploading": "Uploading…",
       "download": "Download {name}",
       "remove": "Remove {name}",
-      "empty": "No attachments."
+      "empty": "No attachments.",
+      "view": "View {name}",
+      "previous": "Previous image",
+      "next": "Next image"
     },
     "children": {
       "title": "Sub-items",
@@ -570,7 +576,8 @@
       "items": "Items",
       "comments": "Comments",
       "pages": "Pages"
-    }
+    },
+    "designWork": "Show design work"
   },
   "shortcuts": {
     "title": "Keyboard shortcuts",

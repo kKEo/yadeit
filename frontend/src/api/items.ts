@@ -105,7 +105,7 @@ export async function removeChecklistEntry(slug: string, key: string, id: number
   await request<void>('DELETE', `${itemPath(slug, key)}/checklist/${id}`)
 }
 
-export async function addLink(slug: string, key: string, req: { url: string; kind: LinkKind; title?: string | null }): Promise<ItemLink> {
+export async function addLink(slug: string, key: string, req: { url: string; kind?: LinkKind; title?: string | null }): Promise<ItemLink> {
   return (await request<ItemResponse<ItemLink>>('POST', `${itemPath(slug, key)}/links`, { body: req })).data
 }
 

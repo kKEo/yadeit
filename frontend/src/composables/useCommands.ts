@@ -2,7 +2,7 @@ import { computed, type Component } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
-  Bookmark, Bot, Building2, FileText, Megaphone, Columns3, Copy, FolderKanban, Inbox, Keyboard, LayoutList, Link2, ListTodo, Plus, Settings,
+  Bookmark, Bot, Building2, FileText, Megaphone, Palette, Columns3, Copy, FolderKanban, Inbox, Keyboard, LayoutList, Link2, ListTodo, Plus, Settings,
   SignalHigh, Tag, CircleDot, User, UserCheck, Users,
 } from '@lucide/vue'
 import { useCanEdit } from '@/composables/useCanEdit'
@@ -99,6 +99,7 @@ export function useCommands() {
       { id: 'go-inbox', group: 'commands.group.navigate', icon: Inbox, shortcut: 'g n', label: t('nav.inbox'), run: go('inbox') },
       { id: 'go-projects', group: 'commands.group.navigate', icon: FolderKanban, shortcut: 'g p', label: t('nav.projects'), run: go('projects') },
       { id: 'go-members', group: 'commands.group.navigate', icon: Users, shortcut: 'g m', label: t('nav.members'), run: go('workspace-members') },
+      { id: 'show-design', group: 'commands.group.navigate', icon: Palette, label: t('commands.designWork'), run: () => void router.push({ name: 'items', params: { slug: slug.value }, query: { kind: 'design', open: '1' } }) },
       { id: 'go-feedback', group: 'commands.group.navigate', icon: Megaphone, label: t('nav.feedback'), run: go('feedback') },
       { id: 'go-docs', group: 'commands.group.navigate', icon: FileText, label: t('nav.docs'), run: go('docs') },
       { id: 'go-agents', group: 'commands.group.navigate', icon: Bot, label: t('nav.agents'), run: go('agents') },

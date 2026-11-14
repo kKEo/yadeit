@@ -195,7 +195,7 @@ Goal: collect outside input and track design and research work.
   - Spam protection on the public form
 - [x] Link feedback to work items with demand counts
   - Sort and filter by demand
-- [ ] Add design-work support
+- [x] Add design-work support
   - Kind filter, design link previews, image galleries
 - [ ] Verify feedback: a public submission is triaged into a work item and raises its demand count
 

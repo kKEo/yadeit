@@ -188,3 +188,29 @@ describe('attachments', function () {
         $this->getJson("{$this->item}/attachments")->assertJsonCount(0, 'data');
     });
 });
+
+it('works out what a link is from its address when the kind is left out', function (string $url, string $kind) {
+    [$workspace, $user] = workspaceWith(WorkspaceRole::Member);
+    $base = "/api/v1/workspaces/{$workspace->slug}";
+    $this->actingAs($user)->postJson("{$base}/projects", ['name' => 'Website', 'key' => 'WEB'])->assertCreated();
+    $this->postJson("{$base}/items", ['project' => 'WEB', 'title' => 'An item'])->assertCreated();
+
+    $this->postJson("{$base}/items/WEB-1/links", ['url' => $url])->assertCreated()->assertJsonPath('data.kind', $kind);
+})->with([
+    ['https://www.figma.com/design/abc123/Checkout?node-id=1-2', 'design'],
+    ['https://app.zeplin.io/project/123', 'design'],
+    ['https://github.com/acme/web/pull/42', 'pr'],
+    ['https://gitlab.com/acme/web/-/merge_requests/7', 'pr'],
+    ['https://github.com/acme/web/tree/feature/login', 'branch'],
+    ['https://example.com/figma.com/notes', 'url'],
+    ['https://notfigma.com/file/x', 'url'],
+]);
+
+it('keeps the kind the caller gives', function () {
+    [$workspace, $user] = workspaceWith(WorkspaceRole::Member);
+    $base = "/api/v1/workspaces/{$workspace->slug}";
+    $this->actingAs($user)->postJson("{$base}/projects", ['name' => 'Website', 'key' => 'WEB'])->assertCreated();
+    $this->postJson("{$base}/items", ['project' => 'WEB', 'title' => 'An item'])->assertCreated();
+
+    $this->postJson("{$base}/items/WEB-1/links", ['url' => 'https://www.figma.com/design/abc', 'kind' => 'url'])->assertJsonPath('data.kind', 'url');
+});

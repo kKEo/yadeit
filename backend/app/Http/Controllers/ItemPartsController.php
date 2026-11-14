@@ -78,7 +78,8 @@ class ItemPartsController extends Controller
 
         $link = $item->links()->create([
             'workspace_id' => $item->workspace_id,
-            'kind' => $data['kind'] ?? LinkKind::Url->value,
+            // Left out, the kind is read off the address: a Figma link is a design, a pull request a PR.
+            'kind' => $data['kind'] ?? LinkKind::guess($data['url'])->value,
             'url' => $data['url'],
             'title' => $data['title'] ?? null,
             'created_by' => $request->user()->id,
