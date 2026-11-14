@@ -189,11 +189,11 @@ Goal: time-boxed planning and written knowledge next to the work.
 
 Goal: collect outside input and track design and research work.
 
-- [ ] Build the feedback inbox with triage actions
+- [x] Build the feedback inbox with triage actions
   - Accept, decline, merge as duplicate, snooze; keyboard shortcuts
-- [ ] Build in-app and public feedback forms
+- [x] Build in-app and public feedback forms
   - Spam protection on the public form
-- [ ] Link feedback to work items with demand counts
+- [x] Link feedback to work items with demand counts
   - Sort and filter by demand
 - [ ] Add design-work support
   - Kind filter, design link previews, image galleries

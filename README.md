@@ -66,6 +66,12 @@ The same checks run in GitHub Actions on every push and pull request.
 - **Docs:** Markdown pages for the workspace or a project, as drafts or published. A published page can get a link that works without signing in.
 - **Search:** `Cmd/Ctrl+K` finds items, comments and pages that contain every word typed. It is plain substring matching, the same on PostgreSQL and MariaDB.
 
+## Feedback
+
+- **Inbox:** anyone in the workspace, guests and agents included, can send feedback for a project. Members decide what happens to it under **Feedback**: accept it as a new item, add it to an existing item, decline it, mark it as a duplicate, or snooze it (`1`, `2`, `3` and `H` on the keyboard).
+- **Demand:** every piece of feedback linked to an item counts as one more voice for it. Items show the count and can be sorted and filtered by it.
+- **Public form:** an admin can switch on a form per project that works without an account (`/f/<token>`). It is rate-limited and has a hidden field that catches simple spam robots. Switching it off kills the link for good.
+
 ## Realtime
 
 Open browsers refresh themselves when something changes. The API sends small signals (identifiers only, never content) through Laravel Reverb; the web app then re-reads through the API. Copy the `REVERB_*` values from `backend/.env` into `frontend/.env.local` as `VITE_REVERB_APP_KEY`, `VITE_REVERB_HOST`, `VITE_REVERB_PORT` and `VITE_REVERB_SCHEME`. Without them the app works, just without live updates.

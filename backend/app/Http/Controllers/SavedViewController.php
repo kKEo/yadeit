@@ -88,7 +88,7 @@ class SavedViewController extends Controller
             'filters.*' => ['string', 'max:200'],
             'layout' => ['sometimes', Rule::in(SavedView::LAYOUTS)],
             'group_by' => ['sometimes', Rule::in(SavedView::GROUPINGS)],
-            'sort' => ['sometimes', 'string', 'regex:/^-?(created_at|updated_at|priority|due_date|sequence)$/'],
+            'sort' => ['sometimes', 'string', 'regex:/^-?(created_at|updated_at|priority|due_date|sequence|demand)$/'],
         ]);
 
         if (isset($data['filters'])) {

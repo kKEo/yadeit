@@ -114,6 +114,11 @@ const dates = computed(() => [
       </dd>
     </template>
 
+    <template v-if="item.demand > 0">
+      <dt class="text-muted-foreground">{{ t('items.fields.demand') }}</dt>
+      <dd class="px-2 py-1.5" data-mark="demand">{{ t('items.demand', item.demand) }}</dd>
+    </template>
+
     <template v-if="item.blocked">
       <dt class="text-muted-foreground">{{ t('items.fields.status') }}</dt>
       <dd class="flex items-center gap-1.5 px-2 py-1 text-sm text-destructive" data-mark="blocked">{{ t('items.blockedBy', { items: blockers }) }}</dd>

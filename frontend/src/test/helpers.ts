@@ -46,6 +46,8 @@ export function makeTestRouter(): Router {
       { path: '/w/:slug/docs', name: 'docs', component: blank },
       { path: '/w/:slug/docs/:id', name: 'doc', component: blank },
       { path: '/p/:token', name: 'public-page', component: blank },
+      { path: '/f/:token', name: 'public-feedback', component: blank },
+      { path: '/w/:slug/feedback', name: 'feedback', component: blank },
       { path: '/w/:slug/settings', name: 'workspace-settings', component: blank },
     ],
   })
@@ -54,7 +56,7 @@ export function makeTestRouter(): Router {
 export function makeItem(overrides: Partial<Item> = {}): Item {
   return {
     key: 'WEB-1', title: 'Fix login', state: { id: 3, name: 'Todo', group: 'unstarted', color: '#64748b' },
-    priority: 'none', kind: 'task', assignee: null, delegate: null, needs_input: false, cycle: null, blocked: false, sub_items: null, labels: [], project: { key: 'WEB', name: 'Website' }, parent: null,
+    priority: 'none', kind: 'task', assignee: null, delegate: null, needs_input: false, cycle: null, demand: 0, blocked: false, sub_items: null, labels: [], project: { key: 'WEB', name: 'Website' }, parent: null,
     due_date: null, version: 3, created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-02T00:00:00Z', completed_at: null,
     ...overrides,
   }
@@ -69,7 +71,7 @@ export function makeDetail(overrides: Partial<ItemDetail> = {}): ItemDetail {
 
 export function makeProject(overrides: Partial<ProjectDetail> = {}): ProjectDetail {
   return {
-    id: 1, key: 'WEB', name: 'Website', description: null, archived: false, cycle_weeks: null, stale_after_days: null,
+    id: 1, key: 'WEB', name: 'Website', description: null, archived: false, cycle_weeks: null, stale_after_days: null, feedback_token: null,
     current_cycle: null, created_at: '2026-01-01T00:00:00Z',
     states: [
       { id: 2, name: 'Backlog', group: 'backlog', color: '#94a3b8', is_default: false },

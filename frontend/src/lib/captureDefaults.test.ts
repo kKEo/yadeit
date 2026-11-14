@@ -4,8 +4,8 @@ import { makeProject } from '@/test/helpers'
 import { captureDefaults, defaultProject } from './captureDefaults'
 
 const projects: Project[] = [
-  { id: 1, key: 'API', name: 'API', description: null, archived: false, cycle_weeks: null, stale_after_days: null, created_at: '' },
-  { id: 2, key: 'WEB', name: 'Website', description: null, archived: false, cycle_weeks: null, stale_after_days: null, created_at: '' },
+  { id: 1, key: 'API', name: 'API', description: null, archived: false, cycle_weeks: null, stale_after_days: null, feedback_token: null, created_at: '' },
+  { id: 2, key: 'WEB', name: 'Website', description: null, archived: false, cycle_weeks: null, stale_after_days: null, feedback_token: null, created_at: '' },
 ]
 
 describe('quick capture defaults', () => {

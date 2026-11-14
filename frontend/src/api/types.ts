@@ -36,6 +36,8 @@ export interface Item {
   /** Paused on a question to a person. */
   needs_input: boolean
   cycle: CycleRef | null
+  /** How many pieces of feedback ask for this item. */
+  demand: number
   /** An open item must be finished before this one. */
   blocked: boolean
   /** How many sub-items exist and how many are done; null without sub-items. */
@@ -116,11 +118,13 @@ export interface ItemFilters {
   needs_input?: string
   /** "1": blocked by an open item */
   blocked?: string
+  /** "1": at least one piece of feedback asks for it */
+  demand?: string
   q?: string
   /** "1" hides closed items */
   open?: string
 }
-export const FILTER_NAMES = ['project', 'state', 'state_group', 'priority', 'kind', 'assignee', 'label', 'cycle', 'needs_input', 'blocked', 'q', 'open'] as const
+export const FILTER_NAMES = ['project', 'state', 'state_group', 'priority', 'kind', 'assignee', 'label', 'cycle', 'needs_input', 'blocked', 'demand', 'q', 'open'] as const
 export type FilterName = (typeof FILTER_NAMES)[number]
 
 export interface ListItemsParams extends ItemFilters {
@@ -149,7 +153,7 @@ export interface ActivityEntry {
 export type ViewLayout = 'list' | 'board'
 export type GroupBy = 'state' | 'priority' | 'assignee' | 'kind' | 'none'
 export const GROUPINGS: readonly GroupBy[] = ['state', 'priority', 'assignee', 'kind', 'none']
-export const SORT_FIELDS = ['updated_at', 'created_at', 'priority', 'due_date', 'sequence'] as const
+export const SORT_FIELDS = ['updated_at', 'created_at', 'priority', 'due_date', 'sequence', 'demand'] as const
 
 /** What the items page shows; lives in the URL and is what a saved view stores. */
 export interface ViewState { filters: ItemFilters; layout: ViewLayout; group_by: GroupBy; sort: string }
@@ -333,6 +337,8 @@ export interface Project {
   cycle_weeks: number | null
   /** Days after which untouched open items return to the backlog; null when off. */
   stale_after_days: number | null
+  /** Token of the public feedback form's link; null when the form is off. */
+  feedback_token: string | null
   created_at: string
 }
 
@@ -425,3 +431,22 @@ export type SearchResult =
   | { type: 'item'; key: string; title: string; state: StateRef; snippet: string | null }
   | { type: 'comment'; key: string; title: string; author: string | null; snippet: string | null }
   | { type: 'page'; id: number; title: string; status: 'draft' | 'published'; project: string | null; snippet: string | null }
+
+/** What someone says they need, before it is work. */
+export interface Feedback {
+  id: number
+  title: string
+  body: string | null
+  project: { key: string; name: string }
+  source: 'app' | 'public' | 'agent'
+  status: 'new' | 'accepted' | 'declined' | 'duplicate'
+  snoozed_until: string | null
+  from: { name?: string; email?: string; member_id?: number }
+  /** The work item this feedback counts for. */
+  item: { key: string; title: string; demand: number } | null
+  duplicate_of: number | null
+  decline_reason: string | null
+  created_at: string
+  triaged_at: string | null
+}
+export type FeedbackStatusFilter = Feedback['status'] | 'snoozed' | 'all'

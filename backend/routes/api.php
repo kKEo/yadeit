@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\InboxController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\ItemPartsController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\MeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PublicFeedbackController;
 use App\Http\Controllers\SavedViewController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StateController;
@@ -53,6 +55,12 @@ Route::prefix('auth')->group(function () {
 // A page shared by link: readable without signing in.
 Route::get('public/pages/{token}', [PageController::class, 'publicShow'])
     ->where('token', '[A-Za-z0-9]{20,64}')->middleware('throttle:auth')->name('pages.public');
+
+// A project's public feedback form: no sign-in, a few submissions per minute per address.
+Route::prefix('public/feedback/{token}')->where(['token' => '[A-Za-z0-9]{20,64}'])->group(function () {
+    Route::get('/', [PublicFeedbackController::class, 'show'])->middleware('throttle:auth')->name('feedback.public.show');
+    Route::post('/', [PublicFeedbackController::class, 'store'])->middleware('throttle:public-feedback')->name('feedback.public.store');
+});
 
 Route::get('invitations/{token}', [InvitationController::class, 'preview'])
     ->middleware('throttle:auth')->name('invitations.preview');
@@ -106,6 +114,7 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::delete('/', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
             Route::get('cycles', [ProjectController::class, 'cycles'])->name('projects.cycles');
+            Route::put('feedback-form', [FeedbackController::class, 'publicForm'])->name('projects.feedback-form');
             Route::get('states', [StateController::class, 'index'])->name('states.index');
             Route::post('states', [StateController::class, 'store'])->name('states.store');
             Route::patch('states/{state}', [StateController::class, 'update'])->whereNumber('state')->name('states.update');
@@ -115,6 +124,16 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::post('labels', [LabelController::class, 'store'])->name('labels.store');
             Route::patch('labels/{label}', [LabelController::class, 'update'])->whereNumber('label')->name('labels.update');
             Route::delete('labels/{label}', [LabelController::class, 'destroy'])->whereNumber('label')->name('labels.destroy');
+        });
+
+        Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
+        Route::post('feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+        Route::prefix('feedback/{feedback}')->whereNumber('feedback')->group(function () {
+            Route::post('accept', [FeedbackController::class, 'accept'])->name('feedback.accept');
+            Route::post('decline', [FeedbackController::class, 'decline'])->name('feedback.decline');
+            Route::post('duplicate', [FeedbackController::class, 'duplicate'])->name('feedback.duplicate');
+            Route::post('snooze', [FeedbackController::class, 'snooze'])->name('feedback.snooze');
+            Route::post('reopen', [FeedbackController::class, 'reopen'])->name('feedback.reopen');
         });
 
         Route::get('search', SearchController::class)->name('search');

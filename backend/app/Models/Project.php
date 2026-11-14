@@ -7,6 +7,7 @@ use App\Models\Concerns\BelongsToWorkspace;
 use App\Support\CurrentWorkspace;
 use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,8 @@ use Illuminate\Support\Carbon;
  * @property int|null $cycle_weeks
  * @property int|null $stale_after_days
  */
-#[Fillable(['workspace_id', 'key', 'name', 'description', 'created_by', 'next_sequence', 'archived_at', 'cycle_weeks', 'stale_after_days'])]
+#[Fillable(['workspace_id', 'key', 'name', 'description', 'created_by', 'next_sequence', 'archived_at', 'cycle_weeks', 'stale_after_days', 'feedback_token'])]
+#[Hidden(['feedback_token'])]
 class Project extends Model
 {
     use BelongsToWorkspace;

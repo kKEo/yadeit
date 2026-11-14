@@ -27,7 +27,7 @@ use Illuminate\Validation\ValidationException;
 
 class WorkItemController extends Controller
 {
-    private const SORTS = ['created_at', 'updated_at', 'priority', 'due_date', 'sequence'];
+    private const SORTS = ['created_at', 'updated_at', 'priority', 'due_date', 'sequence', 'demand'];
 
     public function __construct(private ItemPresenter $presenter, private WorkItemWriter $writer) {}
 
@@ -36,7 +36,8 @@ class WorkItemController extends Controller
      * assignee (id, "me" or "none"), delegate (agent id, "me" or "none"),
      * needs_input (true = waiting for a person's answer),
      * cycle ("current", "none" or a cycle number; use with project),
-     * blocked (true = an open item must be finished first), label (name), parent (key or "none"),
+     * blocked (true = an open item must be finished first),
+     * demand (true = at least one piece of feedback asks for it), label (name), parent (key or "none"),
      * q (text in the title, or an exact key), open (true hides closed items).
      * Paging: limit (default 25, max 100) and cursor. Shaping: expand, fields.
      */
@@ -53,6 +54,7 @@ class WorkItemController extends Controller
             'needs_input' => ['sometimes', 'boolean'],
             'cycle' => ['sometimes', 'string'],
             'blocked' => ['sometimes', 'boolean'],
+            'demand' => ['sometimes', 'boolean'],
             'label' => ['sometimes', 'string'],
             'parent' => ['sometimes', 'string'],
             'q' => ['sometimes', 'string', 'max:200'],
@@ -380,6 +382,10 @@ class WorkItemController extends Controller
                     ->whereNull('closed_at')->where('starts_on', '<=', now()->toDateString())),
                 default => $query->whereHas('cycle', fn (Builder $q) => $q->where('number', (int) $input['cycle'])),
             };
+        }
+
+        if (isset($input['demand'])) {
+            filter_var($input['demand'], FILTER_VALIDATE_BOOLEAN) ? $query->where('demand', '>', 0) : $query->where('demand', 0);
         }
 
         if (isset($input['blocked'])) {

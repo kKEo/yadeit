@@ -18,6 +18,7 @@ const ALLOWED: Partial<Record<FilterName, readonly string[]>> = {
   open: ['1'],
   needs_input: ['1'],
   blocked: ['1'],
+  demand: ['1'],
   cycle: ['current', 'none'],
 }
 

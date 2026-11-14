@@ -71,7 +71,8 @@
       "completedAt": "Completed",
       "delegate": "Agent",
       "status": "Status",
-      "cycle": "Cycle"
+      "cycle": "Cycle",
+      "demand": "Demand"
     },
     "create": {
       "title": "New item",
@@ -115,7 +116,8 @@
       "due_date": "Due date",
       "sequence": "Number",
       "ascending": "Ascending",
-      "descending": "Descending"
+      "descending": "Descending",
+      "demand": "Demand"
     },
     "toast": {
       "changedElsewhere": "{key} was changed by someone else. It has been reloaded; please check and try again."
@@ -227,7 +229,9 @@
     "noCycle": "No cycle",
     "blocked": "Blocked",
     "blockedBy": "Blocked by {items}",
-    "subItemsDone": "{done} of {total} sub-items done"
+    "subItemsDone": "{done} of {total} sub-items done",
+    "hasDemand": "Asked for in feedback",
+    "demand": "No feedback | Asked for once | Asked for {n} times"
   },
   "register": {
     "title": "Create your account",
@@ -323,7 +327,8 @@
     "items": "Items",
     "inbox": "Inbox",
     "agents": "Agents",
-    "docs": "Docs"
+    "docs": "Docs",
+    "feedback": "Feedback"
   },
   "userMenu": {
     "label": "Account menu"
@@ -449,7 +454,8 @@
       "open": "Open only",
       "cycle": "Cycle",
       "needs_input": "Needs input",
-      "blocked": "Blocked"
+      "blocked": "Blocked",
+      "demand": "Demand"
     },
     "currentCycle": "Current cycle",
     "noCycle": "No cycle"
@@ -798,5 +804,87 @@
     "notFound": "This page does not exist or you cannot see it.",
     "publicNotFound": "This page does not exist or is no longer shared.",
     "publicFooter": "Shared from Yadeit"
+  },
+  "feedback": {
+    "title": "Feedback",
+    "subtitle": "What people say they need. Decide here what becomes work.",
+    "send": "Send feedback",
+    "tabs": {
+      "new": "Inbox",
+      "snoozed": "Snoozed",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "duplicate": "Duplicates"
+    },
+    "emptyInbox": "The inbox is empty.",
+    "emptyInboxHint": "New feedback from the team, from agents and from the public form lands here.",
+    "empty": "Nothing here.",
+    "from": "From {name}",
+    "fromUnknown": "From someone",
+    "source": {
+      "app": "In the app",
+      "public": "Public form",
+      "agent": "Agent"
+    },
+    "accept": "Accept as new item",
+    "addTo": "Add to an item…",
+    "decline": "Decline",
+    "duplicate": "Duplicate of…",
+    "snooze": "Snooze",
+    "reopen": "Back to inbox",
+    "snoozeTomorrow": "Until tomorrow",
+    "snoozeWeek": "For a week",
+    "snoozedUntil": "Snoozed until {date}",
+    "countsFor": "Counts for {key}",
+    "demand": "asked for {n} time | asked for {n} times",
+    "declined": "Declined: {reason}",
+    "declinedNoReason": "Declined",
+    "duplicateOf": "Duplicate of #{id}",
+    "addToTitle": "Add to an existing item",
+    "addToHint": "The feedback counts as one more voice for that item.",
+    "itemKey": "Item key",
+    "itemKeyPlaceholder": "e.g. WEB-12",
+    "add": "Add",
+    "duplicateTitle": "Which feedback says the same?",
+    "duplicateHint": "Pick the original. If it is linked to an item, this one counts for it too.",
+    "noOthers": "There is no other feedback to pick from.",
+    "declineTitle": "Decline this feedback?",
+    "reason": "Reason (optional)",
+    "sendTitle": "Send feedback",
+    "sendHint": "Describe what you need or what went wrong. Someone will decide what happens to it.",
+    "project": "Project",
+    "what": "In one sentence",
+    "details": "Details (optional)",
+    "sending": "Sending…",
+    "sent": "Thank you. Your feedback is in the inbox.",
+    "publicTitle": "Public form",
+    "publicHint": "Let anyone send feedback for a project through a link, without an account.",
+    "publicOn": "Switch on",
+    "publicOff": "Switch off",
+    "copy": "Copy link",
+    "copied": "Copied",
+    "shortcuts": {
+      "accept": "Accept as a new item",
+      "decline": "Decline",
+      "duplicate": "Mark as duplicate",
+      "snooze": "Snooze until tomorrow",
+      "group": "Feedback"
+    }
+  },
+  "publicFeedback": {
+    "title": "Feedback for {project}",
+    "intro": "Tell us what you need or what went wrong. We read everything.",
+    "what": "In one sentence",
+    "details": "Details (optional)",
+    "name": "Your name (optional)",
+    "email": "Your email (optional)",
+    "emailHint": "Only if you want an answer.",
+    "website": "Leave this field empty",
+    "send": "Send",
+    "sending": "Sending…",
+    "thanks": "Thank you. Your feedback was received.",
+    "another": "Send another",
+    "closed": "This feedback form does not exist or is closed.",
+    "tooFast": "That was a lot at once. Please try again in a minute."
   }
 }

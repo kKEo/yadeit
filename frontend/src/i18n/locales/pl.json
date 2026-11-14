@@ -71,7 +71,8 @@
       "completedAt": "Ukończono",
       "delegate": "Agent",
       "status": "Status",
-      "cycle": "Cykl"
+      "cycle": "Cykl",
+      "demand": "Zapotrzebowanie"
     },
     "create": {
       "title": "Nowe zadanie",
@@ -115,7 +116,8 @@
       "due_date": "Termin",
       "sequence": "Numer",
       "ascending": "Rosnąco",
-      "descending": "Malejąco"
+      "descending": "Malejąco",
+      "demand": "Zapotrzebowanie"
     },
     "toast": {
       "changedElsewhere": "Zadanie {key} zostało zmienione przez kogoś innego. Wczytano je ponownie – sprawdź i spróbuj jeszcze raz."
@@ -227,7 +229,9 @@
     "noCycle": "Bez cyklu",
     "blocked": "Zablokowane",
     "blockedBy": "Zablokowane przez: {items}",
-    "subItemsDone": "Ukończono {done} z {total} podzadań"
+    "subItemsDone": "Ukończono {done} z {total} podzadań",
+    "hasDemand": "Zgłaszane w opiniach",
+    "demand": "Brak opinii | Zgłoszone raz | Zgłoszone {n} razy | Zgłoszone {n} razy"
   },
   "register": {
     "title": "Załóż konto",
@@ -323,7 +327,8 @@
     "items": "Zadania",
     "inbox": "Skrzynka",
     "agents": "Agenci",
-    "docs": "Dokumenty"
+    "docs": "Dokumenty",
+    "feedback": "Opinie"
   },
   "userMenu": {
     "label": "Menu konta"
@@ -449,7 +454,8 @@
       "open": "Tylko otwarte",
       "cycle": "Cykl",
       "needs_input": "Czeka na odpowiedź",
-      "blocked": "Zablokowane"
+      "blocked": "Zablokowane",
+      "demand": "Zapotrzebowanie"
     },
     "currentCycle": "Bieżący cykl",
     "noCycle": "Bez cyklu"
@@ -798,5 +804,87 @@
     "notFound": "Ta strona nie istnieje albo nie masz do niej dostępu.",
     "publicNotFound": "Ta strona nie istnieje albo nie jest już udostępniana.",
     "publicFooter": "Udostępniono z Yadeit"
+  },
+  "feedback": {
+    "title": "Opinie",
+    "subtitle": "To, czego ludzie potrzebują. Tutaj zdecyduj, co stanie się pracą.",
+    "send": "Wyślij opinię",
+    "tabs": {
+      "new": "Skrzynka",
+      "snoozed": "Odłożone",
+      "accepted": "Przyjęte",
+      "declined": "Odrzucone",
+      "duplicate": "Duplikaty"
+    },
+    "emptyInbox": "Skrzynka jest pusta.",
+    "emptyInboxHint": "Trafiają tu nowe opinie od zespołu, od agentów i z formularza publicznego.",
+    "empty": "Nic tu nie ma.",
+    "from": "Od: {name}",
+    "fromUnknown": "Od nieznanej osoby",
+    "source": {
+      "app": "W aplikacji",
+      "public": "Formularz publiczny",
+      "agent": "Agent"
+    },
+    "accept": "Przyjmij jako nowe zadanie",
+    "addTo": "Dodaj do zadania…",
+    "decline": "Odrzuć",
+    "duplicate": "Duplikat…",
+    "snooze": "Odłóż",
+    "reopen": "Wróć do skrzynki",
+    "snoozeTomorrow": "Do jutra",
+    "snoozeWeek": "Na tydzień",
+    "snoozedUntil": "Odłożone do {date}",
+    "countsFor": "Liczy się dla {key}",
+    "demand": "zgłoszone {n} raz | zgłoszone {n} razy | zgłoszone {n} razy",
+    "declined": "Odrzucono: {reason}",
+    "declinedNoReason": "Odrzucono",
+    "duplicateOf": "Duplikat #{id}",
+    "addToTitle": "Dodaj do istniejącego zadania",
+    "addToHint": "Opinia liczy się jako kolejny głos za tym zadaniem.",
+    "itemKey": "Klucz zadania",
+    "itemKeyPlaceholder": "np. WEB-12",
+    "add": "Dodaj",
+    "duplicateTitle": "Która opinia mówi to samo?",
+    "duplicateHint": "Wskaż oryginał. Jeśli jest powiązany z zadaniem, ta opinia też będzie się dla niego liczyć.",
+    "noOthers": "Nie ma innej opinii do wskazania.",
+    "declineTitle": "Odrzucić tę opinię?",
+    "reason": "Powód (opcjonalnie)",
+    "sendTitle": "Wyślij opinię",
+    "sendHint": "Opisz, czego potrzebujesz albo co poszło nie tak. Ktoś zdecyduje, co się z tym stanie.",
+    "project": "Projekt",
+    "what": "W jednym zdaniu",
+    "details": "Szczegóły (opcjonalnie)",
+    "sending": "Wysyłanie…",
+    "sent": "Dziękujemy. Twoja opinia jest w skrzynce.",
+    "publicTitle": "Formularz publiczny",
+    "publicHint": "Pozwól każdemu wysyłać opinie o projekcie przez link, bez konta.",
+    "publicOn": "Włącz",
+    "publicOff": "Wyłącz",
+    "copy": "Kopiuj link",
+    "copied": "Skopiowano",
+    "shortcuts": {
+      "accept": "Przyjmij jako nowe zadanie",
+      "decline": "Odrzuć",
+      "duplicate": "Oznacz jako duplikat",
+      "snooze": "Odłóż do jutra",
+      "group": "Opinie"
+    }
+  },
+  "publicFeedback": {
+    "title": "Opinia o projekcie {project}",
+    "intro": "Napisz, czego potrzebujesz albo co poszło nie tak. Czytamy wszystko.",
+    "what": "W jednym zdaniu",
+    "details": "Szczegóły (opcjonalnie)",
+    "name": "Twoje imię (opcjonalnie)",
+    "email": "Twój e-mail (opcjonalnie)",
+    "emailHint": "Tylko jeśli chcesz odpowiedzi.",
+    "website": "Pozostaw to pole puste",
+    "send": "Wyślij",
+    "sending": "Wysyłanie…",
+    "thanks": "Dziękujemy. Otrzymaliśmy Twoją opinię.",
+    "another": "Wyślij kolejną",
+    "closed": "Ten formularz nie istnieje albo jest zamknięty.",
+    "tooFast": "To było dużo naraz. Spróbuj ponownie za minutę."
   }
 }

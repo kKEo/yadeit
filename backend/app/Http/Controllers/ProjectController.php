@@ -109,6 +109,8 @@ class ProjectController extends Controller
             'archived' => $project->archived_at !== null,
             'cycle_weeks' => $project->cycle_weeks,
             'stale_after_days' => $project->stale_after_days,
+            // Token of the public feedback form's link, for members; null when the form is off.
+            'feedback_token' => app(CurrentWorkspace::class)->role()?->atLeast(WorkspaceRole::Member) ? $project->feedback_token : null,
             'created_at' => $project->created_at,
         ];
 

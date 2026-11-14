@@ -25,6 +25,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property Carbon|null $due_date
  * @property Carbon|null $completed_at
  * @property bool $needs_input
+ * @property int $demand
  * @property-read string $key
  */
 #[Fillable([

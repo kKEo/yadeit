@@ -13,6 +13,13 @@ describe('progress marks on a row', () => {
     expect(row().findAll('[data-mark]')).toHaveLength(0)
   })
 
+  it('shows how often feedback asked for the item', () => {
+    const mark = row({ demand: 3 }).find('[data-mark="demand"]')
+
+    expect(mark.text()).toContain('3')
+    expect(mark.text()).toContain('Asked for 3 times')
+  })
+
   it('marks a blocked item and shows sub-item progress', () => {
     const wrapper = row({ blocked: true, sub_items: { total: 5, done: 2 } })
 
