@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('auth', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
+        RateLimiter::for('mcp', fn (Request $request) => Limit::perMinute(120)->by($request->user()?->currentAccessToken()?->id ?: $request->ip()));
         RateLimiter::for('api', fn (Request $request) => Limit::perMinute(300)->by($request->user()?->id ?: $request->ip()));
 
         // Work items are addressed by key (WEB-143) inside the current workspace.

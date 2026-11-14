@@ -62,6 +62,16 @@ The same checks run in GitHub Actions on every push and pull request.
 
 Open browsers refresh themselves when something changes. The API sends small signals (identifiers only, never content) through Laravel Reverb; the web app then re-reads through the API. Copy the `REVERB_*` values from `backend/.env` into `frontend/.env.local` as `VITE_REVERB_APP_KEY`, `VITE_REVERB_HOST`, `VITE_REVERB_PORT` and `VITE_REVERB_SCHEME`. Without them the app works, just without live updates.
 
+## MCP server for agents
+
+Agents can use Yadeit through the Model Context Protocol at `/mcp` (protocol revision 2026-07-28; the older handshake is accepted too). Create an agent and a token in the web app, then point the client at it, for example:
+
+```sh
+claude mcp add --transport http yadeit http://localhost:8000/mcp --header "Authorization: Bearer <token>"
+```
+
+There are 14 tools covering the working loop (`whoami`, `ready_items`, `claim_item`, `get_item`, `log_progress`, `add_comment`, `link`, `set_acceptance`, `submit_for_review`, and `search_items`, `list_projects`, `create_item`, `update_item`, `list_activity`), plus the guide `yadeit://guide/agent-workflow`. Every tool goes through the JSON API as the agent, so token limits and permissions are the same in both.
+
 ## API conventions
 
 - The full description is generated to `backend/public/openapi.json` (`php artisan scramble:export`, needs a migrated database) and served at `/openapi.json`.

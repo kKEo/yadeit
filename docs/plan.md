@@ -161,7 +161,7 @@ Goal: agents become real team members.
   - Delegate field; `needs input` and `in review` handling
 - [x] Build agent runs with an activity timeline
   - Typed activities: thought, action, question, response, error
-- [ ] Build the MCP server
+- [x] Build the MCP server
   - Check `laravel/mcp` against the current MCP revision first
   - Tools: `whoami`, `list_projects`, `search_items`, `get_item`, `ready_items`, `claim_item`, `create_item`, `update_item`, `add_comment`, `set_acceptance`, `link`, `submit_for_review`, `list_activity`
   - Agent-workflow guide as a resource

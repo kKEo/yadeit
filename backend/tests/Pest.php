@@ -34,3 +34,11 @@ function addMember(Workspace $workspace, WorkspaceRole $role = WorkspaceRole::Me
 
     return $user;
 }
+
+/** Switches the test to a person using the web app, after it acted as an agent. */
+function asUser(User $user): mixed
+{
+    test()->flushSession();
+
+    return test()->withoutToken()->withHeader('Origin', 'http://localhost:5173')->actingAs($user);
+}
