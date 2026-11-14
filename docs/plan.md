@@ -237,7 +237,7 @@ Goal: safe and ready to deploy.
   - Tenancy, tokens, uploads, Markdown rendering, prompt-injection paths
 - [x] Add OAuth for remote MCP clients
   - Passport with PKCE and audience validation
-- [ ] Do a performance pass
+- [x] Do a performance pass
   - Query counts, list virtualisation
 - [ ] Set up backups and monitoring
 - [ ] Write the production deployment and its docs

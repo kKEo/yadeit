@@ -169,11 +169,13 @@ class WorkItem extends Model
     /** @return list<string> keys of the open items blocking this one */
     public function openBlockerKeys(): array
     {
-        return $this->incomingRelations()->where('type', 'blocks')->get()
-            ->map(fn (ItemRelation $relation) => WorkItem::withoutGlobalScope('token-projects')
-                ->with(['project' => fn ($project) => $project->withoutGlobalScope('token-projects')])
-                ->find($relation->work_item_id))
-            ->filter(fn (?WorkItem $blocker) => $blocker !== null && $blocker->completed_at === null)
+        // One query for all of them, however many there are.
+        return WorkItem::withoutGlobalScope('token-projects')
+            ->with(['project' => fn ($project) => $project->withoutGlobalScope('token-projects')])
+            ->whereIn('id', $this->incomingRelations()->where('type', 'blocks')->select('work_item_id'))
+            ->whereNull('completed_at')
+            ->orderBy('id')
+            ->get()
             ->map(fn (WorkItem $blocker) => $blocker->key)
             ->values()->all();
     }

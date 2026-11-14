@@ -26,7 +26,8 @@ const { t } = useI18n()
         </button>
       </h2>
       <ul v-show="!collapsed.has(group.id)">
-        <li v-for="item in group.items" :key="item.key">
+        <!-- Rows outside the window are skipped by the browser until they come near; long lists stay quick to scroll. -->
+        <li v-for="item in group.items" :key="item.key" class="[contain-intrinsic-size:auto_2.75rem] [content-visibility:auto]">
           <ItemRow
             :item="item" :focused="item.key === focusedKey" :selected="item.key === openKey"
             @open="emit('open', item.key)" @focus="emit('focus', item.key)"

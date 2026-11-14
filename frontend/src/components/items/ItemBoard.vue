@@ -60,7 +60,7 @@ function onDragEnd() {
         <span class="text-xs font-normal text-muted-foreground">{{ group.items.length }}</span>
       </h2>
       <ul v-if="props.groupBy !== 'none' || group.items.length" class="min-h-0 flex-1 space-y-2 overflow-y-auto p-2">
-        <li v-for="item in group.items" :key="item.key">
+        <li v-for="item in group.items" :key="item.key" class="[contain-intrinsic-size:auto_6rem] [content-visibility:auto]">
           <ItemCard
             :item="item" :group-by="groupBy" :focused="item.key === focusedKey" :selected="item.key === openKey"
             :draggable="canEdit && groupBy !== 'none'"
