@@ -197,7 +197,7 @@ Goal: collect outside input and track design and research work.
   - Sort and filter by demand
 - [x] Add design-work support
   - Kind filter, design link previews, image galleries
-- [ ] Verify feedback: a public submission is triaged into a work item and raises its demand count
+- [x] Verify feedback: a public submission is triaged into a work item and raises its demand count
 
 ## Phase 8: Built-in AI
 
