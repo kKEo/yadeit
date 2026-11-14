@@ -46,7 +46,8 @@ class AttachmentController extends Controller
             'uploaded_by' => $request->user()->id,
             'disk' => self::DISK,
             'path' => $path,
-            'name' => Str::limit(basename((string) $file->getClientOriginalName()), 250, ''),
+            // Kept as a label only; characters that break a download header or look like a path are replaced.
+            'name' => Str::limit(trim((string) preg_replace('/[\x00-\x1f\x7f\\\\\/"]+/', '_', basename((string) $file->getClientOriginalName()))), 250, '') ?: 'file',
             // Detected from the bytes, never from the file name or what the client claims.
             'mime_type' => (new finfo(FILEINFO_MIME_TYPE))->file($file->getRealPath()) ?: 'application/octet-stream',
             'size' => $file->getSize(),

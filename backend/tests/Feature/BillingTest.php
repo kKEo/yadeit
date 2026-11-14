@@ -153,12 +153,18 @@ it('follows the Stripe subscription: paid while it is valid, free again when it 
     expect(app(Billing::class))->toBeInstanceOf(Billing::class);
 });
 
-it('accepts Stripe webhooks without a session', function () {
-    $this->withoutHeader('Origin')->postJson('/stripe/webhook', ['type' => 'ping', 'data' => ['object' => []]])->assertOk();
+it('keeps the Stripe webhook closed until a signing secret is set', function () {
+    $this->withoutHeader('Origin')->postJson('/stripe/webhook', ['type' => 'ping', 'data' => ['object' => []]])->assertForbidden();
 });
 
-it('rejects unsigned Stripe webhooks once a signing secret is set', function () {
+it('accepts a Stripe webhook only with a valid signature, and without a session', function () {
     config(['cashier.webhook.secret' => 'whsec_test']);
+    $payload = json_encode(['type' => 'ping', 'data' => ['object' => []]]);
+    $post = fn (string $signature) => $this->withoutHeader('Origin')->call('POST', '/stripe/webhook', server: [
+        'CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json', 'HTTP_STRIPE_SIGNATURE' => $signature,
+    ], content: $payload);
+    $time = time();
 
-    $this->withoutHeader('Origin')->postJson('/stripe/webhook', ['type' => 'ping', 'data' => ['object' => []]])->assertForbidden();
+    $post('t='.$time.',v1='.hash_hmac('sha256', $time.'.'.$payload, 'whsec_other'))->assertForbidden();
+    $post('t='.$time.',v1='.hash_hmac('sha256', $time.'.'.$payload, 'whsec_test'))->assertOk();
 });

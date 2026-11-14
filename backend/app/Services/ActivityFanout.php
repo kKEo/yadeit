@@ -92,6 +92,11 @@ class ActivityFanout
     /** @param  array<string, mixed>|null  $details */
     private function deliver(WorkItem $item, Workspace $workspace, int $userId, string $event, ?int $actorId, ?array $details): void
     {
+        // Following an item does not outlive the membership.
+        if (! DB::table('workspace_memberships')->where('workspace_id', $item->workspace_id)->where('user_id', $userId)->exists()) {
+            return;
+        }
+
         $entry = InboxItem::create([
             'workspace_id' => $item->workspace_id,
             'user_id' => $userId,

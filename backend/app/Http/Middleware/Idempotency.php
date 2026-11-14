@@ -27,7 +27,9 @@ class Idempotency
             return $next($request);
         }
 
-        $hash = hash('sha256', $request->method().'|'.$request->path().'|'.$request->getContent());
+        // The token is part of what makes a request "the same": another token of the same agent may see less.
+        $tokenId = $request->bearerToken() !== null ? $user->currentAccessToken()->getKey() : 0;
+        $hash = hash('sha256', $request->method().'|'.$request->path().'|'.$request->getContent().'|'.$tokenId);
 
         $stored = DB::table('idempotency_keys')
             ->where('user_id', $user->id)

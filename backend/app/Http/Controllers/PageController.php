@@ -196,6 +196,11 @@ class PageController extends Controller
 
     private function project(?string $key): ?Project
     {
+        // A token limited to some projects cannot write workspace-wide pages.
+        if ($key === null && $this->current->projectIds() !== null) {
+            throw ValidationException::withMessages(['project' => ['This token is limited to certain projects: give the page one of them.']]);
+        }
+
         if ($key === null || $key === '' || $key === 'none') {
             return null;
         }

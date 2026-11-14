@@ -83,7 +83,12 @@ class AuditTrail
         }
 
         if ($name === 'auth.login' && $response->getStatusCode() === 422) {
-            $this->record('account.sign_in_failed', $request, null, ['email' => mb_strtolower((string) $request->input('email'))]);
+            $email = $request->input('email');
+
+            // Only a real attempt on an address is worth a row; anything else would let strangers fill the log.
+            if (is_string($email) && strlen($email) <= 255 && filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
+                $this->record('account.sign_in_failed', $request, null, ['email' => mb_strtolower($email)]);
+            }
 
             return $response;
         }

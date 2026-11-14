@@ -284,3 +284,42 @@ it('marks blocked items and counts finished sub-items in lists and details', fun
     $this->getJson("{$this->base}/items/{$parent}")->assertJsonPath('data.blocked', false);
     $this->getJson("{$this->base}/items?blocked=1")->assertJsonCount(0, 'data');
 });
+
+describe('access that must not outlive a membership', function () {
+    beforeEach(function () {
+        [$this->ws, $this->admin] = workspaceWith(WorkspaceRole::Admin);
+        $this->member = addMember($this->ws);
+        $this->api = "/api/v1/workspaces/{$this->ws->slug}";
+        $this->actingAs($this->admin)->postJson("{$this->api}/projects", ['name' => 'Website', 'key' => 'WEB'])->assertCreated();
+        $this->postJson("{$this->api}/items", ['project' => 'WEB', 'title' => 'x'])->assertCreated();
+        $this->bot = User::factory()->agent($this->ws, $this->member)->create();
+        $this->secret = $this->bot->createToken('kept', ['read', 'write'])->plainTextToken;
+        $this->asBot = function () {
+            app('auth')->forgetGuards();
+            $this->flushSession();
+
+            return $this->withoutHeader('Origin')->withToken($this->secret);
+        };
+    });
+
+    it('stops a removed member\'s agent and their notifications', function () {
+        ($this->asBot)()->getJson("{$this->api}/items")->assertOk();
+        asUser($this->member)->putJson("{$this->api}/items/WEB-1/subscription")->assertSuccessful();
+
+        asUser($this->admin)->deleteJson("{$this->api}/members/{$this->member->id}")->assertNoContent();
+
+        expect($this->bot->tokens()->count())->toBe(0)
+            ->and(DB::table('subscriptions')->where('user_id', $this->member->id)->count())->toBe(0);
+        ($this->asBot)()->getJson("{$this->api}/items")->assertUnauthorized();
+
+        // Even with a token created some other way, the agent has nobody to work for.
+        $this->secret = $this->bot->createToken('again', ['read', 'write'])->plainTextToken;
+        ($this->asBot)()->getJson("{$this->api}/items")->assertForbidden()->assertJsonPath('error.code', 'agent_without_owner');
+    });
+
+    it('stops the agent of a member who becomes a guest', function () {
+        asUser($this->admin)->patchJson("{$this->api}/members/{$this->member->id}", ['role' => 'guest'])->assertOk();
+
+        ($this->asBot)()->getJson("{$this->api}/items")->assertUnauthorized();
+    });
+});

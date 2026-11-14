@@ -233,7 +233,7 @@ Goal: run it as a public service.
 
 Goal: safe and ready to deploy.
 
-- [ ] Run a security review
+- [x] Run a security review
   - Tenancy, tokens, uploads, Markdown rendering, prompt-injection paths
 - [ ] Add OAuth for remote MCP clients
   - Passport with PKCE and audience validation

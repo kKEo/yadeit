@@ -12,6 +12,11 @@ function ensureHooks() {
       node.setAttribute('target', '_blank')
       node.setAttribute('rel', 'noopener noreferrer')
     }
+    // A remote image must not learn which page the reader was on.
+    if (node.tagName === 'IMG') {
+      node.setAttribute('referrerpolicy', 'no-referrer')
+      node.setAttribute('loading', 'lazy')
+    }
   })
 }
 

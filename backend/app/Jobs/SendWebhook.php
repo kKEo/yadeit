@@ -54,13 +54,14 @@ class SendWebhook implements ShouldQueue
         $body = (string) json_encode($this->payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $timestamp = now()->getTimestamp();
         $status = null;
-        $error = WebhookTarget::problem($webhook->url);
+        [$error, $addresses] = WebhookTarget::check($webhook->url);
         $started = microtime(true);
 
         if ($error === null) {
             try {
                 $response = Http::timeout((int) config('webhooks.timeout'))
                     ->withoutRedirecting()
+                    ->withOptions($this->pinned($webhook->url, $addresses))
                     ->withHeaders([
                         'User-Agent' => 'Yadeit-Webhooks/1',
                         'X-Yadeit-Event' => $this->event,
@@ -116,5 +117,25 @@ class SendWebhook implements ShouldQueue
             'is_active' => ! $giveUp,
             'disabled_at' => $giveUp ? now() : null,
         ]);
+    }
+
+    /**
+     * Makes the connection go to the addresses that passed the check, not to
+     * whatever the host name answers a moment later.
+     *
+     * @param  list<string>  $addresses
+     * @return array<string, mixed>
+     */
+    private function pinned(string $url, array $addresses): array
+    {
+        if ($addresses === []) {
+            return [];
+        }
+
+        $host = trim((string) parse_url($url, PHP_URL_HOST), '[]');
+        $port = parse_url($url, PHP_URL_PORT) ?: (strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'https' ? 443 : 80);
+        $list = implode(',', array_map(fn (string $ip) => str_contains($ip, ':') ? "[{$ip}]" : $ip, $addresses));
+
+        return ['curl' => [CURLOPT_RESOLVE => ["{$host}:{$port}:{$list}"]]];
     }
 }

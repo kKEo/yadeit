@@ -65,6 +65,11 @@ class AiService
         $limit = (int) ($workspace->ai_monthly_token_limit ?? config('ai.monthly_token_limit'));
         $planLimit = Plans::aiTokens($workspace);
 
+        // On the installation's key a workspace can lower its allowance, not raise it.
+        if ($workspace->ai_api_key === null) {
+            $limit = min($limit, (int) config('ai.monthly_token_limit'));
+        }
+
         return [
             'enabled' => (bool) $workspace->ai_enabled,
             'configured' => $this->key($workspace) !== null,

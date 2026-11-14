@@ -34,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Tests replace this binding with a fake, so no request reaches a model provider.
         $this->app->bind(AiProvider::class, AnthropicProvider::class);
+
+        // The Stripe webhook is registered in routes/web.php, behind a check that a signing secret is set.
+        Cashier::ignoreRoutes();
     }
 
     public function boot(): void
@@ -43,7 +46,11 @@ class AppServiceProvider extends ServiceProvider
         Cashier::useSubscriptionModel(PlanSubscription::class);
         Cashier::useSubscriptionItemModel(PlanSubscriptionItem::class);
 
-        RateLimiter::for('auth', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
+        // Per caller, and per account whoever calls: guessing one password from many addresses is slowed down too.
+        RateLimiter::for('auth', fn (Request $request) => array_filter([
+            Limit::perMinute(10)->by($request->ip()),
+            is_string($request->input('email')) ? Limit::perMinute(20)->by('email:'.sha1(mb_strtolower($request->input('email')))) : null,
+        ]));
         RateLimiter::for('public-feedback', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
         RateLimiter::for('mcp', fn (Request $request) => Limit::perMinute(120)->by($request->user()?->currentAccessToken()?->id ?: $request->ip()));
         // Each access token has its own allowance, so one busy agent cannot starve another.

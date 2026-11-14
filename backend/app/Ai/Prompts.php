@@ -64,7 +64,7 @@ class Prompts
         return new AiPrompt(
             'summarise_item',
             self::system('Summarise where a work item stands for someone who has not followed it. Summary: 2 to 4 sentences on what it is about and the current state. Decisions: what has been decided in the discussion, one per entry, naming who decided when the thread says so. Open questions: what is still unanswered or blocking. Leave a list empty when there is nothing for it.'),
-            self::tag('item_title', $title)."\n".self::tag('item_description', (string) $description)."\n".self::tag('comments', $thread ?: '(none)'),
+            self::tag('item_title', $title)."\n".self::tag('item_description', (string) $description)."\n".self::tag('comments', $thread ?: '(none)', nested: true),
             self::object([
                 'summary' => ['type' => 'string'],
                 'decisions' => ['type' => 'array', 'items' => ['type' => 'string']],
@@ -123,9 +123,11 @@ class Prompts
      *
      * @param  array<string, string>  $attributes
      */
-    private static function tag(string $name, string $text, array $attributes = []): string
+    private static function tag(string $name, string $text, array $attributes = [], bool $nested = false): string
     {
-        $safe = str_ireplace('</'.$name, '< /'.$name, $text);
+        // No closing tag survives inside quoted content, so it cannot step out of its block or an outer one.
+        // A block that holds other blocks was built here, from parts that were each made safe already.
+        $safe = $nested ? $text : str_replace('</', '< /', $text);
         $attrs = implode('', array_map(
             fn (string $key, string $value) => ' '.$key.'="'.htmlspecialchars($value, ENT_QUOTES).'"',
             array_keys($attributes), $attributes,

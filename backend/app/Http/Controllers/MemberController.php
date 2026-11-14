@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\WorkspaceRole;
 use App\Models\Membership;
+use App\Models\User;
 use App\Models\Workspace;
 use App\Support\CurrentWorkspace;
 use Illuminate\Http\JsonResponse;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -48,6 +50,11 @@ class MemberController extends Controller
 
             $membership->update(['role' => $newRole]);
 
+            // A guest cannot have agents working for them.
+            if ($newRole === WorkspaceRole::Guest) {
+                $this->revokeAgentTokens($workspace, $membership->user_id);
+            }
+
             return $membership;
         });
 
@@ -79,10 +86,26 @@ class MemberController extends Controller
             // An agent outside the workspace has nothing left to do: revoke its tokens.
             if ($membership->user->isAgent()) {
                 $membership->user->tokens()->delete();
+
+                return;
             }
+
+            // Whoever leaves takes no access with them: not through their agents, and not through notifications about items they followed.
+            $this->revokeAgentTokens($workspace, $user);
+            DB::table('subscriptions')->where('user_id', $user)
+                ->whereIn('work_item_id', DB::table('work_items')->where('workspace_id', $workspace->id)->select('id'))
+                ->delete();
         });
 
         return response()->noContent();
+    }
+
+    /** Revokes the access tokens of the agents this person owns in the workspace. */
+    private function revokeAgentTokens(Workspace $workspace, int $ownerId): void
+    {
+        $agents = User::query()->where('type', 'agent')->where('workspace_id', $workspace->id)->where('owner_id', $ownerId)->pluck('id');
+
+        PersonalAccessToken::query()->where('tokenable_type', (new User)->getMorphClass())->whereIn('tokenable_id', $agents)->delete();
     }
 
     private function find(Workspace $workspace, int $userId): Membership
