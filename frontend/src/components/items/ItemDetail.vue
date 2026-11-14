@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useQueryCache } from '@pinia/colada'
 import { Bell, BellOff, Maximize2, Trash2, X } from '@lucide/vue'
@@ -15,6 +15,7 @@ import Alert from '@/components/ui/Alert.vue'
 import Button from '@/components/ui/Button.vue'
 import Skeleton from '@/components/ui/Skeleton.vue'
 import Tabs from '@/components/ui/Tabs.vue'
+import { useMembers } from '@/queries/workspace'
 import ItemActivity from './ItemActivity.vue'
 import ItemRuns from './ItemRuns.vue'
 import ItemAttachments from './ItemAttachments.vue'
@@ -59,6 +60,9 @@ function toggleSubscription() {
 }
 
 const tab = ref('comments')
+// The runs tab is noise in a workspace without agents.
+const members = useMembers()
+const showRuns = computed(() => detail.data.value?.delegate != null || (members.data.value ?? []).some((m) => m.type === 'agent'))
 const deleteOpen = ref(false)
 
 async function confirmDelete() {

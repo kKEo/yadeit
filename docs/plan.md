@@ -159,7 +159,7 @@ Goal: agents become real team members.
   - Agent owned by a human; token abilities by project and read/write; expiry; management screen
 - [x] Build delegation, ready-work query and atomic claim
   - Delegate field; `needs input` and `in review` handling
-- [ ] Build agent runs with an activity timeline
+- [x] Build agent runs with an activity timeline
   - Typed activities: thought, action, question, response, error
 - [ ] Build the MCP server
   - Check `laravel/mcp` against the current MCP revision first
