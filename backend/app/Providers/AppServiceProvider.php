@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\WorkItem;
 use App\Support\CurrentWorkspace;
+use App\Support\UnknownFields;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
@@ -30,7 +31,20 @@ class AppServiceProvider extends ServiceProvider
     {
         RateLimiter::for('auth', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
         RateLimiter::for('mcp', fn (Request $request) => Limit::perMinute(120)->by($request->user()?->currentAccessToken()?->id ?: $request->ip()));
-        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(300)->by($request->user()?->id ?: $request->ip()));
+        // Each access token has its own allowance, so one busy agent cannot starve another.
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(300)->by(
+            $request->bearerToken() !== null && $request->user()?->currentAccessToken()?->id
+                ? 'token:'.$request->user()->currentAccessToken()->id
+                : ($request->user()?->id ?: $request->ip())
+        ));
+
+        // Validation also refuses fields the endpoint does not know (see UnknownFields).
+        Request::macro('validate', function (array $rules, ...$params) {
+            /** @var Request $this */
+            UnknownFields::reject($this, $rules);
+
+            return validator($this->all(), $rules, ...$params)->validate();
+        });
 
         // Work items are addressed by key (WEB-143) inside the current workspace.
         Route::bind('item', fn (string $key) => WorkItem::findByKey($key)

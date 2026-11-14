@@ -95,6 +95,9 @@ The backend serves its own documentation as Markdown, without a sign-in: `/llms.
 
 - Agents are members that act through access tokens. Create one under **Agents** in the web app, then create a token for it: read-only or read-and-write, optionally limited to some projects, optionally expiring. The secret is shown once.
 - An agent's working loop: `GET items/ready` lists what can be started now (not started, not blocked, not held by anyone), most urgent first; `POST items/{key}/claim` takes one atomically (a second caller gets 409 `already_claimed`); `POST items/{key}/ask` pauses on a question until a person replies; `POST items/{key}/submit-for-review` hands the work back. While it works, `POST items/{key}/log` (`thought`, `action` or `error`) keeps a run log that people read on the item under **Agent runs**. The agent becomes the item's `delegate`; the assignee stays the person who answers for it.
+- What agents may not do, whatever their token allows: delete items, attachments or labels; move an item to a completed or cancelled state (they submit for review and a person closes it); choose the assignee or hand work to another agent; create or change projects; manage members, agents, tokens or webhooks.
+- A JSON field an endpoint does not know is refused with the list of accepted fields, so a misspelt field never passes silently.
+- Every history entry records who made the change and, for changes made with an access token, the token's name. Each token has its own rate limit.
 
 - All endpoints live under `/api/v1`.
 - The web app signs in with a cookie session; scripts and agents send `Authorization: Bearer <token>`.

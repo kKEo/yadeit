@@ -481,7 +481,8 @@
       "run_failed": "{actor} could not finish the work"
     },
     "needsInputOn": "{actor} marked the item as needing input",
-    "needsInputOff": "{actor} marked the question as answered"
+    "needsInputOff": "{actor} marked the question as answered",
+    "viaToken": "via token “{token}”"
   },
   "capture": {
     "noProjects": "Create a project first: every item belongs to one.",

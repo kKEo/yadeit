@@ -45,7 +45,12 @@ it('renames and archives a project but never changes its key', function () {
     [$workspace, $user] = workspaceWith();
     $this->actingAs($user)->postJson(projectsUrl($workspace), ['name' => 'Website', 'key' => 'WEB']);
 
-    $this->patchJson(projectsUrl($workspace, '/WEB'), ['name' => 'Site', 'key' => 'NEW', 'archived' => true])
+    // The key is not something an update accepts, and saying so beats ignoring it.
+    $this->patchJson(projectsUrl($workspace, '/WEB'), ['key' => 'NEW'])
+        ->assertUnprocessable()
+        ->assertJsonPath('error.details.fields.key.0', 'Unknown field. This endpoint accepts: name, description, archived.');
+
+    $this->patchJson(projectsUrl($workspace, '/WEB'), ['name' => 'Site', 'archived' => true])
         ->assertOk()
         ->assertJsonPath('data.name', 'Site')
         ->assertJsonPath('data.key', 'WEB')

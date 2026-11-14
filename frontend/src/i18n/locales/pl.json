@@ -481,7 +481,8 @@
       "run_failed": "{actor} nie zdołał(a) dokończyć pracy"
     },
     "needsInputOn": "{actor} oznaczył(a) zadanie jako czekające na odpowiedź",
-    "needsInputOff": "{actor} oznaczył(a) pytanie jako wyjaśnione"
+    "needsInputOff": "{actor} oznaczył(a) pytanie jako wyjaśnione",
+    "viaToken": "przez token „{token}”"
   },
   "capture": {
     "noProjects": "Najpierw utwórz projekt – każde zadanie należy do jakiegoś projektu.",

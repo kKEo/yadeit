@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property array<string, mixed>|null $diff
  */
-#[Fillable(['workspace_id', 'work_item_id', 'actor_id', 'event', 'diff', 'created_at'])]
+#[Fillable(['workspace_id', 'work_item_id', 'actor_id', 'token_id', 'token_name', 'event', 'diff', 'created_at'])]
 class Activity extends Model
 {
     use BelongsToWorkspace;
@@ -38,7 +38,9 @@ class Activity extends Model
             'id' => $this->id,
             'event' => $this->event,
             'changes' => $this->diff,
-            'actor' => $this->actor ? ['id' => $this->actor->id, 'name' => $this->actor->name] : null,
+            'actor' => $this->actor ? ['id' => $this->actor->id, 'name' => $this->actor->name, 'type' => $this->actor->type->value] : null,
+            // The access token the change came through; null for the web app.
+            'token' => $this->token_name,
             'created_at' => $this->created_at,
         ];
     }

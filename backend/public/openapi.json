@@ -7618,12 +7618,27 @@
                                                             },
                                                             "name": {
                                                                 "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "human",
+                                                                    "agent"
+                                                                ]
                                                             }
                                                         },
                                                         "required": [
                                                             "id",
-                                                            "name"
+                                                            "name",
+                                                            "type"
                                                         ]
+                                                    },
+                                                    "token": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "description": "The access token the change came through; null for the web app."
                                                     },
                                                     "created_at": {
                                                         "type": [
@@ -7638,6 +7653,7 @@
                                                     "event",
                                                     "changes",
                                                     "actor",
+                                                    "token",
                                                     "created_at"
                                                 ]
                                             }

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Laravel\Sanctum\PersonalAccessToken;
 
 /**
  * @property Priority $priority
@@ -229,9 +230,18 @@ class WorkItem extends Model
     /** @param  array<string, mixed>|null  $changes */
     public function recordActivity(string $event, ?int $actorId, ?array $changes = null): void
     {
+        // Changes made with an access token carry it, so the history shows not only who but through what.
+        $caller = request()->user();
+        $token = $caller instanceof User && $caller->id === $actorId && request()->bearerToken() !== null
+            ? $caller->currentAccessToken()
+            : null;
+        $token = $token instanceof PersonalAccessToken ? $token : null;
+
         $this->activities()->create([
             'workspace_id' => $this->workspace_id,
             'actor_id' => $actorId,
+            'token_id' => $token?->id,
+            'token_name' => $token?->name,
             'event' => $event,
             'diff' => $changes,
             'created_at' => now(),

@@ -12,7 +12,7 @@ const { t, locale } = useI18n()
 const activity = useItemActivity(() => props.itemKey)
 
 const lines = computed(() => (activity.data.value ?? []).flatMap((entry) => (
-  describeActivity(entry, t).map((text, index) => ({ id: `${entry.id}-${index}`, text, at: entry.created_at }))
+  describeActivity(entry, t).map((text, index) => ({ id: `${entry.id}-${index}`, text, at: entry.created_at, token: entry.token ?? null }))
 )))
 </script>
 
@@ -23,7 +23,10 @@ const lines = computed(() => (activity.data.value ?? []).flatMap((entry) => (
   <p v-else-if="lines.length === 0" class="text-sm text-muted-foreground">{{ t('items.activity.empty') }}</p>
   <ol v-else class="space-y-2">
     <li v-for="line in lines" :key="line.id" class="flex items-baseline justify-between gap-3 text-sm">
-      <span class="min-w-0 break-words">{{ line.text }}</span>
+      <span class="min-w-0 break-words">
+        {{ line.text }}
+        <span v-if="line.token" class="text-xs text-muted-foreground">· {{ t('activity.viaToken', { token: line.token }) }}</span>
+      </span>
       <time :datetime="line.at" :title="formatDateTime(line.at, locale)" class="shrink-0 text-xs text-muted-foreground">
         {{ formatRelative(line.at, locale) }}
       </time>

@@ -118,6 +118,8 @@ export interface ActivityEntry {
   /** For `updated`: field → {from, to}. For other events: a few named values. */
   changes: Record<string, unknown> | null
   actor: UserRef | null
+  /** Name of the access token the change came through; null for the web app. */
+  token?: string | null
   created_at: string
 }
 

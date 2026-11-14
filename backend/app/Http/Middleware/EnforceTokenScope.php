@@ -24,6 +24,17 @@ class EnforceTokenScope
     /** Routes outside a workspace that an agent may still call. */
     private const AGENT_GLOBAL_ROUTES = ['me.show', 'workspaces.index'];
 
+    /** What an agent never does, whatever its token allows: removing things and reshaping the workspace is for people. */
+    private const NOT_FOR_AGENTS = [
+        'items.destroy' => 'Agents do not delete items. If it should not exist, say so in a comment and a person will decide.',
+        'attachments.destroy' => 'Agents do not delete attachments.',
+        'labels.destroy' => 'Agents do not delete labels.',
+        'members.destroy' => 'Agents do not remove members, and an agent is removed by its owner.',
+        'projects.store' => 'Agents do not create projects. Ask a person.',
+        'projects.update' => 'Agents do not change projects. Ask a person.',
+        'projects.destroy' => 'Agents do not delete projects.',
+    ];
+
     public function __construct(private CurrentWorkspace $current) {}
 
     public function handle(Request $request, Closure $next): Response
@@ -41,6 +52,10 @@ class EnforceTokenScope
 
             if (! $inWorkspace && ! in_array($routeName, self::AGENT_GLOBAL_ROUTES, true)) {
                 throw new ApiException(403, 'not_available_to_agents', 'Agents can only work inside their workspace: /api/v1/workspaces/{workspace}/...');
+            }
+
+            if (isset(self::NOT_FOR_AGENTS[$routeName])) {
+                throw new ApiException(403, 'not_available_to_agents', self::NOT_FOR_AGENTS[$routeName]);
             }
         }
 

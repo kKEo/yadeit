@@ -130,7 +130,7 @@ it('hides everything outside the projects a token is limited to', function () {
     $this->postJson("{$this->base}/items", ['project' => 'WEB', 'title' => 'Child', 'parent' => 'MOB-1'])->assertUnprocessable();
     $this->postJson("{$this->base}/projects", ['name' => 'New', 'key' => 'NEW'])
         ->assertForbidden()
-        ->assertJsonPath('error.code', 'token_project_scope');
+        ->assertJsonPath('error.code', 'not_available_to_agents');
 
     $this->postJson("{$this->base}/items", ['project' => 'WEB', 'title' => 'Fine'])->assertCreated();
 });

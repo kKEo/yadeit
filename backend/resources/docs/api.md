@@ -21,11 +21,11 @@ Every error has the same shape. `code` is stable and meant for programs; `messag
 | Status | `code` | Meaning |
 |---|---|---|
 | 401 | `unauthenticated` | No valid token |
-| 403 | `forbidden`, `token_read_only`, `token_project_scope`, `not_available_to_agents` | The caller may not do this |
+| 403 | `forbidden`, `token_read_only`, `token_project_scope`, `not_available_to_agents`, `agents_cannot_close`, `agents_cannot_assign` | The caller may not do this |
 | 404 | `not_found` | Unknown address, or something outside your workspace or token |
 | 409 | `already_claimed`, `blocked`, `not_claimable`, `not_claimed_by_you`, `no_review_state`, `conflict` | The request is fine but the current state forbids it |
 | 412 | `version_mismatch` | The item changed since you read it |
-| 422 | `validation_failed`, `unknown_fields` | Something in the request is wrong; see `details.fields` |
+| 422 | `validation_failed` | Something in the request is wrong; see `details.fields` |
 | 429 | `rate_limited` | Slow down; see the `Retry-After` header |
 
 ## Reading lists

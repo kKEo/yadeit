@@ -40,6 +40,8 @@ class WorkItemWriter
                 ? $this->resolveState($project, $data['state'])
                 : $project->defaultState();
 
+            $this->guardAgent($actor, $data, $state);
+
             $item = new WorkItem([
                 'workspace_id' => $project->workspace_id,
                 'project_id' => $project->id,
@@ -87,6 +89,8 @@ class WorkItemWriter
 
             $project = $item->project;
             $changes = [];
+
+            $this->guardAgent($actor, $data, array_key_exists('state', $data) ? $this->resolveState($project, $data['state']) : null, $item);
 
             foreach (['title', 'description', 'kind', 'due_date'] as $field) {
                 if (array_key_exists($field, $data)) {
@@ -354,6 +358,47 @@ class WorkItemWriter
                 $this->commit($item, 'input_provided', $actor, ['needs_input' => ['from' => true, 'to' => false]]);
             }
         });
+    }
+
+    /**
+     * What an agent may not decide: it does not close work (a person reviews
+     * it), does not choose who is accountable, and does not hand work to
+     * another agent.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private function guardAgent(User $actor, array $data, ?State $state, ?WorkItem $item = null): void
+    {
+        if (! $actor->isAgent()) {
+            return;
+        }
+
+        if ($state?->group->isClosed() && $state->id !== $item?->state_id) {
+            throw new ApiException(403, 'agents_cannot_close',
+                "Agents do not move items to \"{$state->name}\". Submit the work for review (POST items/{key}/submit-for-review) and a person will close it.");
+        }
+
+        if (array_key_exists('assignee', $data) && $this->changesAssignee($data['assignee'], $item)) {
+            throw new ApiException(403, 'agents_cannot_assign', 'Agents do not choose the assignee. Suggest it in a comment.');
+        }
+
+        if (array_key_exists('delegate', $data)) {
+            $wanted = $data['delegate'];
+            $self = $wanted === 'me' || (is_numeric($wanted) && (int) $wanted === $actor->id)
+                || (is_string($wanted) && strcasecmp($wanted, $actor->name) === 0);
+            $releasing = ($wanted === null || $wanted === '') && ($item === null || $item->delegate_id === null || $item->delegate_id === $actor->id);
+
+            if (! $self && ! $releasing) {
+                throw new ApiException(403, 'agents_cannot_assign', 'An agent can take an item itself (claim) or give its own back (release), not hand work to others.');
+            }
+        }
+    }
+
+    private function changesAssignee(mixed $wanted, ?WorkItem $item): bool
+    {
+        $wantedId = ($wanted === null || $wanted === '') ? null : (is_numeric($wanted) ? (int) $wanted : -1);
+
+        return $wantedId !== $item?->assignee_id;
     }
 
     /** @param  array<string, mixed>  $changes */
