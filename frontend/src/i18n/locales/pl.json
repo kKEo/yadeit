@@ -68,7 +68,9 @@
       "project": "Projekt",
       "createdAt": "Utworzono",
       "updatedAt": "Zaktualizowano",
-      "completedAt": "Ukończono"
+      "completedAt": "Ukończono",
+      "delegate": "Agent",
+      "status": "Status"
     },
     "create": {
       "title": "Nowe zadanie",
@@ -195,7 +197,11 @@
     "activity": {
       "title": "Historia",
       "empty": "Brak historii."
-    }
+    },
+    "noDelegate": "Bez agenta",
+    "needsInput": "Czeka na odpowiedź",
+    "markAnswered": "Oznacz jako wyjaśnione",
+    "delegatedTo": "Powierzone agentowi {name}"
   },
   "register": {
     "title": "Załóż konto",
@@ -430,7 +436,8 @@
       "labels": "etykiety",
       "due_date": "termin",
       "parent": "zadanie nadrzędne",
-      "description": "opis"
+      "description": "opis",
+      "delegate": "agenta"
     },
     "event": {
       "created": "{actor} – utworzenie zadania",
@@ -444,8 +451,15 @@
       "relation_added": "{actor} – nowe powiązanie: {type} {item}",
       "attachment_added": "{actor} – dodanie załącznika {name}",
       "attachment_removed": "{actor} – usunięcie załącznika {name}",
-      "other": "{actor}: {event}"
-    }
+      "other": "{actor}: {event}",
+      "claimed": "{actor} podjął(-ęła) zadanie",
+      "released": "{actor} oddał(a) zadanie",
+      "input_requested": "{actor} zadał(a) pytanie i czeka na odpowiedź",
+      "input_provided": "{actor} odpowiedział(a) na pytanie",
+      "submitted_for_review": "{actor} przekazał(a) pracę do przeglądu"
+    },
+    "needsInputOn": "{actor} oznaczył(a) zadanie jako czekające na odpowiedź",
+    "needsInputOff": "{actor} oznaczył(a) pytanie jako wyjaśnione"
   },
   "capture": {
     "noProjects": "Najpierw utwórz projekt – każde zadanie należy do jakiegoś projektu.",
@@ -585,7 +599,9 @@
       "assigned": "{actor} przypisał(a) Ci to zadanie",
       "commented": "{actor} dodał(a) komentarz",
       "state_changed": "{actor} zmienił(a) stan",
-      "state_changed_to": "{actor} zmienił(a) stan z „{from}” na „{to}”"
+      "state_changed_to": "{actor} zmienił(a) stan z „{from}” na „{to}”",
+      "input_requested": "{actor} potrzebuje Twojej odpowiedzi",
+      "submitted_for_review": "{actor} przekazał(a) pracę do Twojego przeglądu"
     }
   },
   "agents": {

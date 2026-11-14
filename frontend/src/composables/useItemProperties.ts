@@ -18,7 +18,14 @@ export function useItemProperties(item: () => Item | null | undefined) {
 
   const states = computed(() => project.data.value?.states ?? [])
   const labels = computed(() => project.data.value?.labels ?? [])
-  const people = computed(() => members.data.value ?? [])
+  // People are assigned (they answer for the work); agents are delegated to (they do it).
+  const everyone = computed(() => members.data.value ?? [])
+  const people = computed(() => everyone.value.filter((m) => m.type !== 'agent'))
+  const agents = computed(() => everyone.value.filter((m) => m.type === 'agent'))
+  const delegateOptions = computed<PickerOption[]>(() => [
+    { value: '', label: t('items.noDelegate') },
+    ...agents.value.map((a) => ({ value: String(a.id), label: a.name })),
+  ])
 
   const options = computed<Record<ItemProperty, PickerOption[]>>(() => ({
     state: stateOptions(states.value, t),
@@ -57,11 +64,18 @@ export function useItemProperties(item: () => Item | null | undefined) {
     return state ? { state: { id: state.id, name: state.name, group: state.group, color: state.color } } : null
   }
 
+  function delegateTo(value: string | string[]) {
+    const current = item()
+    const id = Array.isArray(value) ? value[0] ?? '' : value
+    const agent = agents.value.find((a) => String(a.id) === id)
+    if (current && (id === '' || agent)) void update(current.key, { delegate: agent ? { id: agent.id, name: agent.name } : null })
+  }
+
   function apply(property: ItemProperty, value: string | string[]) {
     const current = item()
     const patch = toPatch(property, value)
     if (current && patch) void update(current.key, patch)
   }
 
-  return { options, values, apply, update, states, labels, members: people }
+  return { options, values, apply, update, states, labels, members: people, agents, delegateOptions, delegateTo }
 }

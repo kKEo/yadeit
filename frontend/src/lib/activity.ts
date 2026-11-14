@@ -26,6 +26,7 @@ export function describeActivity(entry: ActivityEntry, t: Translate): string[] {
       const { from, to } = change as { from: unknown; to: unknown }
       // Long text is not worth printing twice.
       if (field === 'description') return t('activity.changedDescription', { actor })
+      if (field === 'needs_input') return t(to ? 'activity.needsInputOn' : 'activity.needsInputOff', { actor })
       return t('activity.changed', {
         actor, field: t(`activity.field.${field}`), from: shown(field, from, t), to: shown(field, to, t),
       })

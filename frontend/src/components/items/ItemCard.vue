@@ -5,6 +5,8 @@ import LabelChips from './LabelChips.vue'
 import PriorityIcon from './PriorityIcon.vue'
 import StateDot from './StateDot.vue'
 import UserInitials from './UserInitials.vue'
+import DelegateMark from './DelegateMark.vue'
+import NeedsInputBadge from './NeedsInputBadge.vue'
 
 defineProps<{ item: Item; focused: boolean; selected: boolean; draggable: boolean; groupBy: GroupBy }>()
 const emit = defineEmits<{ open: []; focus: []; dragstart: [event: DragEvent]; dragend: [] }>()
@@ -20,7 +22,11 @@ const emit = defineEmits<{ open: []; focus: []; dragstart: [event: DragEvent]; d
   >
     <span class="flex items-center justify-between gap-2">
       <span class="truncate font-mono text-xs text-muted-foreground">{{ item.key }}</span>
-      <UserInitials v-if="groupBy !== 'assignee'" :user="item.assignee" />
+      <span class="flex items-center gap-1.5">
+        <NeedsInputBadge v-if="item.needs_input" compact />
+        <DelegateMark v-if="item.delegate" :delegate="item.delegate" />
+        <UserInitials v-if="groupBy !== 'assignee'" :user="item.assignee" />
+      </span>
     </span>
     <span class="mt-1 line-clamp-3 block break-words" :class="item.completed_at ? 'text-muted-foreground' : ''">{{ item.title }}</span>
     <span class="mt-2 flex flex-wrap items-center gap-2">

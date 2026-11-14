@@ -31,6 +31,10 @@ export interface Item {
   priority: Priority
   kind: ItemKind
   assignee: UserRef | null
+  /** The agent doing the work; the assignee stays the accountable person. */
+  delegate: UserRef | null
+  /** Paused on a question to a person. */
+  needs_input: boolean
   labels: LabelRef[]
   project: { key: string; name: string }
   parent: string | null
@@ -76,6 +80,9 @@ export interface CreateItemRequest {
 
 export interface UpdateItemRequest extends Partial<Omit<CreateItemRequest, 'project'>> {
   expected_version?: number
+  /** An agent's id, or null to take the work back. */
+  delegate?: number | null
+  needs_input?: boolean
 }
 
 /** Filter names shared by the item list, the URL and saved views. Values are strings, as stored. */
@@ -129,7 +136,7 @@ export interface SaveViewRequest extends Partial<ViewState> { name?: string; is_
 
 // ── Inbox ────────────────────────────────────────────────────────────────────
 
-export type InboxEvent = 'assigned' | 'commented' | 'state_changed'
+export type InboxEvent = 'assigned' | 'commented' | 'state_changed' | 'input_requested' | 'submitted_for_review'
 export interface InboxEntry {
   id: number
   event: InboxEvent

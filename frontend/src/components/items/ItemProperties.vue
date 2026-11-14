@@ -7,13 +7,15 @@ import { formatDateTime } from '@/lib/format'
 import { useUiStore, type ItemProperty } from '@/stores/ui'
 import PropertyPicker from '@/components/app/PropertyPicker.vue'
 import LabelChips from './LabelChips.vue'
+import NeedsInputBadge from './NeedsInputBadge.vue'
 
 /** The properties column: every picker-edited property goes through PropertyPicker. */
 const props = defineProps<{ item: ItemDetail; canEdit: boolean }>()
 const emit = defineEmits<{ open: [key: string] }>()
 const { t, locale } = useI18n()
 const ui = useUiStore()
-const { options, values, apply, update } = useItemProperties(() => props.item)
+const { options, values, apply, update, agents, delegateOptions, delegateTo } = useItemProperties(() => props.item)
+const delegateOpen = ref(false)
 
 const PICKERS: ItemProperty[] = ['state', 'priority', 'assignee', 'labels', 'kind']
 const openPicker = ref<ItemProperty | null>(null)
@@ -64,6 +66,29 @@ const dates = computed(() => [
             ><LabelChips :labels="item.labels" class="flex-wrap" /></button>
           </template>
         </PropertyPicker>
+      </dd>
+    </template>
+
+    <template v-if="agents.length > 0 || item.delegate">
+      <dt class="text-muted-foreground">{{ t('items.fields.delegate') }}</dt>
+      <dd>
+        <PropertyPicker
+          v-model:open="delegateOpen" :label="t('items.fields.delegate')" :options="delegateOptions"
+          :model-value="item.delegate ? String(item.delegate.id) : ''" :disabled="!canEdit"
+          @update:model-value="delegateTo($event)"
+        />
+      </dd>
+    </template>
+
+    <template v-if="item.needs_input">
+      <dt class="text-muted-foreground">{{ t('items.fields.status') }}</dt>
+      <dd class="flex flex-wrap items-center gap-2 px-2 py-1">
+        <NeedsInputBadge />
+        <button
+          v-if="canEdit" type="button"
+          class="rounded text-xs text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          @click="update(item.key, { needs_input: false })"
+        >{{ t('items.markAnswered') }}</button>
       </dd>
     </template>
 

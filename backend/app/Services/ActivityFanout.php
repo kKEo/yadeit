@@ -73,6 +73,18 @@ class ActivityFanout
             }
         }
 
+        // An agent's question or finished work goes to the people who answer for it.
+        if ($event === 'input_requested' || $event === 'submitted_for_review') {
+            $owners = [$item->assignee_id, $item->delegate?->owner_id, User::find($actorId)?->owner_id];
+
+            $audience = $followers()->merge($owners)->filter()->unique()
+                ->reject(fn (int $id) => $id === $actorId);
+
+            foreach ($audience as $userId) {
+                $entries[] = [$userId, $event, null];
+            }
+        }
+
         return $entries;
     }
 

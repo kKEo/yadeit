@@ -68,7 +68,9 @@
       "project": "Project",
       "createdAt": "Created",
       "updatedAt": "Updated",
-      "completedAt": "Completed"
+      "completedAt": "Completed",
+      "delegate": "Agent",
+      "status": "Status"
     },
     "create": {
       "title": "New item",
@@ -195,7 +197,11 @@
     "activity": {
       "title": "Activity",
       "empty": "No activity yet."
-    }
+    },
+    "noDelegate": "No agent",
+    "needsInput": "Needs input",
+    "markAnswered": "Mark as answered",
+    "delegatedTo": "Delegated to {name}"
   },
   "register": {
     "title": "Create your account",
@@ -430,7 +436,8 @@
       "labels": "labels",
       "due_date": "the due date",
       "parent": "the parent",
-      "description": "the description"
+      "description": "the description",
+      "delegate": "the agent"
     },
     "event": {
       "created": "{actor} created the item",
@@ -444,8 +451,15 @@
       "relation_added": "{actor} added a relation: {type} {item}",
       "attachment_added": "{actor} attached {name}",
       "attachment_removed": "{actor} removed the attachment {name}",
-      "other": "{actor}: {event}"
-    }
+      "other": "{actor}: {event}",
+      "claimed": "{actor} took the item",
+      "released": "{actor} gave the item back",
+      "input_requested": "{actor} asked a question and is waiting for an answer",
+      "input_provided": "{actor} answered the question",
+      "submitted_for_review": "{actor} submitted the work for review"
+    },
+    "needsInputOn": "{actor} marked the item as needing input",
+    "needsInputOff": "{actor} marked the question as answered"
   },
   "capture": {
     "noProjects": "Create a project first: every item belongs to one.",
@@ -585,7 +599,9 @@
       "assigned": "{actor} assigned this item to you",
       "commented": "{actor} commented",
       "state_changed": "{actor} changed the state",
-      "state_changed_to": "{actor} changed the state from {from} to {to}"
+      "state_changed_to": "{actor} changed the state from {from} to {to}",
+      "input_requested": "{actor} needs your input",
+      "submitted_for_review": "{actor} submitted work for your review"
     }
   },
   "agents": {

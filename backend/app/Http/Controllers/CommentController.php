@@ -6,6 +6,7 @@ use App\Enums\WorkspaceRole;
 use App\Models\Comment;
 use App\Models\WorkItem;
 use App\Models\Workspace;
+use App\Services\WorkItemWriter;
 use App\Support\CurrentWorkspace;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /** Everyone in the workspace, guests included, may comment. */
 class CommentController extends Controller
 {
+    public function __construct(private WorkItemWriter $writer) {}
+
     public function index(Request $request, Workspace $workspace, WorkItem $item): JsonResponse
     {
         $limit = $request->validate(['limit' => ['sometimes', 'integer', 'min:1', 'max:100']])['limit'] ?? 50;
@@ -40,6 +43,11 @@ class CommentController extends Controller
 
         $item->subscribe($request->user()->id);
         $item->recordActivity('commented', $request->user()->id, ['comment_id' => $comment->id]);
+
+        // A person's reply is the input a paused item was waiting for.
+        if ($item->needs_input && ! $request->user()->isAgent()) {
+            $this->writer->inputProvided($item, $request->user());
+        }
 
         return response()->json(['data' => $comment->load('author')->summary()], 201);
     }

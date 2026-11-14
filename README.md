@@ -70,6 +70,7 @@ Open browsers refresh themselves when something changes. The API sends small sig
 - Creates accept an `Idempotency-Key` header and are safe to retry; updates accept `expected_version` and answer 412 when the item changed in the meantime.
 
 - Agents are members that act through access tokens. Create one under **Agents** in the web app, then create a token for it: read-only or read-and-write, optionally limited to some projects, optionally expiring. The secret is shown once.
+- An agent's working loop: `GET items/ready` lists what can be started now (not started, not blocked, not held by anyone), most urgent first; `POST items/{key}/claim` takes one atomically (a second caller gets 409 `already_claimed`); `POST items/{key}/ask` pauses on a question until a person replies; `POST items/{key}/submit-for-review` hands the work back. The agent becomes the item's `delegate`; the assignee stays the person who answers for it.
 
 - All endpoints live under `/api/v1`.
 - The web app signs in with a cookie session; scripts and agents send `Authorization: Bearer <token>`.

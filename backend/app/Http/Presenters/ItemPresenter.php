@@ -16,7 +16,7 @@ use App\Models\WorkItem;
  */
 class ItemPresenter
 {
-    public const LIST_RELATIONS = ['project', 'state', 'assignee', 'labels', 'parent.project'];
+    public const LIST_RELATIONS = ['project', 'state', 'assignee', 'delegate', 'labels', 'parent.project'];
 
     public const EXPANDABLE = ['description', 'checklist', 'links'];
 
@@ -34,6 +34,9 @@ class ItemPresenter
             'priority' => $item->priority->label(),
             'kind' => $item->kind->value,
             'assignee' => $item->assignee ? ['id' => $item->assignee->id, 'name' => $item->assignee->name] : null,
+            // The agent doing the work; the assignee stays the accountable person.
+            'delegate' => $item->delegate ? ['id' => $item->delegate->id, 'name' => $item->delegate->name] : null,
+            'needs_input' => $item->needs_input,
             'labels' => $item->labels->map(fn (Label $l) => $l->summary())->values()->all(),
             'project' => ['key' => $item->project->key, 'name' => $item->project->name],
             'parent' => $item->parent?->key,

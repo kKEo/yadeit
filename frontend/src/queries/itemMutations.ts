@@ -18,6 +18,8 @@ export interface ItemPatch {
   priority?: Priority
   kind?: ItemKind
   assignee?: UserRef | null
+  delegate?: UserRef | null
+  needs_input?: boolean
   labels?: LabelRef[]
   due_date?: string | null
   parent?: string | null
@@ -25,10 +27,11 @@ export interface ItemPatch {
 
 /** The request body for a patch: references by id or name, the way the API takes them. */
 export function patchRequest(patch: ItemPatch): UpdateItemRequest {
-  const { state, assignee, labels, ...plain } = patch
+  const { state, assignee, delegate, labels, ...plain } = patch
   const req: UpdateItemRequest = { ...plain }
   if (state !== undefined) req.state = state.id
   if (assignee !== undefined) req.assignee = assignee?.id ?? null
+  if (delegate !== undefined) req.delegate = delegate?.id ?? null
   if (labels !== undefined) req.labels = labels.map((label) => label.name)
   return req
 }

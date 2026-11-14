@@ -23,11 +23,12 @@ use Illuminate\Support\Carbon;
  * @property ItemKind $kind
  * @property Carbon|null $due_date
  * @property Carbon|null $completed_at
+ * @property bool $needs_input
  * @property-read string $key
  */
 #[Fillable([
     'workspace_id', 'project_id', 'sequence', 'title', 'description', 'state_id', 'priority', 'kind',
-    'assignee_id', 'created_by', 'parent_id', 'due_date', 'version', 'completed_at',
+    'assignee_id', 'delegate_id', 'needs_input', 'created_by', 'parent_id', 'due_date', 'version', 'completed_at',
 ])]
 class WorkItem extends Model
 {
@@ -50,6 +51,9 @@ class WorkItem extends Model
 
     use SoftDeletes;
 
+    /** @var array<string, mixed> */
+    protected $attributes = ['needs_input' => false];
+
     /** @return array<string, string> */
     protected function casts(): array
     {
@@ -58,6 +62,7 @@ class WorkItem extends Model
             'kind' => ItemKind::class,
             'due_date' => 'date:Y-m-d',
             'completed_at' => 'datetime',
+            'needs_input' => 'boolean',
         ];
     }
 
@@ -99,6 +104,41 @@ class WorkItem extends Model
     public function state(): BelongsTo
     {
         return $this->belongsTo(State::class);
+    }
+
+    /**
+     * The agent doing the work, if any.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function delegate(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'delegate_id');
+    }
+
+    /**
+     * Items not blocked by any open item. Blockers count even when the
+     * caller's token cannot see their project.
+     *
+     * @param  Builder<WorkItem>  $query
+     */
+    public function scopeUnblocked(Builder $query): void
+    {
+        $query->whereDoesntHave('incomingRelations', fn (Builder $relation) => $relation
+            ->where('type', 'blocks')
+            ->whereHas('item', fn (Builder $blocker) => $blocker->withoutGlobalScope('token-projects')->whereNull('completed_at')));
+    }
+
+    /** @return list<string> keys of the open items blocking this one */
+    public function openBlockerKeys(): array
+    {
+        return $this->incomingRelations()->where('type', 'blocks')->get()
+            ->map(fn (ItemRelation $relation) => WorkItem::withoutGlobalScope('token-projects')
+                ->with(['project' => fn ($project) => $project->withoutGlobalScope('token-projects')])
+                ->find($relation->work_item_id))
+            ->filter(fn (?WorkItem $blocker) => $blocker !== null && $blocker->completed_at === null)
+            ->map(fn (WorkItem $blocker) => $blocker->key)
+            ->values()->all();
     }
 
     /** @return BelongsTo<User, $this> */

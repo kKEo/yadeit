@@ -51,7 +51,7 @@ export function makeTestRouter(): Router {
 export function makeItem(overrides: Partial<Item> = {}): Item {
   return {
     key: 'WEB-1', title: 'Fix login', state: { id: 3, name: 'Todo', group: 'unstarted', color: '#64748b' },
-    priority: 'none', kind: 'task', assignee: null, labels: [], project: { key: 'WEB', name: 'Website' }, parent: null,
+    priority: 'none', kind: 'task', assignee: null, delegate: null, needs_input: false, labels: [], project: { key: 'WEB', name: 'Website' }, parent: null,
     due_date: null, version: 3, created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-02T00:00:00Z', completed_at: null,
     ...overrides,
   }

@@ -5,6 +5,8 @@ import LabelChips from './LabelChips.vue'
 import PriorityIcon from './PriorityIcon.vue'
 import StateDot from './StateDot.vue'
 import UserInitials from './UserInitials.vue'
+import DelegateMark from './DelegateMark.vue'
+import NeedsInputBadge from './NeedsInputBadge.vue'
 
 defineProps<{ item: Item; focused: boolean; selected: boolean }>()
 const emit = defineEmits<{ open: []; focus: [] }>()
@@ -23,6 +25,8 @@ const emit = defineEmits<{ open: []; focus: [] }>()
     <span class="min-w-0 flex-1 truncate" :class="item.completed_at ? 'text-muted-foreground' : ''">{{ item.title }}</span>
     <LabelChips :labels="item.labels" :max="2" class="hidden md:inline-flex" />
     <DueDate v-if="item.due_date" :date="item.due_date" :done="item.completed_at !== null" />
+    <NeedsInputBadge v-if="item.needs_input" compact />
+    <DelegateMark v-if="item.delegate" :delegate="item.delegate" />
     <UserInitials :user="item.assignee" />
   </button>
 </template>

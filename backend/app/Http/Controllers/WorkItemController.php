@@ -29,7 +29,8 @@ class WorkItemController extends Controller
 
     /**
      * Filters: project (key), state (name or id), state_group, priority, kind,
-     * assignee (id, "me" or "none"), label (name), parent (key or "none"),
+     * assignee (id, "me" or "none"), delegate (agent id, "me" or "none"),
+     * needs_input (true = waiting for a person's answer), label (name), parent (key or "none"),
      * q (text in the title, or an exact key), open (true hides closed items).
      * Paging: limit (default 25, max 100) and cursor. Shaping: expand, fields.
      */
@@ -42,6 +43,8 @@ class WorkItemController extends Controller
             'priority' => ['sometimes', Rule::in(Priority::labels())],
             'kind' => ['sometimes', Rule::enum(ItemKind::class)],
             'assignee' => ['sometimes', 'string'],
+            'delegate' => ['sometimes', 'string'],
+            'needs_input' => ['sometimes', 'boolean'],
             'label' => ['sometimes', 'string'],
             'parent' => ['sometimes', 'string'],
             'q' => ['sometimes', 'string', 'max:200'],
@@ -125,6 +128,90 @@ class WorkItemController extends Controller
             ->header('ETag', $this->etag($item));
     }
 
+    /**
+     * Work that can be started right now, most urgent first: not started,
+     * not blocked by an open item, and free to take. An agent sees items
+     * delegated to it plus items nobody holds; a person sees items assigned
+     * to them plus items nobody holds. Take one with POST items/{key}/claim.
+     */
+    public function ready(Request $request): JsonResponse
+    {
+        $input = $request->validate([
+            'project' => ['sometimes', 'string'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:50'],
+        ]);
+
+        $user = $request->user();
+        $mine = $user->isAgent() ? 'delegate_id' : 'assignee_id';
+
+        $query = WorkItem::query()
+            ->with(ItemPresenter::LIST_RELATIONS)
+            ->whereNull('completed_at')
+            ->where('needs_input', false)
+            ->whereHas('state', fn (Builder $q) => $q->where('group', StateGroup::Unstarted))
+            ->unblocked()
+            ->where(fn (Builder $q) => $q
+                ->where($mine, $user->id)
+                ->orWhere(fn (Builder $free) => $free->whereNull('assignee_id')->whereNull('delegate_id')))
+            ->orderByDesc('priority')
+            ->orderBy('id');
+
+        if (isset($input['project'])) {
+            $query->whereHas('project', fn (Builder $q) => $q->where('key', strtoupper($input['project'])));
+        }
+
+        $items = $query->limit($input['limit'] ?? 10)->get();
+
+        return response()->json(['data' => $items->map(fn (WorkItem $i) => $this->presenter->compact($i))]);
+    }
+
+    /**
+     * Takes the item to work on. Exactly one of several simultaneous callers
+     * succeeds; the others get 409 `already_claimed`. Claiming again when you
+     * already hold it changes nothing.
+     */
+    public function claim(Request $request, Workspace $workspace, WorkItem $item, CurrentWorkspace $current): JsonResponse
+    {
+        $current->requireRole(WorkspaceRole::Member);
+
+        return $this->respond($this->writer->claim($item, $request->user()), $request);
+    }
+
+    /** Gives the item back so that someone else can take it. */
+    public function release(Request $request, Workspace $workspace, WorkItem $item, CurrentWorkspace $current): JsonResponse
+    {
+        $current->requireRole(WorkspaceRole::Member);
+
+        return $this->respond($this->writer->release($item, $request->user()), $request);
+    }
+
+    /**
+     * Asks a person a question and marks the item as waiting for input. The
+     * flag clears by itself when a person replies in the comments.
+     */
+    public function ask(Request $request, Workspace $workspace, WorkItem $item, CurrentWorkspace $current): JsonResponse
+    {
+        $current->requireRole(WorkspaceRole::Member);
+        $data = $request->validate(['question' => ['required', 'string', 'max:50000']]);
+
+        return $this->respond($this->writer->askForInput($item, $request->user(), $data['question']), $request);
+    }
+
+    /** Hands the work to a person for review, with an optional summary posted as a comment. */
+    public function submitForReview(Request $request, Workspace $workspace, WorkItem $item, CurrentWorkspace $current): JsonResponse
+    {
+        $current->requireRole(WorkspaceRole::Member);
+        $data = $request->validate(['summary' => ['sometimes', 'nullable', 'string', 'max:50000']]);
+
+        return $this->respond($this->writer->submitForReview($item, $request->user(), $data['summary'] ?? null), $request);
+    }
+
+    private function respond(WorkItem $item, Request $request): JsonResponse
+    {
+        return response()->json(['data' => $this->presenter->detail($item, $request->user()->id)])
+            ->header('ETag', $this->etag($item));
+    }
+
     /** A soft delete: the item disappears from lists but its number is never reused. */
     public function destroy(Request $request, Workspace $workspace, WorkItem $item, CurrentWorkspace $current): Response
     {
@@ -171,6 +258,8 @@ class WorkItemController extends Controller
             'priority' => ['sometimes', Rule::in(Priority::labels())],
             'kind' => ['sometimes', Rule::enum(ItemKind::class)],
             'assignee' => ['sometimes', 'nullable'],
+            'delegate' => ['sometimes', 'nullable'],
+            'needs_input' => ['sometimes', 'boolean'],
             'parent' => ['sometimes', 'nullable', 'string'],
             'due_date' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
             'labels' => ['sometimes', 'array', 'max:20'],
@@ -215,6 +304,18 @@ class WorkItemController extends Controller
                 $input['assignee'] === 'me' => $query->where('assignee_id', $viewerId),
                 default => $query->where('assignee_id', (int) $input['assignee']),
             };
+        }
+
+        if (isset($input['delegate'])) {
+            match (true) {
+                $input['delegate'] === 'none' => $query->whereNull('delegate_id'),
+                $input['delegate'] === 'me' => $query->where('delegate_id', $viewerId),
+                default => $query->where('delegate_id', (int) $input['delegate']),
+            };
+        }
+
+        if (isset($input['needs_input'])) {
+            $query->where('needs_input', filter_var($input['needs_input'], FILTER_VALIDATE_BOOLEAN));
         }
 
         if (isset($input['label'])) {

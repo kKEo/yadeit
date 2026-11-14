@@ -114,6 +114,8 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
 
         // Work items are addressed by key, for example /items/WEB-143.
         Route::get('items', [WorkItemController::class, 'index'])->name('items.index');
+        // Declared before items/{item}, so "ready" is not read as an item key.
+        Route::get('items/ready', [WorkItemController::class, 'ready'])->name('items.ready');
         Route::post('items', [WorkItemController::class, 'store'])->middleware('idempotent')->name('items.store');
 
         Route::prefix('items/{item}')->group(function () {
@@ -121,6 +123,10 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::patch('/', [WorkItemController::class, 'update'])->name('items.update');
             Route::delete('/', [WorkItemController::class, 'destroy'])->name('items.destroy');
             Route::get('activity', [WorkItemController::class, 'activity'])->name('items.activity');
+            Route::post('claim', [WorkItemController::class, 'claim'])->name('items.claim');
+            Route::delete('claim', [WorkItemController::class, 'release'])->name('items.release');
+            Route::post('ask', [WorkItemController::class, 'ask'])->name('items.ask');
+            Route::post('submit-for-review', [WorkItemController::class, 'submitForReview'])->name('items.submit-for-review');
             Route::put('subscription', [WorkItemController::class, 'subscribe'])->name('items.subscribe');
             Route::delete('subscription', [WorkItemController::class, 'unsubscribe'])->name('items.unsubscribe');
 

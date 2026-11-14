@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StateGroup;
 use App\Models\Concerns\BelongsToWorkspace;
 use App\Support\CurrentWorkspace;
 use Database\Factories\ProjectFactory;
@@ -68,5 +69,17 @@ class Project extends Model
     {
         return $this->states()->where('is_default', true)->first()
             ?? $this->states()->firstOrFail();
+    }
+
+    /**
+     * Where finished work waits for a person: the last "started" state, when
+     * the project has more than one. With a single started state there is no
+     * separate review step.
+     */
+    public function reviewState(): ?State
+    {
+        $started = $this->states()->where('group', StateGroup::Started)->orderBy('position')->get();
+
+        return $started->count() > 1 ? $started->last() : null;
     }
 }

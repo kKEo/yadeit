@@ -5126,7 +5126,7 @@
         "/workspaces/{workspace}/items": {
             "get": {
                 "operationId": "items.index",
-                "summary": "Filters: project (key), state (name or id), state_group, priority, kind,\nassignee (id, \"me\" or \"none\"), label (name), parent (key or \"none\"),\nq (text in the title, or an exact key), open (true hides closed items).\nPaging: limit (default 25, max 100) and cursor. Shaping: expand, fields",
+                "summary": "Filters: project (key), state (name or id), state_group, priority, kind,\nassignee (id, \"me\" or \"none\"), delegate (agent id, \"me\" or \"none\"),\nneeds_input (true = waiting for a person's answer), label (name), parent (key or \"none\"),\nq (text in the title, or an exact key), open (true hides closed items).\nPaging: limit (default 25, max 100) and cursor. Shaping: expand, fields",
                 "tags": [
                     "WorkItem"
                 ],
@@ -5186,6 +5186,20 @@
                         "in": "query",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "delegate",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "needs_input",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
                         }
                     },
                     {
@@ -5338,6 +5352,28 @@
                                                                     "name"
                                                                 ]
                                                             },
+                                                            "delegate": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "description": "The agent doing the work; the assignee stays the accountable person.",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name"
+                                                                ]
+                                                            },
+                                                            "needs_input": {
+                                                                "type": "boolean"
+                                                            },
                                                             "labels": {
                                                                 "type": "array",
                                                                 "items": {
@@ -5482,6 +5518,8 @@
                                                             "priority",
                                                             "kind",
                                                             "assignee",
+                                                            "delegate",
+                                                            "needs_input",
                                                             "labels",
                                                             "project",
                                                             "parent",
@@ -5581,6 +5619,15 @@
                                             "string",
                                             "null"
                                         ]
+                                    },
+                                    "delegate": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "needs_input": {
+                                        "type": "boolean"
                                     },
                                     "parent": {
                                         "type": [
@@ -5876,6 +5923,326 @@
                                                 "subscribed"
                                             ],
                                             "additionalProperties": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/items/ready": {
+            "get": {
+                "operationId": "items.ready",
+                "summary": "Work that can be started right now, most urgent first: not started,\nnot blocked by an open item, and free to take. An agent sees items\ndelegated to it plus items nobody holds; a person sees items assigned\nto them plus items nobody holds. Take one with POST items/{key}/claim",
+                "tags": [
+                    "WorkItem"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "project",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 50
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "anyOf": [
+                                                    {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "state": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "group": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "triage",
+                                                                            "backlog",
+                                                                            "unstarted",
+                                                                            "started",
+                                                                            "completed",
+                                                                            "cancelled"
+                                                                        ]
+                                                                    },
+                                                                    "color": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "group",
+                                                                    "color"
+                                                                ]
+                                                            },
+                                                            "priority": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "task",
+                                                                    "bug",
+                                                                    "feature",
+                                                                    "design",
+                                                                    "research"
+                                                                ]
+                                                            },
+                                                            "assignee": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name"
+                                                                ]
+                                                            },
+                                                            "delegate": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "description": "The agent doing the work; the assignee stays the accountable person.",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name"
+                                                                ]
+                                                            },
+                                                            "needs_input": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "labels": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "color": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "name",
+                                                                        "color"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "project": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "name"
+                                                                ]
+                                                            },
+                                                            "parent": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "due_date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "version": {
+                                                                "type": "integer"
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "format": "date-time"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "format": "date-time"
+                                                            },
+                                                            "completed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "format": "date-time"
+                                                            },
+                                                            "description": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "checklist": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "text": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "is_done": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "text",
+                                                                        "is_done"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "links": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "kind": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "pr",
+                                                                                "branch",
+                                                                                "design",
+                                                                                "url"
+                                                                            ]
+                                                                        },
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "title": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "kind",
+                                                                        "url",
+                                                                        "title"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "title",
+                                                            "state",
+                                                            "priority",
+                                                            "kind",
+                                                            "assignee",
+                                                            "delegate",
+                                                            "needs_input",
+                                                            "labels",
+                                                            "project",
+                                                            "parent",
+                                                            "due_date",
+                                                            "version",
+                                                            "created_at",
+                                                            "updated_at",
+                                                            "completed_at",
+                                                            "description",
+                                                            "checklist",
+                                                            "links"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "array"
+                                                    }
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -6269,6 +6636,15 @@
                                             "string",
                                             "null"
                                         ]
+                                    },
+                                    "delegate": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "needs_input": {
+                                        "type": "boolean"
                                     },
                                     "parent": {
                                         "type": [
@@ -6725,6 +7101,1287 @@
                                     "required": [
                                         "data",
                                         "next_cursor"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/items/{item}/claim": {
+            "post": {
+                "operationId": "items.claim",
+                "summary": "Takes the item to work on. Exactly one of several simultaneous callers\nsucceeds; the others get 409 `already_claimed`. Claiming again when you\nalready hold it changes nothing",
+                "tags": [
+                    "WorkItem"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "description": "The item ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "children": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "state": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "group": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "triage",
+                                                                            "backlog",
+                                                                            "unstarted",
+                                                                            "started",
+                                                                            "completed",
+                                                                            "cancelled"
+                                                                        ]
+                                                                    },
+                                                                    "color": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "group",
+                                                                    "color"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "title",
+                                                            "state"
+                                                        ]
+                                                    }
+                                                },
+                                                "relations": {
+                                                    "type": "array",
+                                                    "prefixItems": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "blocks",
+                                                                            "relates",
+                                                                            "duplicate"
+                                                                        ]
+                                                                    },
+                                                                    "item": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "key": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "title": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "state": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "name": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "group": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "triage",
+                                                                                            "backlog",
+                                                                                            "unstarted",
+                                                                                            "started",
+                                                                                            "completed",
+                                                                                            "cancelled"
+                                                                                        ]
+                                                                                    },
+                                                                                    "color": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "id",
+                                                                                    "name",
+                                                                                    "group",
+                                                                                    "color"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "key",
+                                                                            "title",
+                                                                            "state"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "type",
+                                                                    "item"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "blocked_by",
+                                                                            "blocks",
+                                                                            "relates",
+                                                                            "duplicate"
+                                                                        ]
+                                                                    },
+                                                                    "item": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "key": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "title": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "state": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "name": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "group": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "triage",
+                                                                                            "backlog",
+                                                                                            "unstarted",
+                                                                                            "started",
+                                                                                            "completed",
+                                                                                            "cancelled"
+                                                                                        ]
+                                                                                    },
+                                                                                    "color": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "id",
+                                                                                    "name",
+                                                                                    "group",
+                                                                                    "color"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "key",
+                                                                            "title",
+                                                                            "state"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "type",
+                                                                    "item"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    "minItems": 2,
+                                                    "maxItems": 2
+                                                },
+                                                "attachments": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "mime_type": {
+                                                                "type": "string"
+                                                            },
+                                                            "size": {
+                                                                "type": "integer"
+                                                            },
+                                                            "is_image": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "mime_type",
+                                                            "size",
+                                                            "is_image",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "comment_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "subscribed": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "children",
+                                                "relations",
+                                                "attachments",
+                                                "comment_count",
+                                                "subscribed"
+                                            ],
+                                            "additionalProperties": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "items.release",
+                "summary": "Gives the item back so that someone else can take it",
+                "tags": [
+                    "WorkItem"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "description": "The item ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "children": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "state": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "group": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "triage",
+                                                                            "backlog",
+                                                                            "unstarted",
+                                                                            "started",
+                                                                            "completed",
+                                                                            "cancelled"
+                                                                        ]
+                                                                    },
+                                                                    "color": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "group",
+                                                                    "color"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "title",
+                                                            "state"
+                                                        ]
+                                                    }
+                                                },
+                                                "relations": {
+                                                    "type": "array",
+                                                    "prefixItems": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "blocks",
+                                                                            "relates",
+                                                                            "duplicate"
+                                                                        ]
+                                                                    },
+                                                                    "item": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "key": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "title": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "state": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "name": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "group": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "triage",
+                                                                                            "backlog",
+                                                                                            "unstarted",
+                                                                                            "started",
+                                                                                            "completed",
+                                                                                            "cancelled"
+                                                                                        ]
+                                                                                    },
+                                                                                    "color": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "id",
+                                                                                    "name",
+                                                                                    "group",
+                                                                                    "color"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "key",
+                                                                            "title",
+                                                                            "state"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "type",
+                                                                    "item"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "blocked_by",
+                                                                            "blocks",
+                                                                            "relates",
+                                                                            "duplicate"
+                                                                        ]
+                                                                    },
+                                                                    "item": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "key": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "title": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "state": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "name": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "group": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "triage",
+                                                                                            "backlog",
+                                                                                            "unstarted",
+                                                                                            "started",
+                                                                                            "completed",
+                                                                                            "cancelled"
+                                                                                        ]
+                                                                                    },
+                                                                                    "color": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "id",
+                                                                                    "name",
+                                                                                    "group",
+                                                                                    "color"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "key",
+                                                                            "title",
+                                                                            "state"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "type",
+                                                                    "item"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    "minItems": 2,
+                                                    "maxItems": 2
+                                                },
+                                                "attachments": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "mime_type": {
+                                                                "type": "string"
+                                                            },
+                                                            "size": {
+                                                                "type": "integer"
+                                                            },
+                                                            "is_image": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "mime_type",
+                                                            "size",
+                                                            "is_image",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "comment_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "subscribed": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "children",
+                                                "relations",
+                                                "attachments",
+                                                "comment_count",
+                                                "subscribed"
+                                            ],
+                                            "additionalProperties": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/items/{item}/ask": {
+            "post": {
+                "operationId": "items.ask",
+                "summary": "Asks a person a question and marks the item as waiting for input. The\nflag clears by itself when a person replies in the comments",
+                "tags": [
+                    "WorkItem"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "description": "The item ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "question": {
+                                        "type": "string",
+                                        "maxLength": 50000
+                                    }
+                                },
+                                "required": [
+                                    "question"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "children": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "state": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "group": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "triage",
+                                                                            "backlog",
+                                                                            "unstarted",
+                                                                            "started",
+                                                                            "completed",
+                                                                            "cancelled"
+                                                                        ]
+                                                                    },
+                                                                    "color": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "group",
+                                                                    "color"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "title",
+                                                            "state"
+                                                        ]
+                                                    }
+                                                },
+                                                "relations": {
+                                                    "type": "array",
+                                                    "prefixItems": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "blocks",
+                                                                            "relates",
+                                                                            "duplicate"
+                                                                        ]
+                                                                    },
+                                                                    "item": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "key": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "title": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "state": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "name": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "group": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "triage",
+                                                                                            "backlog",
+                                                                                            "unstarted",
+                                                                                            "started",
+                                                                                            "completed",
+                                                                                            "cancelled"
+                                                                                        ]
+                                                                                    },
+                                                                                    "color": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "id",
+                                                                                    "name",
+                                                                                    "group",
+                                                                                    "color"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "key",
+                                                                            "title",
+                                                                            "state"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "type",
+                                                                    "item"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "blocked_by",
+                                                                            "blocks",
+                                                                            "relates",
+                                                                            "duplicate"
+                                                                        ]
+                                                                    },
+                                                                    "item": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "key": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "title": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "state": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "name": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "group": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "triage",
+                                                                                            "backlog",
+                                                                                            "unstarted",
+                                                                                            "started",
+                                                                                            "completed",
+                                                                                            "cancelled"
+                                                                                        ]
+                                                                                    },
+                                                                                    "color": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "id",
+                                                                                    "name",
+                                                                                    "group",
+                                                                                    "color"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "key",
+                                                                            "title",
+                                                                            "state"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "type",
+                                                                    "item"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    "minItems": 2,
+                                                    "maxItems": 2
+                                                },
+                                                "attachments": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "mime_type": {
+                                                                "type": "string"
+                                                            },
+                                                            "size": {
+                                                                "type": "integer"
+                                                            },
+                                                            "is_image": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "mime_type",
+                                                            "size",
+                                                            "is_image",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "comment_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "subscribed": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "children",
+                                                "relations",
+                                                "attachments",
+                                                "comment_count",
+                                                "subscribed"
+                                            ],
+                                            "additionalProperties": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/items/{item}/submit-for-review": {
+            "post": {
+                "operationId": "items.submit-for-review",
+                "summary": "Hands the work to a person for review, with an optional summary posted as a comment",
+                "tags": [
+                    "WorkItem"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "description": "The item ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "summary": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 50000
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "children": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "state": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "group": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "triage",
+                                                                            "backlog",
+                                                                            "unstarted",
+                                                                            "started",
+                                                                            "completed",
+                                                                            "cancelled"
+                                                                        ]
+                                                                    },
+                                                                    "color": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "group",
+                                                                    "color"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "title",
+                                                            "state"
+                                                        ]
+                                                    }
+                                                },
+                                                "relations": {
+                                                    "type": "array",
+                                                    "prefixItems": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "blocks",
+                                                                            "relates",
+                                                                            "duplicate"
+                                                                        ]
+                                                                    },
+                                                                    "item": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "key": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "title": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "state": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "name": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "group": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "triage",
+                                                                                            "backlog",
+                                                                                            "unstarted",
+                                                                                            "started",
+                                                                                            "completed",
+                                                                                            "cancelled"
+                                                                                        ]
+                                                                                    },
+                                                                                    "color": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "id",
+                                                                                    "name",
+                                                                                    "group",
+                                                                                    "color"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "key",
+                                                                            "title",
+                                                                            "state"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "type",
+                                                                    "item"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "blocked_by",
+                                                                            "blocks",
+                                                                            "relates",
+                                                                            "duplicate"
+                                                                        ]
+                                                                    },
+                                                                    "item": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "key": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "title": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "state": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "name": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "group": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "triage",
+                                                                                            "backlog",
+                                                                                            "unstarted",
+                                                                                            "started",
+                                                                                            "completed",
+                                                                                            "cancelled"
+                                                                                        ]
+                                                                                    },
+                                                                                    "color": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "id",
+                                                                                    "name",
+                                                                                    "group",
+                                                                                    "color"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "key",
+                                                                            "title",
+                                                                            "state"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "type",
+                                                                    "item"
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    "minItems": 2,
+                                                    "maxItems": 2
+                                                },
+                                                "attachments": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "mime_type": {
+                                                                "type": "string"
+                                                            },
+                                                            "size": {
+                                                                "type": "integer"
+                                                            },
+                                                            "is_image": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "mime_type",
+                                                            "size",
+                                                            "is_image",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "comment_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "subscribed": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "children",
+                                                "relations",
+                                                "attachments",
+                                                "comment_count",
+                                                "subscribed"
+                                            ],
+                                            "additionalProperties": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
                                     ]
                                 }
                             }
