@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\ApiErrorRenderer;
+use App\Http\Middleware\Idempotency;
 use App\Http\Middleware\ResolveWorkspace;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -21,7 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
 
         // The workspace must be known before tenant models are bound from the route.
-        $middleware->alias(['workspace' => ResolveWorkspace::class]);
+        $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class]);
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolveWorkspace::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

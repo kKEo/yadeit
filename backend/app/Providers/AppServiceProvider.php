@@ -2,14 +2,20 @@
 
 namespace App\Providers;
 
+use App\Models\WorkItem;
 use App\Support\CurrentWorkspace;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,8 +28,18 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('auth', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(300)->by($request->user()?->id ?: $request->ip()));
+
+        // Work items are addressed by key (WEB-143) inside the current workspace.
+        Route::bind('item', fn (string $key) => WorkItem::findByKey($key)
+            ?? throw new NotFoundHttpException('Work item not found.'));
 
         $this->pointEmailLinksAtTheFrontend();
+
+        // Shown in the generated OpenAPI file: scripts and agents send a bearer token.
+        Scramble::configure()->withDocumentTransformers(function (OpenApi $openApi): void {
+            $openApi->secure(SecurityScheme::http('bearer'));
+        });
     }
 
     /**

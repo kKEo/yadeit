@@ -1,13 +1,19 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SessionController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\ItemPartsController;
+use App\Http\Controllers\LabelController;
 use App\Http\Controllers\MeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\StateController;
+use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,7 +47,7 @@ Route::prefix('auth')->group(function () {
 Route::get('invitations/{token}', [InvitationController::class, 'preview'])
     ->middleware('throttle:auth')->name('invitations.preview');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::get('me', [MeController::class, 'show'])->name('me.show');
     Route::patch('me', [MeController::class, 'update'])->name('me.update');
 
@@ -66,6 +72,55 @@ Route::middleware('auth:sanctum')->group(function () {
             ->whereNumber('invitation')->name('workspace-invitations.destroy');
 
         Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
-        Route::get('projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+        Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
+
+        Route::prefix('projects/{project}')->group(function () {
+            Route::get('/', [ProjectController::class, 'show'])->name('projects.show');
+            Route::patch('/', [ProjectController::class, 'update'])->name('projects.update');
+            Route::delete('/', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+            Route::get('states', [StateController::class, 'index'])->name('states.index');
+            Route::post('states', [StateController::class, 'store'])->name('states.store');
+            Route::patch('states/{state}', [StateController::class, 'update'])->whereNumber('state')->name('states.update');
+            Route::delete('states/{state}', [StateController::class, 'destroy'])->whereNumber('state')->name('states.destroy');
+
+            Route::get('labels', [LabelController::class, 'index'])->name('labels.index');
+            Route::post('labels', [LabelController::class, 'store'])->name('labels.store');
+            Route::patch('labels/{label}', [LabelController::class, 'update'])->whereNumber('label')->name('labels.update');
+            Route::delete('labels/{label}', [LabelController::class, 'destroy'])->whereNumber('label')->name('labels.destroy');
+        });
+
+        // Work items are addressed by key, for example /items/WEB-143.
+        Route::get('items', [WorkItemController::class, 'index'])->name('items.index');
+        Route::post('items', [WorkItemController::class, 'store'])->middleware('idempotent')->name('items.store');
+
+        Route::prefix('items/{item}')->group(function () {
+            Route::get('/', [WorkItemController::class, 'show'])->name('items.show');
+            Route::patch('/', [WorkItemController::class, 'update'])->name('items.update');
+            Route::delete('/', [WorkItemController::class, 'destroy'])->name('items.destroy');
+            Route::get('activity', [WorkItemController::class, 'activity'])->name('items.activity');
+            Route::put('subscription', [WorkItemController::class, 'subscribe'])->name('items.subscribe');
+            Route::delete('subscription', [WorkItemController::class, 'unsubscribe'])->name('items.unsubscribe');
+
+            Route::get('comments', [CommentController::class, 'index'])->name('comments.index');
+            Route::post('comments', [CommentController::class, 'store'])->middleware('idempotent')->name('comments.store');
+            Route::patch('comments/{comment}', [CommentController::class, 'update'])->whereNumber('comment')->name('comments.update');
+            Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->whereNumber('comment')->name('comments.destroy');
+
+            Route::post('checklist', [ItemPartsController::class, 'addChecklistItem'])->name('checklist.store');
+            Route::patch('checklist/{entry}', [ItemPartsController::class, 'updateChecklistItem'])->whereNumber('entry')->name('checklist.update');
+            Route::delete('checklist/{entry}', [ItemPartsController::class, 'removeChecklistItem'])->whereNumber('entry')->name('checklist.destroy');
+
+            Route::post('links', [ItemPartsController::class, 'addLink'])->name('links.store');
+            Route::delete('links/{link}', [ItemPartsController::class, 'removeLink'])->whereNumber('link')->name('links.destroy');
+
+            Route::post('relations', [ItemPartsController::class, 'addRelation'])->name('relations.store');
+            Route::delete('relations/{relation}', [ItemPartsController::class, 'removeRelation'])->whereNumber('relation')->name('relations.destroy');
+
+            Route::get('attachments', [AttachmentController::class, 'index'])->name('attachments.index');
+            Route::post('attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+            Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->whereNumber('attachment')->name('attachments.download');
+            Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->whereNumber('attachment')->name('attachments.destroy');
+        });
     });
 });

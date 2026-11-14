@@ -19,6 +19,11 @@ it('creates a workspace with the creator as owner and a sample project', functio
         ->assertJsonCount(1, 'data')
         ->assertJsonPath('data.0.key', 'DEMO');
 
+    $this->getJson('/api/v1/workspaces/acme-design/items?sort=sequence')
+        ->assertJsonCount(3, 'data')
+        ->assertJsonPath('data.0.key', 'DEMO-1')
+        ->assertJsonPath('data.0.assignee.id', $user->id);
+
     $this->getJson('/api/v1/me')->assertJsonPath('data.workspaces.0.slug', 'acme-design');
 });
 
@@ -80,7 +85,7 @@ describe('tenant isolation', function () {
 
         $path = str_replace(
             ['{slug}', '{user}', '{project}'],
-            [$other->slug, (string) $otherMember->id, (string) $project->id],
+            [$other->slug, (string) $otherMember->id, $project->key],
             $path,
         );
 
@@ -114,7 +119,7 @@ describe('tenant isolation', function () {
         [$mine, $user] = workspaceWith();
         $foreignProject = Project::factory()->create();
 
-        $this->actingAs($user)->getJson("/api/v1/workspaces/{$mine->slug}/projects/{$foreignProject->id}")
+        $this->actingAs($user)->getJson("/api/v1/workspaces/{$mine->slug}/projects/{$foreignProject->key}")
             ->assertNotFound();
     });
 

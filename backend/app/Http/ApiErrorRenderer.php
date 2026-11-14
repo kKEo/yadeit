@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Exceptions\ApiException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -29,6 +30,14 @@ class ApiErrorRenderer
 
     public function render(Throwable $e): JsonResponse
     {
+        if ($e instanceof ApiException) {
+            return new JsonResponse(['error' => array_filter([
+                'code' => $e->errorCode,
+                'message' => $e->getMessage(),
+                'details' => $e->details,
+            ])], $e->status);
+        }
+
         if ($e instanceof ValidationException) {
             return $this->respond(422, $e->getMessage(), ['fields' => $e->errors()]);
         }
