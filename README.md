@@ -73,6 +73,16 @@ The same checks run in GitHub Actions on every push and pull request.
 - **Design work:** a link's kind is read off its address (a Figma link is a design, a pull request a PR). Figma links offer a preview that loads only when asked for. Image attachments form a gallery with a lightbox. The command palette has "Show design work".
 - **Public form:** an admin can switch on a form per project that works without an account (`/f/<token>`). It is rate-limited and has a hidden field that catches simple spam robots. Switching it off kills the link for good.
 
+## Built-in AI
+
+Optional help from a Claude model: drafting an item from one sentence, proposing sub-items, summarising an item's discussion or a page, and suggesting how to triage feedback. Every result is a suggestion a person confirms; nothing is written by the model.
+
+- **Off by default.** A workspace admin switches it on under **Settings**, because using it sends the text involved to the model provider (Anthropic).
+- **Key:** set `ANTHROPIC_API_KEY` in `backend/.env` for the whole installation, or let a workspace store its own key (encrypted, never shown again).
+- **Model and cost:** `AI_MODEL` (default `claude-opus-5-5`) and `AI_EFFORT` (default `low`). Every call is metered per workspace; `AI_MONTHLY_TOKEN_LIMIT` (default 2,000,000 tokens) or the workspace's own limit stops further calls for the month.
+- **Who:** members and admins. Guests and agents cannot use it.
+- If the model declines a request, the API retries it on its default fallback model.
+
 ## Realtime
 
 Open browsers refresh themselves when something changes. The API sends small signals (identifiers only, never content) through Laravel Reverb; the web app then re-reads through the API. Copy the `REVERB_*` values from `backend/.env` into `frontend/.env.local` as `VITE_REVERB_APP_KEY`, `VITE_REVERB_HOST`, `VITE_REVERB_PORT` and `VITE_REVERB_SCHEME`. Without them the app works, just without live updates.

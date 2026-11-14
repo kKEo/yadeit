@@ -17,6 +17,7 @@ import Skeleton from '@/components/ui/Skeleton.vue'
 import Tabs from '@/components/ui/Tabs.vue'
 import { useMembers } from '@/queries/workspace'
 import ItemActivity from './ItemActivity.vue'
+import ItemAi from './ItemAi.vue'
 import ItemRuns from './ItemRuns.vue'
 import ItemAttachments from './ItemAttachments.vue'
 import ItemChecklist from './ItemChecklist.vue'
@@ -117,6 +118,7 @@ const notFound = () => detail.error.value instanceof ApiError && detail.error.va
           />
           <ItemDescription :description="detail.data.value.description" :can-edit="canEdit" @save="update(itemKey, { description: $event })" />
           <ItemProperties v-if="variant === 'peek'" :item="detail.data.value" :can-edit="canEdit" class="rounded-lg border p-3" @open="emit('open', $event)" />
+          <ItemAi :item="detail.data.value" />
           <ItemChecklist :item="detail.data.value" :can-edit="canEdit" />
           <ItemChildren :item="detail.data.value" :can-edit="canEdit" @open="emit('open', $event)" />
           <ItemRelations :item="detail.data.value" :can-edit="canEdit" @open="emit('open', $event)" />

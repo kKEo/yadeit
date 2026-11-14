@@ -205,10 +205,10 @@ Goal: helpful AI inside the app, always as confirmable suggestions.
 
 - [x] Build the AI service, provider settings and usage metering
   - Per-workspace switch and limits
-- [ ] Add drafting a work item from one sentence
-- [ ] Add splitting an item into sub-items
-- [ ] Add thread and doc summaries
-- [ ] Add triage suggestions
+- [x] Add drafting a work item from one sentence
+- [x] Add splitting an item into sub-items
+- [x] Add thread and doc summaries
+- [x] Add triage suggestions
   - Duplicates, labels, priority
 - [ ] Verify AI: features work with a test key, and no provider call is made when the workspace switch is off
 

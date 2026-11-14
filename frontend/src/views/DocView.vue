@@ -2,11 +2,14 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ArrowLeft, Check, Copy, Pencil, Trash2 } from '@lucide/vue'
+import { ArrowLeft, Check, Copy, Pencil, Sparkles, Trash2 } from '@lucide/vue'
+import { summarisePage } from '@/api/ai'
+import { useAi } from '@/composables/useAi'
+import AiNote from '@/components/app/AiNote.vue'
 import { ApiError } from '@/api/client'
 import * as api from '@/api/pages'
 import { listProjects } from '@/api/projects'
-import type { DocPage, Project, SavePageRequest } from '@/api/types'
+import type { AiPageSummary, DocPage, Project, SavePageRequest } from '@/api/types'
 import { useApiForm } from '@/composables/useApiForm'
 import { useCanEdit } from '@/composables/useCanEdit'
 import { formatDateTime } from '@/lib/format'
@@ -42,6 +45,15 @@ const project = ref('none')
 const conflict = ref(false)
 const copied = ref(false)
 const deleteOpen = ref(false)
+
+// A summary by the model, shown above the text until dismissed. It is never saved into the page.
+const { available: aiAvailable } = useAi()
+const aiForm = useApiForm()
+const aiSummary = ref<AiPageSummary | null>(null)
+
+function summarise() {
+  return aiForm.submit(async () => { aiSummary.value = await summarisePage(slug.value, id.value) })
+}
 
 const projectOptions = computed(() => [
   { value: 'none', label: t('docs.workspaceWide') },
@@ -158,6 +170,9 @@ async function confirmDelete() {
           <div class="flex flex-wrap items-start justify-between gap-3">
             <h1 class="text-3xl font-semibold tracking-tight">{{ page.title }}</h1>
             <div v-if="canEdit" class="flex flex-wrap items-center gap-2">
+              <Button v-if="aiAvailable && page.body" variant="outline" size="sm" class="gap-1.5" :disabled="aiForm.pending.value" @click="summarise">
+                <Sparkles class="h-3.5 w-3.5" />{{ aiForm.pending.value ? t('ai.working') : t('ai.summary.button') }}
+              </Button>
               <Button variant="outline" size="sm" class="gap-1.5" @click="startEditing"><Pencil class="h-3.5 w-3.5" />{{ t('docs.edit') }}</Button>
               <Button variant="outline" size="sm" :disabled="form.pending.value" @click="change({ status: page.status === 'published' ? 'draft' : 'published' })">
                 {{ t(page.status === 'published' ? 'docs.unpublish' : 'docs.publish') }}
@@ -185,6 +200,17 @@ async function confirmDelete() {
               <component :is="copied ? Check : Copy" class="h-3.5 w-3.5" />{{ copied ? t('docs.copied') : t('docs.copyLink') }}
             </Button>
           </div>
+        </section>
+
+        <Alert v-if="aiForm.error.value" variant="destructive" :title="aiForm.error.value" />
+        <section v-if="aiSummary" class="space-y-2 rounded-lg border bg-muted/30 p-3 text-sm" data-ai-summary>
+          <div class="flex items-start justify-between gap-2">
+            <AiNote />
+            <button type="button" class="rounded text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline" @click="aiSummary = null">{{ t('ai.dismiss') }}</button>
+          </div>
+          <p>{{ aiSummary.summary }}</p>
+          <h3 v-if="aiSummary.key_points.length" class="text-xs font-medium text-muted-foreground">{{ t('ai.summary.keyPoints') }}</h3>
+          <ul class="list-disc space-y-0.5 pl-5"><li v-for="(line, i) in aiSummary.key_points" :key="i">{{ line }}</li></ul>
         </section>
 
         <MarkdownView v-if="page.body" :source="page.body" />

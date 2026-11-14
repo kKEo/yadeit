@@ -893,5 +893,55 @@
     "another": "Send another",
     "closed": "This feedback form does not exist or is closed.",
     "tooFast": "That was a lot at once. Please try again in a minute."
+  },
+  "ai": {
+    "label": "Suggested by AI. Check it before you use it.",
+    "working": "Thinking…",
+    "dismiss": "Dismiss",
+    "draft": {
+      "button": "Draft with AI",
+      "hint": "Write one sentence about what you need, then let AI draft the item.",
+      "description": "Description",
+      "acceptance": "Acceptance criteria",
+      "discard": "Discard the draft"
+    },
+    "split": {
+      "button": "Suggest sub-items",
+      "none": "This item looks small enough as it is.",
+      "create": "Create selected | Create {n} selected | Create {n} selected",
+      "creating": "Creating…"
+    },
+    "summary": {
+      "button": "Summarise",
+      "decisions": "Decided",
+      "open": "Still open",
+      "keyPoints": "Key points"
+    },
+    "triage": {
+      "button": "Suggest",
+      "duplicate": "Looks like a duplicate of #{id}",
+      "existing": "{key} already covers this",
+      "newItem": "New item: {kind}, priority {priority}",
+      "markDuplicate": "Mark as duplicate of #{id}",
+      "addTo": "Add to {key}",
+      "accept": "Accept as {kind}"
+    },
+    "settings": {
+      "title": "AI help",
+      "description": "Drafting items from a sentence, splitting them, summaries and triage suggestions. Everything AI produces is a suggestion a person confirms.",
+      "privacy": "When AI is on, the text involved (item titles, descriptions, comments, pages, feedback) is sent to the model provider, Anthropic, to produce the suggestion.",
+      "enable": "AI help for this workspace",
+      "usage": "{used} of {limit} tokens used this month",
+      "model": "Model: {model}",
+      "notConfigured": "No provider key is available. Add one below, or ask whoever runs this installation.",
+      "key": "Own Anthropic API key (optional)",
+      "keyHint": "Leave empty to use the installation's key. A saved key is never shown again.",
+      "keySet": "This workspace uses its own key.",
+      "removeKey": "Remove own key",
+      "limit": "Monthly token limit",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved."
+    }
   }
 }

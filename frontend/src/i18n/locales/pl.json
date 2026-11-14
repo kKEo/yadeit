@@ -893,5 +893,55 @@
     "another": "Wyślij kolejną",
     "closed": "Ten formularz nie istnieje albo jest zamknięty.",
     "tooFast": "To było dużo naraz. Spróbuj ponownie za minutę."
+  },
+  "ai": {
+    "label": "Propozycja AI. Sprawdź ją, zanim z niej skorzystasz.",
+    "working": "Myślę…",
+    "dismiss": "Odrzuć",
+    "draft": {
+      "button": "Szkic z AI",
+      "hint": "Napisz jedno zdanie o tym, czego potrzebujesz, a AI przygotuje szkic zadania.",
+      "description": "Opis",
+      "acceptance": "Kryteria akceptacji",
+      "discard": "Odrzuć szkic"
+    },
+    "split": {
+      "button": "Zaproponuj podzadania",
+      "none": "To zadanie wygląda na wystarczająco małe.",
+      "create": "Utwórz zaznaczone | Utwórz {n} zaznaczone | Utwórz {n} zaznaczone | Utwórz {n} zaznaczonych",
+      "creating": "Tworzenie…"
+    },
+    "summary": {
+      "button": "Podsumuj",
+      "decisions": "Ustalono",
+      "open": "Nadal otwarte",
+      "keyPoints": "Najważniejsze punkty"
+    },
+    "triage": {
+      "button": "Zaproponuj",
+      "duplicate": "Wygląda na duplikat #{id}",
+      "existing": "{key} już to obejmuje",
+      "newItem": "Nowe zadanie: {kind}, priorytet {priority}",
+      "markDuplicate": "Oznacz jako duplikat #{id}",
+      "addTo": "Dodaj do {key}",
+      "accept": "Przyjmij jako: {kind}"
+    },
+    "settings": {
+      "title": "Pomoc AI",
+      "description": "Szkice zadań z jednego zdania, dzielenie zadań, podsumowania i propozycje przy opiniach. Wszystko, co tworzy AI, jest propozycją zatwierdzaną przez człowieka.",
+      "privacy": "Gdy AI jest włączone, odpowiedni tekst (tytuły zadań, opisy, komentarze, strony, opinie) jest wysyłany do dostawcy modelu, firmy Anthropic, aby przygotować propozycję.",
+      "enable": "Pomoc AI w tej przestrzeni",
+      "usage": "Wykorzystano {used} z {limit} tokenów w tym miesiącu",
+      "model": "Model: {model}",
+      "notConfigured": "Brak klucza dostawcy. Dodaj go poniżej albo poproś administratora instalacji.",
+      "key": "Własny klucz API Anthropic (opcjonalnie)",
+      "keyHint": "Zostaw puste, aby używać klucza instalacji. Zapisany klucz nie jest już nigdy pokazywany.",
+      "keySet": "Ta przestrzeń używa własnego klucza.",
+      "removeKey": "Usuń własny klucz",
+      "limit": "Miesięczny limit tokenów",
+      "save": "Zapisz",
+      "saving": "Zapisywanie…",
+      "saved": "Zapisano."
+    }
   }
 }

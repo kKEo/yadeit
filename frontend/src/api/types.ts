@@ -450,3 +450,28 @@ export interface Feedback {
   triaged_at: string | null
 }
 export type FeedbackStatusFilter = Feedback['status'] | 'snoozed' | 'all'
+
+// ── Built-in AI: every result is a suggestion for a person to check ──────────
+
+export interface AiStatus {
+  /** Switched on by an admin of the workspace. */
+  enabled: boolean
+  /** A provider key is available (the workspace's own or the instance's). */
+  configured: boolean
+  has_own_key: boolean
+  used_tokens: number
+  monthly_token_limit: number
+  model: string
+}
+export interface AiItemDraft { title: string; description: string; kind: ItemKind; priority: Priority; labels: string[]; acceptance: string[] }
+export interface AiSubItem { title: string; description: string }
+export interface AiItemSummary { summary: string; decisions: string[]; open_questions: string[] }
+export interface AiPageSummary { summary: string; key_points: string[] }
+export interface AiTriageSuggestion {
+  duplicate_of: number | null
+  existing_item: string | null
+  kind: ItemKind
+  priority: Priority
+  labels: string[]
+  reason: string
+}

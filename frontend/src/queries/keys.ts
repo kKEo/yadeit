@@ -22,6 +22,7 @@ export const keys = {
   project: (slug: string, key: string): EntryKey => ['w', slug, 'projects', 'detail', key.toUpperCase()],
   members: (slug: string): EntryKey => ['w', slug, 'members'],
   views: (slug: string): EntryKey => ['w', slug, 'views'],
+  ai: (slug: string): EntryKey => ['w', slug, 'ai'],
   inbox: (slug: string): EntryKey => ['w', slug, 'inbox'],
   inboxLists: (slug: string): EntryKey => ['w', slug, 'inbox', 'list'],
   inboxList: (slug: string, unread: boolean): EntryKey => ['w', slug, 'inbox', 'list', unread ? 'unread' : 'all'],

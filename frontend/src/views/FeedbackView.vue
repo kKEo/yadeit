@@ -2,10 +2,13 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Check, Copy, Megaphone, Plus } from '@lucide/vue'
+import { Check, Copy, Megaphone, Plus, Sparkles } from '@lucide/vue'
+import { triageFeedback } from '@/api/ai'
+import { useAi } from '@/composables/useAi'
+import AiNote from '@/components/app/AiNote.vue'
 import * as api from '@/api/feedback'
 import { listProjects } from '@/api/projects'
-import type { Feedback, FeedbackStatusFilter, Project } from '@/api/types'
+import type { AiTriageSuggestion, Feedback, FeedbackStatusFilter, Project } from '@/api/types'
 import { useApiForm } from '@/composables/useApiForm'
 import { useCanEdit } from '@/composables/useCanEdit'
 import { useItemPeek } from '@/composables/useItemPeek'
@@ -87,6 +90,20 @@ const accept = (row: Feedback) => decide(row, { action: 'accept', body: {} })
 const reopen = (row: Feedback) => decide(row, { action: 'reopen' })
 const snooze = (row: Feedback, days: number) => decide(row, { action: 'snooze', body: { until: new Date(Date.now() + days * 86_400_000).toISOString() } })
 const unsnooze = (row: Feedback) => decide(row, { action: 'snooze', body: { until: null } })
+
+// ── AI suggestions: shown under the row, applied only by clicking one of the usual decisions ─
+const { available: aiAvailable } = useAi()
+const aiForm = useApiForm()
+const suggestions = ref<Record<number, AiTriageSuggestion>>({})
+const suggestingId = ref<number | null>(null)
+
+async function suggest(row: Feedback) {
+  suggestingId.value = row.id
+  await aiForm.submit(async () => {
+    suggestions.value = { ...suggestions.value, [row.id]: await triageFeedback(slug.value, row.id) }
+  })
+  suggestingId.value = null
+}
 
 // ── Dialogs: add to an item, duplicate of, decline ───────────────────────────
 const dialog = reactive({ kind: null as 'addTo' | 'duplicate' | 'decline' | null, row: null as Feedback | null, itemKey: '', of: '', reason: '' })
@@ -229,10 +246,32 @@ useShortcuts([
             <Button variant="outline" size="sm" class="gap-1.5" :disabled="list.pending.value" @click.stop="openDialog('duplicate', row)">{{ t('feedback.duplicate') }}<Kbd keys="3" /></Button>
             <Button variant="ghost" size="sm" class="gap-1.5" :disabled="list.pending.value" @click.stop="snooze(row, 1)">{{ t('feedback.snoozeTomorrow') }}<Kbd keys="h" /></Button>
             <Button variant="ghost" size="sm" :disabled="list.pending.value" @click.stop="snooze(row, 7)">{{ t('feedback.snoozeWeek') }}</Button>
+            <Button v-if="aiAvailable" variant="ghost" size="sm" class="gap-1.5" :disabled="aiForm.pending.value" @click.stop="suggest(row)">
+              <Sparkles class="h-3.5 w-3.5" />{{ suggestingId === row.id ? t('ai.working') : t('ai.triage.button') }}
+            </Button>
           </template>
           <Button v-else variant="outline" size="sm" :disabled="list.pending.value" @click.stop="status === 'snoozed' ? unsnooze(row) : reopen(row)">
             {{ t('feedback.reopen') }}
           </Button>
+        </div>
+
+        <div v-if="suggestions[row.id] && status === 'new'" class="space-y-2 rounded-lg border bg-muted/30 p-3 text-sm" data-ai-triage>
+          <AiNote />
+          <p>{{ suggestions[row.id].reason }}</p>
+          <div class="flex flex-wrap gap-2">
+            <Button
+              v-if="suggestions[row.id].duplicate_of" variant="outline" size="sm" :disabled="list.pending.value"
+              @click.stop="decide(row, { action: 'duplicate', body: { of: suggestions[row.id].duplicate_of! } })"
+            >{{ t('ai.triage.markDuplicate', { id: suggestions[row.id].duplicate_of }) }}</Button>
+            <Button
+              v-if="suggestions[row.id].existing_item" variant="outline" size="sm" :disabled="list.pending.value"
+              @click.stop="decide(row, { action: 'accept', body: { item: suggestions[row.id].existing_item! } })"
+            >{{ t('ai.triage.addTo', { key: suggestions[row.id].existing_item }) }}</Button>
+            <Button
+              variant="outline" size="sm" :disabled="list.pending.value"
+              @click.stop="decide(row, { action: 'accept', body: { kind: suggestions[row.id].kind, priority: suggestions[row.id].priority } })"
+            >{{ t('ai.triage.accept', { kind: t(`kind.${suggestions[row.id].kind}`) }) }}</Button>
+          </div>
         </div>
       </li>
     </ul>

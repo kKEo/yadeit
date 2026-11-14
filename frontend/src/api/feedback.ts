@@ -1,5 +1,5 @@
 import { request, workspacePath } from './client'
-import type { Feedback, FeedbackStatusFilter, ItemKind, ItemResponse } from './types'
+import type { Feedback, FeedbackStatusFilter, ItemKind, ItemResponse, Priority } from './types'
 
 const feedbackPath = (slug: string) => `${workspacePath(slug)}/feedback`
 
@@ -17,7 +17,7 @@ export async function sendFeedback(slug: string, req: { project: string; title: 
 }
 
 type Decision =
-  | { action: 'accept'; body: { item?: string; kind?: ItemKind } }
+  | { action: 'accept'; body: { item?: string; kind?: ItemKind; priority?: Priority } }
   | { action: 'decline'; body: { reason?: string | null } }
   | { action: 'duplicate'; body: { of: number } }
   | { action: 'snooze'; body: { until: string | null } }
