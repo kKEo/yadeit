@@ -54,10 +54,109 @@ export interface ListWorkItemsParams {
   limit?: number
 }
 
+// ── Accounts and workspaces ──────────────────────────────────────────────────
+
+export type WorkspaceRole = 'owner' | 'admin' | 'member' | 'guest'
+
+/** Account as returned by register and login (no workspace list). */
 export interface User {
-  id: string | number
+  id: number
   name: string
   email: string
+  locale: string
+  email_verified: boolean
+  created_at: string
+}
+
+export interface Workspace {
+  id: number
+  name: string
+  slug: string
+  /** The signed-in user's role in this workspace. */
+  role: WorkspaceRole
+  created_at: string
+}
+
+/** The signed-in user as returned by `GET /me`. */
+export interface Me extends User {
+  workspaces: Workspace[]
+}
+
+export interface RegisterRequest {
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
+  locale?: string
+}
+
+export interface UpdateMeRequest {
+  name?: string
+  locale?: string
+}
+
+export interface ResetPasswordRequest {
+  token: string
+  email: string
+  password: string
+  password_confirmation: string
+}
+
+export interface VerifyEmailParams {
+  id: string
+  hash: string
+  expires: string
+  signature: string
+}
+
+export interface CreateWorkspaceRequest {
+  name: string
+  slug?: string
+}
+
+export type UpdateWorkspaceRequest = Partial<CreateWorkspaceRequest>
+
+export interface Member {
+  /** User id */
+  id: number
+  name: string
+  email: string
+  role: WorkspaceRole
+  joined_at: string
+}
+
+export interface Invitation {
+  id: number
+  email: string
+  role: WorkspaceRole
+  expires_at: string
+  created_at: string
+}
+
+export interface CreateInvitationRequest {
+  email: string
+  role?: WorkspaceRole
+}
+
+/** What the invited person sees before signing in. */
+export interface InvitationPreview {
+  workspace: { name: string }
+  email: string
+  role: WorkspaceRole
+  expires_at: string
+  has_account: boolean
+}
+
+export interface AcceptedInvitation {
+  workspace: Pick<Workspace, 'id' | 'name' | 'slug'>
+}
+
+export interface Project {
+  id: number
+  key: string
+  name: string
+  description: string | null
+  created_at: string
 }
 
 // ── Response envelopes ───────────────────────────────────────────────────────
@@ -69,6 +168,10 @@ export interface ListResponse<T> {
 
 export interface ItemResponse<T> {
   data: T
+}
+
+export interface MessageResponse {
+  message: string
 }
 
 export type FieldErrors = Record<string, string[]>

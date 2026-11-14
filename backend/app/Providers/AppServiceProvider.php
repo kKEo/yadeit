@@ -2,23 +2,58 @@
 
 namespace App\Providers;
 
+use App\Support\CurrentWorkspace;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        //
+        // One per request or job, so a workspace never leaks between them.
+        $this->app->scoped(CurrentWorkspace::class);
+    }
+
+    public function boot(): void
+    {
+        RateLimiter::for('auth', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
+
+        $this->pointEmailLinksAtTheFrontend();
     }
 
     /**
-     * Bootstrap any application services.
+     * Emails link to the web app, which then calls the API. Verification
+     * links carry a signature over the relative API path, so they stay valid
+     * whatever host the API is reached through.
      */
-    public function boot(): void
+    private function pointEmailLinksAtTheFrontend(): void
     {
-        //
+        $frontend = fn (string $path) => rtrim((string) config('app.frontend_url'), '/').$path;
+
+        ResetPassword::createUrlUsing(fn (object $user, string $token) => $frontend(
+            '/reset-password?'.http_build_query(['token' => $token, 'email' => $user->getEmailForPasswordReset()])
+        ));
+
+        VerifyEmail::createUrlUsing(function (object $user) use ($frontend) {
+            $signed = URL::temporarySignedRoute(
+                'auth.verification.verify',
+                now()->addMinutes(60),
+                ['id' => $user->getKey(), 'hash' => sha1($user->getEmailForVerification())],
+                absolute: false,
+            );
+
+            parse_str((string) parse_url($signed, PHP_URL_QUERY), $query);
+
+            return $frontend('/verify-email?'.http_build_query([
+                'id' => $user->getKey(),
+                'hash' => sha1($user->getEmailForVerification()),
+                ...$query,
+            ]));
+        });
     }
 }

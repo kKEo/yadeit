@@ -8,14 +8,14 @@ export type AppLocale = (typeof SUPPORTED_LOCALES)[number]
 export const DEFAULT_LOCALE: AppLocale = 'en'
 const STORAGE_KEY = 'yadeit_locale'
 
-function isSupported(value: unknown): value is AppLocale {
+export function isSupportedLocale(value: unknown): value is AppLocale {
   return SUPPORTED_LOCALES.includes(value as AppLocale)
 }
 
 function storedLocale(): AppLocale {
   try {
     const value = localStorage.getItem(STORAGE_KEY)
-    if (isSupported(value)) return value
+    if (isSupportedLocale(value)) return value
   } catch {
     // storage unavailable (private mode, blocked) — fall through
   }

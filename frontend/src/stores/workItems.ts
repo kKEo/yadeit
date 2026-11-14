@@ -11,8 +11,12 @@ import type {
 import * as api from '@/api/client'
 import { ApiError } from '@/api/client'
 import i18n from '@/i18n'
+import { useWorkspaceStore } from '@/stores/workspace'
 
 export const useWorkItemsStore = defineStore('workItems', () => {
+  // Work items live inside the workspace named in the URL.
+  const workspaces = useWorkspaceStore()
+
   const list = ref<WorkItemSummary[]>([])
   const nextCursor = ref<string | null>(null)
   const current = ref<WorkItem | null>(null)
@@ -47,7 +51,7 @@ export const useWorkItemsStore = defineStore('workItems', () => {
     loading.value = true
     reset()
     try {
-      const res = await api.listWorkItems(params)
+      const res = await api.listWorkItems(workspaces.requireSlug(), params)
       if (id !== listRequest) return
       list.value = params?.cursor ? [...list.value, ...res.data] : res.data
       nextCursor.value = res.next_cursor
@@ -63,7 +67,7 @@ export const useWorkItemsStore = defineStore('workItems', () => {
     loading.value = true
     reset()
     try {
-      const res = await api.getWorkItem(key)
+      const res = await api.getWorkItem(workspaces.requireSlug(), key)
       current.value = res.item
       remember(res)
     } catch (err: unknown) {
@@ -77,7 +81,7 @@ export const useWorkItemsStore = defineStore('workItems', () => {
     loading.value = true
     reset()
     try {
-      const res = await api.createWorkItem(req)
+      const res = await api.createWorkItem(workspaces.requireSlug(), req)
       remember(res)
       return res.item
     } catch (err: unknown) {
@@ -91,7 +95,7 @@ export const useWorkItemsStore = defineStore('workItems', () => {
   async function update(key: string, req: UpdateWorkItemRequest): Promise<boolean> {
     reset()
     try {
-      const res = await api.updateWorkItem(key, req, etags.value[key])
+      const res = await api.updateWorkItem(workspaces.requireSlug(), key, req, etags.value[key])
       if (current.value?.key === key) current.value = res.item
       remember(res)
       return true
@@ -105,7 +109,7 @@ export const useWorkItemsStore = defineStore('workItems', () => {
     loading.value = true
     reset()
     try {
-      await api.deleteWorkItem(key, etags.value[key])
+      await api.deleteWorkItem(workspaces.requireSlug(), key, etags.value[key])
       delete etags.value[key]
       list.value = list.value.filter((item) => item.key !== key)
       if (current.value?.key === key) current.value = null

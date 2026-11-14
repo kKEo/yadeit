@@ -1,52 +1,99 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteLocationRaw } from 'vue-router'
 import { setUnauthorizedHandler } from '@/api/client'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    // ── Public: reachable signed out ─────────────────────────────────────────
     {
       path: '/login',
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
+      meta: { public: true, guestOnly: true },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/views/RegisterView.vue'),
+      meta: { public: true, guestOnly: true },
+    },
+    {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: () => import('@/views/ForgotPasswordView.vue'),
       meta: { public: true },
     },
     {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: () => import('@/views/ResetPasswordView.vue'),
+      meta: { public: true },
+    },
+    {
+      path: '/verify-email',
+      name: 'verify-email',
+      component: () => import('@/views/VerifyEmailView.vue'),
+      meta: { public: true },
+    },
+    {
+      path: '/invitations/:token',
+      name: 'invitation',
+      component: () => import('@/views/InvitationView.vue'),
+      meta: { public: true },
+    },
+
+    // ── Signed in ────────────────────────────────────────────────────────────
+    {
+      // Never rendered: the guard below sends the user to a workspace or to onboarding.
       path: '/',
-      redirect: '/items',
+      name: 'home',
+      component: { render: () => null },
     },
     {
-      path: '/items',
-      name: 'items',
-      component: () => import('@/views/WorkItemListView.vue'),
+      path: '/welcome',
+      name: 'welcome',
+      component: () => import('@/views/CreateWorkspaceView.vue'),
     },
     {
-      path: '/items/new',
-      name: 'create-item',
-      component: () => import('@/views/CreateWorkItemView.vue'),
+      path: '/workspaces/new',
+      name: 'workspace-new',
+      component: () => import('@/views/CreateWorkspaceView.vue'),
     },
     {
-      path: '/items/:key',
-      name: 'item-detail',
-      component: () => import('@/views/WorkItemDetailView.vue'),
+      path: '/w/:slug',
+      component: () => import('@/layouts/WorkspaceLayout.vue'),
+      children: [
+        { path: '', name: 'workspace', component: () => import('@/views/ProjectListView.vue') },
+        { path: 'members', name: 'workspace-members', component: () => import('@/views/MembersView.vue') },
+        { path: 'settings', name: 'workspace-settings', component: () => import('@/views/WorkspaceSettingsView.vue') },
+        { path: 'items', name: 'items', component: () => import('@/views/WorkItemListView.vue') },
+        { path: 'items/new', name: 'create-item', component: () => import('@/views/CreateWorkItemView.vue') },
+        { path: 'items/:key', name: 'item-detail', component: () => import('@/views/WorkItemDetailView.vue') },
+      ],
     },
     {
       path: '/:pathMatch(.*)*',
-      redirect: '/items',
+      redirect: '/',
     },
   ],
 })
 
-router.beforeEach(async (to) => {
+router.beforeEach(async (to): Promise<RouteLocationRaw | undefined> => {
   const auth = useAuthStore()
   // One initial session probe; every later navigation reuses the settled promise.
   await auth.ensureInitialized()
-  if (!to.meta.public && !auth.isAuthenticated) {
-    return { name: 'login', query: to.fullPath === '/items' ? {} : { redirect: to.fullPath } }
+
+  if (!auth.user) {
+    if (to.meta.public) return undefined
+    return { name: 'login', query: to.fullPath === '/' ? {} : { redirect: to.fullPath } }
   }
-  if (to.name === 'login' && auth.isAuthenticated) {
-    return { name: 'items' }
+  if (to.meta.guestOnly) return { name: 'home' }
+  if (to.name === 'home') {
+    const first = auth.user.workspaces[0]
+    return first ? { name: 'workspace', params: { slug: first.slug } } : { name: 'welcome' }
   }
+  return undefined
 })
 
 // Session expired mid-use: drop local state and send the user back to login.
@@ -55,7 +102,7 @@ setUnauthorizedHandler(() => {
   if (!auth.isAuthenticated) return
   auth.reset()
   const current = router.currentRoute.value
-  if (current.name !== 'login') {
+  if (!current.meta.public) {
     void router.push({ name: 'login', query: { redirect: current.fullPath } })
   }
 })

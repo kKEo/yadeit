@@ -48,11 +48,11 @@ describe('api client', () => {
     document.cookie = 'XSRF-TOKEN=abc%3D%3D; path=/'
     fetchMock.mockResolvedValue(jsonResponse({ data: item }, { status: 201 }))
 
-    const res = await createWorkItem({ title: 'Fix login' })
+    const res = await createWorkItem('acme', { title: 'Fix login' })
 
     expect(res.item.key).toBe('WEB-143')
     const { url, init, headers } = call()
-    expect(url).toBe('/api/v1/items')
+    expect(url).toBe('/api/v1/workspaces/acme/items')
     expect(init.method).toBe('POST')
     expect(headers['X-XSRF-TOKEN']).toBe('abc==')
     expect(headers.Accept).toBe('application/json')
@@ -65,11 +65,11 @@ describe('api client', () => {
     document.cookie = 'XSRF-TOKEN=abc; path=/'
     fetchMock.mockResolvedValue(jsonResponse({ data: [], next_cursor: null }))
 
-    const res = await listWorkItems({ state: 'started', cursor: 'c1' })
+    const res = await listWorkItems('acme', { state: 'started', cursor: 'c1' })
 
     expect(res).toEqual({ data: [], next_cursor: null })
     const { url, init, headers } = call()
-    expect(url).toBe('/api/v1/items?state=started&cursor=c1')
+    expect(url).toBe('/api/v1/workspaces/acme/items?state=started&cursor=c1')
     expect(init.credentials).toBe('include')
     expect(headers.Accept).toBe('application/json')
     expect(headers).not.toHaveProperty('X-XSRF-TOKEN')
@@ -79,11 +79,11 @@ describe('api client', () => {
     document.cookie = 'XSRF-TOKEN=tok; path=/'
     fetchMock.mockResolvedValue(jsonResponse({ data: item }, { headers: { ETag: '"v2"' } }))
 
-    const res = await updateWorkItem('WEB-143', { state: 'started' }, '"v1"')
+    const res = await updateWorkItem('acme', 'WEB-143', { state: 'started' }, '"v1"')
 
     expect(res.etag).toBe('"v2"')
     const { url, init, headers } = call()
-    expect(url).toBe('/api/v1/items/WEB-143')
+    expect(url).toBe('/api/v1/workspaces/acme/items/WEB-143')
     expect(init.method).toBe('PATCH')
     expect(init.credentials).toBe('include')
     expect(headers['If-Match']).toBe('"v1"')
@@ -104,7 +104,7 @@ describe('api client', () => {
       ),
     )
 
-    const err = await createWorkItem({ title: '' }).catch((e: unknown) => e)
+    const err = await createWorkItem('acme', { title: '' }).catch((e: unknown) => e)
 
     expect(err).toBeInstanceOf(ApiError)
     const apiError = err as ApiError
@@ -117,7 +117,7 @@ describe('api client', () => {
   it('falls back to a generic ApiError when the body is not the envelope', async () => {
     fetchMock.mockResolvedValue(new Response('<html>Bad Gateway</html>', { status: 502, statusText: 'Bad Gateway' }))
 
-    const err = (await listWorkItems().catch((e: unknown) => e)) as ApiError
+    const err = (await listWorkItems('acme').catch((e: unknown) => e)) as ApiError
 
     expect(err).toBeInstanceOf(ApiError)
     expect(err.status).toBe(502)

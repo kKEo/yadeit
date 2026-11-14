@@ -11,7 +11,8 @@
     "refresh": "Odśwież",
     "save": "Zapisz",
     "saving": "Zapisywanie…",
-    "signOut": "Wyloguj się"
+    "signOut": "Wyloguj się",
+    "goHome": "Przejdź do strony głównej"
   },
   "locale": {
     "en": "English",
@@ -24,7 +25,11 @@
     "emailPlaceholder": "ty{'@'}example.com",
     "password": "Hasło",
     "submit": "Zaloguj się",
-    "submitting": "Logowanie…"
+    "submitting": "Logowanie…",
+    "forgotLink": "Nie pamiętasz hasła?",
+    "noAccount": "Nie masz jeszcze konta?",
+    "registerLink": "Załóż konto",
+    "backToLogin": "Wróć do logowania"
   },
   "state": {
     "backlog": "Backlog",
@@ -80,6 +85,159 @@
       "saved": "Zmiany zostały zapisane."
     }
   },
+  "register": {
+    "title": "Załóż konto",
+    "description": "Podaj imię i nazwisko, adres e-mail oraz hasło.",
+    "name": "Imię i nazwisko",
+    "passwordHint": "Co najmniej 8 znaków.",
+    "passwordConfirmation": "Powtórz hasło",
+    "submit": "Załóż konto",
+    "submitting": "Zakładanie konta…",
+    "haveAccount": "Masz już konto?"
+  },
+  "forgot": {
+    "title": "Zresetuj hasło",
+    "description": "Podaj adres e-mail, a wyślemy Ci link do ustawienia nowego hasła.",
+    "sent": "Jeśli istnieje konto z tym adresem, link do zmiany hasła jest już w drodze.",
+    "submit": "Wyślij link",
+    "submitting": "Wysyłanie…"
+  },
+  "reset": {
+    "title": "Ustaw nowe hasło",
+    "description": "Wpisz nowe hasło do swojego konta.",
+    "newPassword": "Nowe hasło",
+    "submit": "Zmień hasło",
+    "missingToken": "Ten link do zmiany hasła jest niekompletny. Poproś o nowy.",
+    "requestNew": "Poproś o nowy link",
+    "doneTitle": "Hasło zostało zmienione",
+    "doneDescription": "Możesz teraz zalogować się nowym hasłem."
+  },
+  "verify": {
+    "title": "Potwierdzenie adresu e-mail",
+    "checking": "Potwierdzamy Twój adres e-mail…",
+    "confirmed": "Twój adres e-mail został potwierdzony.",
+    "failed": "Ten link potwierdzający jest nieprawidłowy lub wygasł.",
+    "failedHint": "Zaloguj się i użyj przycisku „Wyślij ponownie e-mail potwierdzający”, aby otrzymać nowy link.",
+    "continue": "Przejdź do Yadeit",
+    "continueSignedOut": "Przejdź do logowania"
+  },
+  "verifyBanner": {
+    "text": "Potwierdź swój adres e-mail ({email}), aby móc zapraszać osoby do swoich przestrzeni roboczych.",
+    "sent": "Nowy link potwierdzający został wysłany na adres {email}.",
+    "resend": "Wyślij ponownie e-mail potwierdzający",
+    "resending": "Wysyłanie…",
+    "dismiss": "Ukryj"
+  },
+  "invitation": {
+    "title": "Dołącz do {workspace}",
+    "description": "To zaproszenie zostało wysłane na adres {email}.",
+    "expires": "Ważne do",
+    "signInHint": "Zaloguj się, aby przyjąć zaproszenie.",
+    "registerHint": "Załóż konto z tym adresem e-mail, aby przyjąć zaproszenie.",
+    "accept": "Przyjmij zaproszenie",
+    "accepting": "Dołączanie…",
+    "wrongAccountTitle": "Jesteś zalogowany(-a) na inne konto",
+    "wrongAccount": "Jesteś zalogowany(-a) jako {current}, a to zaproszenie zostało wysłane na adres {invited}. Wyloguj się, a następnie zaloguj lub zarejestruj, używając tego adresu.",
+    "invalidTitle": "Zaproszenie jest niedostępne",
+    "invalid": "To zaproszenie zostało już wykorzystane, wycofane albo wygasło. Poproś osobę zapraszającą o nowe.",
+    "loadFailedTitle": "Nie udało się wczytać zaproszenia"
+  },
+  "welcome": {
+    "title": "Witaj, {name}",
+    "description": "Utwórz swoją pierwszą przestrzeń roboczą. Przestrzeń robocza zawiera projekty i członków Twojego zespołu."
+  },
+  "workspace": {
+    "switcher": {
+      "label": "Przełącz przestrzeń roboczą",
+      "placeholder": "Wybierz przestrzeń roboczą",
+      "heading": "Twoje przestrzenie robocze",
+      "create": "Utwórz przestrzeń roboczą"
+    },
+    "create": {
+      "title": "Utwórz przestrzeń roboczą",
+      "description": "Osobna przestrzeń z własnymi projektami i członkami.",
+      "submit": "Utwórz przestrzeń roboczą",
+      "submitting": "Tworzenie…"
+    },
+    "fields": {
+      "name": "Nazwa przestrzeni roboczej",
+      "namePlaceholder": "Acme sp. z o.o.",
+      "slug": "Adres internetowy",
+      "slugHint": "Przestrzeń robocza będzie dostępna pod adresem {path}.",
+      "slugRule": "Użyj od 2 do 40 małych liter i cyfr, rozdzielonych pojedynczymi łącznikami."
+    },
+    "notFound": {
+      "title": "Nie znaleziono przestrzeni roboczej",
+      "description": "Ta przestrzeń robocza nie istnieje albo nie jesteś jej członkiem. Sprawdź adres lub poproś administratora o zaproszenie."
+    }
+  },
+  "nav": {
+    "label": "Przestrzeń robocza",
+    "projects": "Projekty",
+    "members": "Członkowie",
+    "settings": "Ustawienia"
+  },
+  "userMenu": {
+    "label": "Menu konta"
+  },
+  "role": {
+    "owner": "Właściciel",
+    "admin": "Administrator",
+    "member": "Członek",
+    "guest": "Gość"
+  },
+  "projects": {
+    "title": "Projekty",
+    "subtitle": "Projekty w przestrzeni {workspace}",
+    "emptyTitle": "Nie ma jeszcze żadnych projektów",
+    "emptyDescription": "Projekty grupują powiązane zadania pod krótkim kluczem, np. WEB. Gdy w tej przestrzeni roboczej powstanie projekt, pojawi się tutaj.",
+    "noDescription": "Brak opisu."
+  },
+  "members": {
+    "title": "Członkowie",
+    "count": "Brak członków | {n} członek | {n} członkowie | {n} członków",
+    "you": "(Ty)",
+    "fields": {
+      "name": "Imię i nazwisko",
+      "role": "Rola",
+      "joined": "Data dołączenia",
+      "actions": "Akcje"
+    },
+    "changeRoleOf": "Zmień rolę użytkownika {name}",
+    "remove": "Usuń",
+    "removeNamed": "Usuń użytkownika {name}",
+    "removeTitle": "Usunąć użytkownika {name}?",
+    "removeDescription": "Ta osoba natychmiast straci dostęp do tej przestrzeni roboczej. Później możesz zaprosić ją ponownie.",
+    "leave": "Opuść przestrzeń roboczą",
+    "leaveTitle": "Opuścić przestrzeń {workspace}?",
+    "leaveDescription": "Stracisz dostęp do tej przestrzeni roboczej, a żeby wrócić, będziesz potrzebować nowego zaproszenia."
+  },
+  "invitations": {
+    "title": "Zaproś osoby",
+    "description": "Zaproszone osoby otrzymają e-mail z linkiem ważnym przez kilka dni.",
+    "emailPlaceholder": "kolega{'@'}example.com",
+    "send": "Wyślij zaproszenie",
+    "sending": "Wysyłanie…",
+    "sent": "Zaproszenie zostało wysłane na adres {email}.",
+    "pending": "Oczekujące zaproszenia",
+    "empty": "Brak oczekujących zaproszeń.",
+    "expires": "Ważne do {date}",
+    "withdraw": "Wycofaj"
+  },
+  "settings": {
+    "title": "Ustawienia przestrzeni roboczej",
+    "general": "Ogólne",
+    "generalDescription": "Zmień nazwę przestrzeni roboczej lub jej adres internetowy.",
+    "readOnly": "Te ustawienia mogą zmieniać tylko administratorzy i właściciele.",
+    "slugHint": "Przestrzeń robocza jest dostępna pod adresem {path}. Zmiana adresu sprawi, że dotychczasowe linki przestaną działać.",
+    "saved": "Zmiany zostały zapisane.",
+    "dangerZone": "Usuń przestrzeń roboczą",
+    "deleteDescription": "Trwale usuwa przestrzeń roboczą wraz ze wszystkimi projektami i członkami.",
+    "delete": "Usuń przestrzeń roboczą",
+    "deleting": "Usuwanie…",
+    "deleteTitle": "Usunąć przestrzeń {workspace}?",
+    "deleteConfirm": "Cała zawartość tej przestrzeni roboczej zostanie trwale usunięta dla wszystkich członków. Tej operacji nie można cofnąć."
+  },
   "errors": {
     "generic": "Coś poszło nie tak. Spróbuj ponownie.",
     "login": "Nie udało się zalogować.",
@@ -87,6 +245,7 @@
     "fetchOne": "Nie udało się wczytać zadania.",
     "create": "Nie udało się utworzyć zadania.",
     "update": "Nie udało się zaktualizować zadania.",
-    "delete": "Nie udało się usunąć zadania."
+    "delete": "Nie udało się usunąć zadania.",
+    "register": "Nie udało się założyć konta."
   }
 }

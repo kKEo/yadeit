@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\ApiErrorRenderer;
+use App\Http\Middleware\ResolveWorkspace;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // The SPA signs in with a cookie session; API clients and agents use bearer tokens.
         $middleware->statefulApi();
+
+        // The workspace must be known before tenant models are bound from the route.
+        $middleware->alias(['workspace' => ResolveWorkspace::class]);
+        $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolveWorkspace::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -11,7 +11,8 @@
     "refresh": "Refresh",
     "save": "Save",
     "saving": "Saving…",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "goHome": "Go to the home page"
   },
   "locale": {
     "en": "English",
@@ -24,7 +25,11 @@
     "emailPlaceholder": "you{'@'}example.com",
     "password": "Password",
     "submit": "Sign in",
-    "submitting": "Signing in…"
+    "submitting": "Signing in…",
+    "forgotLink": "Forgot your password?",
+    "noAccount": "New to Yadeit?",
+    "registerLink": "Create an account",
+    "backToLogin": "Back to sign in"
   },
   "state": {
     "backlog": "Backlog",
@@ -80,6 +85,159 @@
       "saved": "Changes saved."
     }
   },
+  "register": {
+    "title": "Create your account",
+    "description": "Start with your name, email and a password.",
+    "name": "Name",
+    "passwordHint": "At least 8 characters.",
+    "passwordConfirmation": "Repeat password",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "haveAccount": "Already have an account?"
+  },
+  "forgot": {
+    "title": "Reset your password",
+    "description": "Enter your email and we will send you a link to choose a new password.",
+    "sent": "If an account exists for this address, a reset link is on its way.",
+    "submit": "Send reset link",
+    "submitting": "Sending…"
+  },
+  "reset": {
+    "title": "Choose a new password",
+    "description": "Enter a new password for your account.",
+    "newPassword": "New password",
+    "submit": "Change password",
+    "missingToken": "This reset link is incomplete. Request a new one.",
+    "requestNew": "Request a new link",
+    "doneTitle": "Password changed",
+    "doneDescription": "You can now sign in with your new password."
+  },
+  "verify": {
+    "title": "Email confirmation",
+    "checking": "Confirming your email address…",
+    "confirmed": "Your email address is confirmed.",
+    "failed": "This confirmation link is invalid or has expired.",
+    "failedHint": "Sign in and use “Resend confirmation email” to get a new link.",
+    "continue": "Continue to Yadeit",
+    "continueSignedOut": "Continue to sign in"
+  },
+  "verifyBanner": {
+    "text": "Confirm your email address ({email}) to invite people to your workspaces.",
+    "sent": "A new confirmation link has been sent to {email}.",
+    "resend": "Resend confirmation email",
+    "resending": "Sending…",
+    "dismiss": "Dismiss"
+  },
+  "invitation": {
+    "title": "Join {workspace}",
+    "description": "This invitation was sent to {email}.",
+    "expires": "Valid until",
+    "signInHint": "Sign in to accept the invitation.",
+    "registerHint": "Create an account with this email address to accept the invitation.",
+    "accept": "Accept invitation",
+    "accepting": "Joining…",
+    "wrongAccountTitle": "You are signed in with a different account",
+    "wrongAccount": "You are signed in as {current}, but this invitation was sent to {invited}. Sign out, then sign in or register with that address.",
+    "invalidTitle": "Invitation not available",
+    "invalid": "This invitation has already been used, was withdrawn or has expired. Ask the person who invited you for a new one.",
+    "loadFailedTitle": "Could not load the invitation"
+  },
+  "welcome": {
+    "title": "Welcome, {name}",
+    "description": "Create your first workspace. A workspace holds your team's projects and members."
+  },
+  "workspace": {
+    "switcher": {
+      "label": "Switch workspace",
+      "placeholder": "Select a workspace",
+      "heading": "Your workspaces",
+      "create": "Create workspace"
+    },
+    "create": {
+      "title": "Create a workspace",
+      "description": "A separate space with its own projects and members.",
+      "submit": "Create workspace",
+      "submitting": "Creating…"
+    },
+    "fields": {
+      "name": "Workspace name",
+      "namePlaceholder": "Acme Inc.",
+      "slug": "Web address",
+      "slugHint": "Your workspace will be available at {path}.",
+      "slugRule": "Use 2–40 lowercase letters and digits, separated by single hyphens."
+    },
+    "notFound": {
+      "title": "Workspace not found",
+      "description": "This workspace does not exist or you are not a member of it. Check the address or ask an admin to invite you."
+    }
+  },
+  "nav": {
+    "label": "Workspace",
+    "projects": "Projects",
+    "members": "Members",
+    "settings": "Settings"
+  },
+  "userMenu": {
+    "label": "Account menu"
+  },
+  "role": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
+    "guest": "Guest"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Projects in {workspace}",
+    "emptyTitle": "No projects yet",
+    "emptyDescription": "Projects group related work items under a short key such as WEB. Once a project is created in this workspace, it will show up here.",
+    "noDescription": "No description."
+  },
+  "members": {
+    "title": "Members",
+    "count": "No members | {n} member | {n} members",
+    "you": "(you)",
+    "fields": {
+      "name": "Name",
+      "role": "Role",
+      "joined": "Joined",
+      "actions": "Actions"
+    },
+    "changeRoleOf": "Change the role of {name}",
+    "remove": "Remove",
+    "removeNamed": "Remove {name}",
+    "removeTitle": "Remove {name}?",
+    "removeDescription": "They lose access to this workspace immediately. You can invite them again later.",
+    "leave": "Leave workspace",
+    "leaveTitle": "Leave {workspace}?",
+    "leaveDescription": "You lose access to this workspace and need a new invitation to come back."
+  },
+  "invitations": {
+    "title": "Invite people",
+    "description": "They receive an email with a link that is valid for a few days.",
+    "emailPlaceholder": "colleague{'@'}example.com",
+    "send": "Send invitation",
+    "sending": "Sending…",
+    "sent": "Invitation sent to {email}.",
+    "pending": "Pending invitations",
+    "empty": "No pending invitations.",
+    "expires": "Valid until {date}",
+    "withdraw": "Withdraw"
+  },
+  "settings": {
+    "title": "Workspace settings",
+    "general": "General",
+    "generalDescription": "Rename the workspace or change its web address.",
+    "readOnly": "Only admins and owners can change these settings.",
+    "slugHint": "The workspace is available at {path}. Changing it breaks existing links.",
+    "saved": "Changes saved.",
+    "dangerZone": "Delete workspace",
+    "deleteDescription": "Permanently removes the workspace with all its projects and members.",
+    "delete": "Delete workspace",
+    "deleting": "Deleting…",
+    "deleteTitle": "Delete {workspace}?",
+    "deleteConfirm": "Everything in this workspace is permanently removed for all members. This action cannot be undone."
+  },
   "errors": {
     "generic": "Something went wrong. Please try again.",
     "login": "Could not sign in.",
@@ -87,6 +245,7 @@
     "fetchOne": "Failed to load the work item.",
     "create": "Failed to create the work item.",
     "update": "Failed to update the work item.",
-    "delete": "Failed to delete the work item."
+    "delete": "Failed to delete the work item.",
+    "register": "Could not create the account."
   }
 }

@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { SUPPORTED_LOCALES, setLocale, type AppLocale } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
 
 const { t, locale } = useI18n()
+const auth = useAuthStore()
 
 function onChange(event: Event) {
-  setLocale((event.target as HTMLSelectElement).value as AppLocale)
+  const next = (event.target as HTMLSelectElement).value as AppLocale
+  setLocale(next)
+  // Remember the choice on the account; if saving fails it still applies in this browser.
+  if (auth.isAuthenticated) auth.updateProfile({ locale: next }).catch(() => undefined)
 }
 </script>
 

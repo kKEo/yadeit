@@ -8,7 +8,11 @@ import { Check, ChevronDown, ChevronUp } from '@lucide/vue'
 import { cn } from '@/lib/utils'
 
 interface SelectOption { value: string; label: string; disabled?: boolean }
-interface Props { modelValue?: string; options: SelectOption[]; placeholder?: string; disabled?: boolean; class?: string }
+interface Props {
+  modelValue?: string; options: SelectOption[]; placeholder?: string; disabled?: boolean; class?: string
+  /** Forwarded to the trigger button so a `<Label for>` or an aria-label can name it. */
+  id?: string; ariaLabel?: string
+}
 const props = withDefaults(defineProps<Props>(), { placeholder: 'Select…' })
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 </script>
@@ -16,6 +20,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 <template>
   <SelectRoot :model-value="modelValue" :disabled="disabled" @update:model-value="emit('update:modelValue', $event)">
     <SelectTrigger
+      :id="id" :aria-label="ariaLabel"
       :class="cn(
         'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2',
         'text-sm ring-offset-background placeholder:text-muted-foreground',

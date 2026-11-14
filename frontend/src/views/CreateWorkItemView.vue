@@ -7,7 +7,6 @@ import {
   WORK_ITEM_PRIORITIES, WORK_ITEM_STATES,
   type WorkItemPriority, type WorkItemState,
 } from '@/api/types'
-import AppHeader from '@/components/app/AppHeader.vue'
 import Alert from '@/components/ui/Alert.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
@@ -55,69 +54,63 @@ async function submit() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-background">
-    <AppHeader>
-      <Button variant="ghost" size="sm" @click="router.push({ name: 'items' })">
-        <ArrowLeft class="mr-2 h-4 w-4" />{{ t('common.back') }}
-      </Button>
-      <span class="truncate font-semibold tracking-tight">{{ t('items.create.title') }}</span>
-    </AppHeader>
-
-    <main class="mx-auto max-w-2xl px-4 py-6">
-      <Card>
-        <form novalidate @submit.prevent="submit">
-          <CardHeader>
-            <CardTitle>{{ t('items.create.title') }}</CardTitle>
-            <CardDescription>{{ t('items.create.description') }}</CardDescription>
-          </CardHeader>
-          <CardContent class="space-y-4">
-            <Alert v-if="store.error" variant="destructive" :title="store.error" />
+  <div class="mx-auto max-w-2xl space-y-4">
+    <Button variant="ghost" size="sm" @click="router.push({ name: 'items' })">
+      <ArrowLeft class="mr-2 h-4 w-4" />{{ t('common.back') }}
+    </Button>
+    <Card>
+      <form novalidate @submit.prevent="submit">
+        <CardHeader>
+          <CardTitle>{{ t('items.create.title') }}</CardTitle>
+          <CardDescription>{{ t('items.create.description') }}</CardDescription>
+        </CardHeader>
+        <CardContent class="space-y-4">
+          <Alert v-if="store.error" variant="destructive" :title="store.error" />
+          <div class="space-y-1.5">
+            <Label for="title">{{ t('items.fields.title') }} *</Label>
+            <Input id="title" v-model="title" :placeholder="t('items.create.titlePlaceholder')" required />
+            <p v-if="store.fieldErrors.title" class="text-sm text-destructive">{{ store.fieldErrors.title[0] }}</p>
+          </div>
+          <div class="space-y-1.5">
+            <Label for="description">{{ t('items.fields.description') }}</Label>
+            <Textarea
+              id="description" v-model="description" :rows="8"
+              :placeholder="t('items.create.descriptionPlaceholder')" class="font-mono"
+            />
+            <p v-if="store.fieldErrors.description" class="text-sm text-destructive">
+              {{ store.fieldErrors.description[0] }}
+            </p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-1.5">
-              <Label for="title">{{ t('items.fields.title') }} *</Label>
-              <Input id="title" v-model="title" :placeholder="t('items.create.titlePlaceholder')" required />
-              <p v-if="store.fieldErrors.title" class="text-sm text-destructive">{{ store.fieldErrors.title[0] }}</p>
+              <Label>{{ t('items.fields.state') }}</Label>
+              <Select
+                :model-value="state" :options="stateOptions"
+                @update:model-value="state = $event as WorkItemState"
+              />
+              <p v-if="store.fieldErrors.state" class="text-sm text-destructive">{{ store.fieldErrors.state[0] }}</p>
             </div>
             <div class="space-y-1.5">
-              <Label for="description">{{ t('items.fields.description') }}</Label>
-              <Textarea
-                id="description" v-model="description" :rows="8"
-                :placeholder="t('items.create.descriptionPlaceholder')" class="font-mono"
+              <Label>{{ t('items.fields.priority') }}</Label>
+              <Select
+                :model-value="priority" :options="priorityOptions"
+                @update:model-value="priority = $event as WorkItemPriority"
               />
-              <p v-if="store.fieldErrors.description" class="text-sm text-destructive">
-                {{ store.fieldErrors.description[0] }}
+              <p v-if="store.fieldErrors.priority" class="text-sm text-destructive">
+                {{ store.fieldErrors.priority[0] }}
               </p>
             </div>
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div class="space-y-1.5">
-                <Label>{{ t('items.fields.state') }}</Label>
-                <Select
-                  :model-value="state" :options="stateOptions"
-                  @update:model-value="state = $event as WorkItemState"
-                />
-                <p v-if="store.fieldErrors.state" class="text-sm text-destructive">{{ store.fieldErrors.state[0] }}</p>
-              </div>
-              <div class="space-y-1.5">
-                <Label>{{ t('items.fields.priority') }}</Label>
-                <Select
-                  :model-value="priority" :options="priorityOptions"
-                  @update:model-value="priority = $event as WorkItemPriority"
-                />
-                <p v-if="store.fieldErrors.priority" class="text-sm text-destructive">
-                  {{ store.fieldErrors.priority[0] }}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter class="justify-end gap-2">
-            <Button variant="outline" :disabled="submitting" @click="router.push({ name: 'items' })">
-              {{ t('common.cancel') }}
-            </Button>
-            <Button type="submit" :disabled="!valid || submitting">
-              {{ submitting ? t('items.create.submitting') : t('items.create.submit') }}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-    </main>
+          </div>
+        </CardContent>
+        <CardFooter class="justify-end gap-2">
+          <Button variant="outline" :disabled="submitting" @click="router.push({ name: 'items' })">
+            {{ t('common.cancel') }}
+          </Button>
+          <Button type="submit" :disabled="!valid || submitting">
+            {{ submitting ? t('items.create.submitting') : t('items.create.submit') }}
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
   </div>
 </template>
