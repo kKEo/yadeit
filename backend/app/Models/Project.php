@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property Carbon|null $archived_at
@@ -27,6 +29,13 @@ class Project extends Model
 
     protected static function booted(): void
     {
+        // Deleting a project deletes its items for good, in the bin or not: their uploaded files go with them.
+        static::deleting(function (Project $project): void {
+            foreach (DB::table('work_items')->where('project_id', $project->id)->pluck('id') as $itemId) {
+                Storage::disk('local')->deleteDirectory("attachments/{$project->workspace_id}/{$itemId}");
+            }
+        });
+
         // A project-limited access token sees nothing outside its projects.
         static::addGlobalScope('token-projects', function (Builder $query): void {
             $projectIds = app(CurrentWorkspace::class)->projectIds();

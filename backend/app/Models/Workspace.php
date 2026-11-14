@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Cashier\Billable;
 
@@ -28,6 +29,12 @@ class Workspace extends Model
 
     /** @use HasFactory<WorkspaceFactory> */
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        // The database removes the workspace's rows by itself; the uploaded files have to be removed here.
+        static::deleted(fn (Workspace $workspace) => Storage::disk('local')->deleteDirectory("attachments/{$workspace->id}"));
+    }
 
     /** Stripe knows the workspace by its name and reaches its first owner. */
     public function stripeName(): string

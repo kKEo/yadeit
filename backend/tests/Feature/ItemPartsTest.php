@@ -214,3 +214,41 @@ it('keeps the kind the caller gives', function () {
 
     $this->postJson("{$base}/items/WEB-1/links", ['url' => 'https://www.figma.com/design/abc', 'kind' => 'url'])->assertJsonPath('data.kind', 'url');
 });
+
+describe('uploaded files after deletion', function () {
+    beforeEach(function () {
+        Storage::fake('local');
+        $this->upload = function (string $item): string {
+            $id = $this->post("{$item}/attachments", ['file' => UploadedFile::fake()->image('shot.png', 10, 10)], ['Accept' => 'application/json'])
+                ->assertCreated()->json('data.id');
+
+            return app(CurrentWorkspace::class)->runUnscoped(fn () => Attachment::findOrFail($id))->path;
+        };
+    });
+
+    it('removes a project\'s files with the project and leaves other projects alone', function () {
+        $admin = addMember($this->workspace, WorkspaceRole::Admin);
+        $this->postJson("{$this->base}/projects", ['name' => 'Other', 'key' => 'OTH']);
+        $this->postJson("{$this->base}/items", ['project' => 'OTH', 'title' => 'Kept'])->assertCreated();
+        $gone = ($this->upload)($this->item);
+        $kept = ($this->upload)("{$this->base}/items/OTH-1");
+        // An item in the bin still has its files until the project goes.
+        $this->deleteJson($this->item)->assertNoContent();
+        Storage::disk('local')->assertExists($gone);
+
+        $this->actingAs($admin)->deleteJson("{$this->base}/projects/WEB")->assertNoContent();
+
+        Storage::disk('local')->assertMissing($gone);
+        Storage::disk('local')->assertExists($kept);
+    });
+
+    it('removes every file of a workspace with the workspace', function () {
+        $owner = addMember($this->workspace, WorkspaceRole::Owner);
+        $path = ($this->upload)($this->item);
+
+        $this->actingAs($owner)->deleteJson($this->base)->assertNoContent();
+
+        Storage::disk('local')->assertMissing($path);
+        expect(Storage::disk('local')->directories('attachments'))->toBe([]);
+    });
+});
