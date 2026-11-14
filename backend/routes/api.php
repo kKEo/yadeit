@@ -121,6 +121,8 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
         Route::post('agents', [AgentController::class, 'store'])->name('agents.store');
         Route::patch('agents/{agent}', [AgentController::class, 'update'])->whereNumber('agent')->name('agents.update');
         Route::delete('agents/{agent}', [AgentController::class, 'destroy'])->whereNumber('agent')->name('agents.destroy');
+        Route::get('agents/{agent}/connections', [AgentController::class, 'connections'])->whereNumber('agent')->name('agent-connections.index');
+        Route::delete('agents/{agent}/connections/{connection}', [AgentController::class, 'disconnect'])->whereNumber(['agent', 'connection'])->name('agent-connections.destroy');
         Route::get('agents/{agent}/tokens', [AgentController::class, 'tokens'])->whereNumber('agent')->name('agent-tokens.index');
         Route::post('agents/{agent}/tokens', [AgentController::class, 'createToken'])->whereNumber('agent')->name('agent-tokens.store');
         Route::delete('agents/{agent}/tokens/{token}', [AgentController::class, 'revokeToken'])

@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { topLevelError } from '@/composables/useApiForm'
-import { authQuery, queryString, redirectTarget } from '@/lib/redirect'
+import { authQuery, followRedirect, queryString } from '@/lib/redirect'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import FormField from '@/components/app/FormField.vue'
 import TextLink from '@/components/app/TextLink.vue'
@@ -34,7 +34,7 @@ onBeforeUnmount(() => auth.clearError())
 async function handleLogin() {
   if (!canSubmit.value) return
   const ok = await auth.login(email.value.trim(), password.value)
-  if (ok) await router.push(redirectTarget(route.query))
+  if (ok) await followRedirect(router, route.query)
 }
 </script>
 

@@ -41,6 +41,7 @@ class AuditTrail
         'agents.destroy' => 'agent.removed',
         'agent-tokens.store' => 'token.created',
         'agent-tokens.destroy' => 'token.revoked',
+        'agent-connections.destroy' => 'agent.app_disconnected',
         'webhooks.store' => 'webhook.created',
         'webhooks.update' => 'webhook.updated',
         'webhooks.destroy' => 'webhook.deleted',

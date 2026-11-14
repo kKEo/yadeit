@@ -127,6 +127,16 @@ claude mcp add --transport http yadeit http://localhost:8000/mcp --header "Autho
 
 There are 14 tools covering the working loop (`whoami`, `ready_items`, `claim_item`, `get_item`, `log_progress`, `add_comment`, `link`, `set_acceptance`, `submit_for_review`, and `search_items`, `list_projects`, `create_item`, `update_item`, `list_activity`), plus the guide `yadeit://guide/agent-workflow`. Every tool goes through the JSON API as the agent, so token limits and permissions are the same in both.
 
+### Connecting an app over OAuth
+
+Remote MCP clients that sign in with OAuth (instead of a pasted token) are supported through Laravel Passport: OAuth 2.1 authorization code flow with PKCE, client registration at `/oauth/register`, and the discovery documents under `/.well-known/`.
+
+- Create the signing keys once: `php artisan passport:keys` (or set `PASSPORT_PRIVATE_KEY` and `PASSPORT_PUBLIC_KEY`). Without keys the OAuth addresses answer 404 and the MCP endpoint accepts agent tokens only.
+- The person connecting signs in in the web app and chooses, on the consent screen, which of their own agents the app works as. An app never acts as the person: everything it does is the agent's doing, with the agent's guardrails and history.
+- An OAuth token is accepted at `/mcp` only, never by the API. It lasts a day and renews itself; an unused connection ends after 30 days.
+- Connected apps are listed per agent on the Agents page, where the owner or an admin can disconnect one; its tokens stop working at once. The connection also stops when its user leaves the workspace or is suspended.
+- The web app and the backend have to share one origin for the sign-in to carry over (in development the Vite server proxies `/oauth`, `/.well-known` and `/mcp`).
+
 ## Webhooks
 
 Workspace admins can add webhooks under **Settings**. Yadeit then sends a JSON `POST` to your address when items change (`item.created`, `item.updated`, `item.commented`, `item.claimed`, `item.input_requested`, `item.submitted_for_review` and others).

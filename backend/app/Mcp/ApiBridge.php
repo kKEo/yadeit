@@ -29,7 +29,13 @@ class ApiBridge
         $uri = '/api/v1/workspaces/'.$workspace->slug.($path === '' ? '' : '/'.ltrim($path, '/'));
         $isRead = in_array($method, ['GET', 'HEAD'], true);
 
-        $server = ['HTTP_ACCEPT' => 'application/json', 'HTTP_AUTHORIZATION' => (string) $outer->header('Authorization')];
+        $server = ['HTTP_ACCEPT' => 'application/json'];
+
+        // An agent's own token travels with the inner request. An app connected over OAuth has none:
+        // its request was already turned into the agent's, and its OAuth token means nothing to the API.
+        if (! $outer->attributes->get('mcp.oauth')) {
+            $server['HTTP_AUTHORIZATION'] = (string) $outer->header('Authorization');
+        }
 
         foreach ($headers as $name => $value) {
             $server['HTTP_'.strtoupper(str_replace('-', '_', $name))] = $value;
@@ -40,6 +46,7 @@ class ApiBridge
             : Request::create($uri, $method, server: [...$server, 'CONTENT_TYPE' => 'application/json'], content: (string) json_encode((object) $data));
 
         $inner->setUserResolver($outer->getUserResolver());
+        $inner->attributes->set('mcp.oauth', (bool) $outer->attributes->get('mcp.oauth'));
 
         // The inner request is "the request" while it runs, then the outer one is put back.
         app()->instance('request', $inner);

@@ -13,7 +13,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Laravel\Passport\AccessToken;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\PersonalAccessToken;
+use Laravel\Sanctum\TransientToken;
 
 /**
  * @property UserType $type
@@ -49,6 +52,17 @@ class User extends Authenticatable implements MustVerifyEmail
             'is_operator' => 'boolean',
             'suspended_at' => 'datetime',
         ];
+    }
+
+    /**
+     * What the request came with: an agent's access token, the stand-in a
+     * browser session gets, an OAuth app's token, or nothing.
+     *
+     * @return PersonalAccessToken|TransientToken|AccessToken<mixed>|null
+     */
+    public function currentAccessToken()
+    {
+        return $this->accessToken;
     }
 
     public function isAgent(): bool

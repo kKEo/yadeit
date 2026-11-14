@@ -4,12 +4,14 @@ namespace App\Providers;
 
 use App\Ai\AiProvider;
 use App\Ai\AnthropicProvider;
+use App\Http\Controllers\OAuthConsentController;
 use App\Models\PlanSubscription;
 use App\Models\PlanSubscriptionItem;
 use App\Models\WorkItem;
 use App\Models\Workspace;
 use App\Support\CurrentWorkspace;
 use App\Support\UnknownFields;
+use Carbon\CarbonInterval;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
@@ -23,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
+use Laravel\Passport\Passport;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
 
         // The Stripe webhook is registered in routes/web.php, behind a check that a signing secret is set.
         Cashier::ignoreRoutes();
+
+        // Apps connect with the authorization code flow only.
+        Passport::$deviceCodeGrantEnabled = false;
     }
 
     public function boot(): void
@@ -51,6 +57,36 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinute(10)->by($request->ip()),
             is_string($request->input('email')) ? Limit::perMinute(20)->by('email:'.sha1(mb_strtolower($request->input('email')))) : null,
         ]));
+        // The consent screen of an app connecting over OAuth: the person picks which of their agents it works as.
+        Passport::authorizationView(function (array $parameters) {
+            $user = $parameters['user'];
+            $agents = OAuthConsentController::agentsOf($user)->get();
+            $polish = $user->locale === 'pl';
+
+            return response()->view('oauth.authorize', [
+                ...$parameters,
+                'agents' => $agents,
+                'workspaces' => Workspace::query()->whereIn('id', $agents->pluck('workspace_id'))->pluck('name', 'id'),
+                'redirectHost' => (string) (parse_url((string) $parameters['request']->query('redirect_uri'), PHP_URL_HOST) ?: $parameters['request']->query('redirect_uri')),
+                'appUrl' => rtrim((string) config('app.frontend_url'), '/'),
+                'locale' => $polish ? 'pl' : 'en',
+                't' => $polish ? [
+                    'title' => 'Połącz aplikację', 'asks' => 'prosi o dostęp do Yadeit przez MCP.', 'returns' => 'Po zatwierdzeniu wrócisz do:',
+                    'choose' => 'Jako który agent ma działać?', 'means' => 'Aplikacja będzie działać jako wybrany agent: zobaczy i zmieni to, co on może, a zakończenie zadania zawsze zatwierdza człowiek. Połączenie odłączysz w każdej chwili na stronie Agenci.',
+                    'none' => 'Nie masz jeszcze agenta. Utwórz go w aplikacji (Agenci), a potem połącz ponownie.', 'open' => 'Otwórz Yadeit',
+                    'allow' => 'Połącz', 'deny' => 'Odmów', 'signedIn' => 'Zalogowano jako',
+                ] : [
+                    'title' => 'Connect an app', 'asks' => 'asks for access to Yadeit over MCP.', 'returns' => 'After you allow it, you return to:',
+                    'choose' => 'Which agent should it work as?', 'means' => 'The app will work as the agent you choose: it sees and changes what that agent can, and a person always approves "done". You can disconnect it at any time on the Agents page.',
+                    'none' => 'You have no agent yet. Create one in the app (Agents), then connect again.', 'open' => 'Open Yadeit',
+                    'allow' => 'Connect', 'deny' => 'Deny', 'signedIn' => 'Signed in as',
+                ],
+            ]);
+        });
+        // An app's access lasts a day and renews itself; unused, a connection ends after a month.
+        Passport::tokensExpireIn(CarbonInterval::day());
+        Passport::refreshTokensExpireIn(CarbonInterval::days(30));
+
         RateLimiter::for('public-feedback', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
         RateLimiter::for('mcp', fn (Request $request) => Limit::perMinute(120)->by($request->user()?->currentAccessToken()?->id ?: $request->ip()));
         // Each access token has its own allowance, so one busy agent cannot starve another.

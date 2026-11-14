@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { Bot, Check, Copy, KeyRound, Trash2 } from '@lucide/vue'
 import * as api from '@/api/agents'
 import { listProjects } from '@/api/projects'
-import type { Agent, AgentToken, NewAgentToken, Project } from '@/api/types'
+import type { Agent, AgentConnection, AgentToken, NewAgentToken, Project } from '@/api/types'
 import { useApiForm } from '@/composables/useApiForm'
 import { formatDateTime } from '@/lib/format'
 import { roleAtLeast } from '@/lib/roles'
@@ -46,6 +46,7 @@ const description = ref('')
 const openId = ref<number | null>(null)
 const tokens = ref<AgentToken[]>([])
 const tokensLoading = ref(false)
+const connections = ref<AgentConnection[]>([])
 const draft = reactive({ name: '', access: 'write' as 'read' | 'write', projects: [] as string[], expiry: '90' })
 
 const secret = ref<NewAgentToken | null>(null)
@@ -101,16 +102,22 @@ async function toggle(agent: Agent, forceOpen = false) {
   }
   openId.value = agent.id
   tokens.value = []
+  connections.value = []
   tokenForm.clear()
   Object.assign(draft, { name: '', access: 'write', projects: [], expiry: '90' })
   tokensLoading.value = true
   try {
-    tokens.value = await api.listAgentTokens(slug.value, agent.id)
+    [tokens.value, connections.value] = await Promise.all([api.listAgentTokens(slug.value, agent.id), api.listAgentConnections(slug.value, agent.id)])
   } catch (err: unknown) {
     list.error.value = err instanceof Error ? err.message : t('errors.generic')
   } finally {
     tokensLoading.value = false
   }
+}
+
+async function disconnect(agent: Agent, connection: AgentConnection) {
+  const ok = await list.submit(() => api.disconnectAgentApp(slug.value, agent.id, connection.id))
+  if (ok) connections.value = connections.value.filter((c) => c.id !== connection.id)
 }
 
 function toggleProject(key: string, checked: boolean) {
@@ -260,6 +267,21 @@ function closeSecret() {
                   </Button>
                 </li>
               </ul>
+
+              <template v-if="connections.length">
+                <h2 class="text-sm font-medium">{{ t('agents.apps.title') }}</h2>
+                <ul class="divide-y rounded-md border">
+                  <li v-for="connection in connections" :key="connection.id" class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3" data-testid="agent-app">
+                    <div class="min-w-0">
+                      <p class="truncate text-sm font-medium">{{ connection.app }}</p>
+                      <p class="text-xs text-muted-foreground">{{ t('agents.apps.since', { date: formatDateTime(connection.connected_at, locale) }) }}</p>
+                    </div>
+                    <Button variant="outline" size="sm" :disabled="list.pending.value" :aria-label="t('agents.apps.disconnectNamed', { name: connection.app })" @click="disconnect(agent, connection)">
+                      {{ t('agents.apps.disconnect') }}
+                    </Button>
+                  </li>
+                </ul>
+              </template>
 
               <form novalidate class="space-y-4 rounded-md bg-muted/40 p-4" @submit.prevent="createToken(agent)">
                 <Alert v-if="tokenForm.error.value" variant="destructive" :title="tokenForm.error.value" />

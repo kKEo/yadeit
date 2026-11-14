@@ -613,3 +613,10 @@ export interface BillingStatus {
   subscription: { status: string; ends_at: string | null } | null
   has_billing_account: boolean
 }
+
+/** An app connected to an agent over OAuth (a remote MCP client). */
+export interface AgentConnection {
+  id: number
+  app: string
+  connected_at: string
+}

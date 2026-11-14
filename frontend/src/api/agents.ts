@@ -1,5 +1,5 @@
 import { request, workspacePath } from './client'
-import type { Agent, AgentToken, CreateAgentTokenRequest, ItemResponse, NewAgentToken } from './types'
+import type { Agent, AgentToken, CreateAgentTokenRequest, ItemResponse, NewAgentToken, AgentConnection } from './types'
 
 const agentsPath = (slug: string) => `${workspacePath(slug)}/agents`
 
@@ -26,4 +26,14 @@ export async function createAgentToken(slug: string, agentId: number, req: Creat
 
 export async function revokeAgentToken(slug: string, agentId: number, tokenId: number): Promise<void> {
   await request<void>('DELETE', `${agentsPath(slug)}/${agentId}/tokens/${tokenId}`)
+}
+
+/** The apps connected to this agent over OAuth. */
+export async function listAgentConnections(slug: string, agentId: number): Promise<AgentConnection[]> {
+  return (await request<ItemResponse<AgentConnection[]>>('GET', `${agentsPath(slug)}/${agentId}/connections`)).data
+}
+
+/** Disconnects an app; its access ends at once. */
+export async function disconnectAgentApp(slug: string, agentId: number, connectionId: number): Promise<void> {
+  await request<void>('DELETE', `${agentsPath(slug)}/${agentId}/connections/${connectionId}`)
 }

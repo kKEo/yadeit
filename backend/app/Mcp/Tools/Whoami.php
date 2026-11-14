@@ -32,7 +32,7 @@ class Whoami extends ApiTool
         return $this->result([
             'agent' => ['id' => $agent->id, 'name' => $agent->name, 'owner' => $agent->owner?->name],
             'workspace' => $workspace->name,
-            'access' => $token->can('write') ? 'read and write' : 'read only',
+            'access' => $token === null || $token->can('write') ? 'read and write' : 'read only',
             'projects' => array_map(fn (array $p) => ['key' => $p['key'], 'name' => $p['name']], $projects->data()),
             'rules' => 'You may create and update items, comment, log progress and submit work for review. You may not delete, close or reassign: people do that. '.self::UNTRUSTED,
         ]);

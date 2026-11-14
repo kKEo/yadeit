@@ -725,6 +725,12 @@
       "copy": "Kopiuj",
       "copied": "Skopiowano",
       "done": "Token zapisany"
+    },
+    "apps": {
+      "title": "Połączone aplikacje",
+      "since": "Połączono przez OAuth: {date}",
+      "disconnect": "Odłącz",
+      "disconnectNamed": "Odłącz aplikację {name}"
     }
   },
   "webhooks": {
@@ -1136,7 +1142,9 @@
       "agent": {
         "created": "Utworzenie agenta",
         "updated": "Zmiana agenta",
-        "removed": "Usunięcie agenta"
+        "removed": "Usunięcie agenta",
+        "app_connected": "Połączenie aplikacji z agentem",
+        "app_disconnected": "Odłączenie aplikacji od agenta"
       },
       "token": {
         "created": "Utworzenie tokenu dostępu",

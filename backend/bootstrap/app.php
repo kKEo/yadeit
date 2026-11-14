@@ -30,7 +30,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // The workspace must be known before tenant models are bound from the route.
         $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class, 'token.scope' => EnforceTokenScope::class, 'active' => EnsureAccountActive::class, 'operator' => EnsureOperator::class]);
         // There is no sign-in page on this side: a signed-out request gets a 401, also when a browser asks (a download link).
-        $middleware->redirectGuestsTo(fn () => null);
+        // The one exception is an app connecting over OAuth: its user signs in in the web app and comes back.
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('oauth/*')
+            ? rtrim((string) config('app.frontend_url'), '/').'/login?redirect='.urlencode($request->getRequestUri())
+            : null);
         // Stripe posts its webhooks without a session.
         $middleware->preventRequestForgery(except: ['stripe/*']);
         // Every API request passes the audit trail, which records the ones on its list.
@@ -45,7 +48,8 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->render(function (Throwable $e, Request $request) {
-            if ($request->is('api/*')) {
+            // The MCP endpoint answers in JSON as well, whatever goes wrong before a tool runs.
+            if ($request->is('api/*') || $request->is('mcp')) {
                 return app(ApiErrorRenderer::class)->render($e);
             }
         });

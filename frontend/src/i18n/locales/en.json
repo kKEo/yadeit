@@ -725,6 +725,12 @@
       "copy": "Copy",
       "copied": "Copied",
       "done": "I have stored it"
+    },
+    "apps": {
+      "title": "Connected apps",
+      "since": "Connected over OAuth on {date}",
+      "disconnect": "Disconnect",
+      "disconnectNamed": "Disconnect {name}"
     }
   },
   "webhooks": {
@@ -1136,7 +1142,9 @@
       "agent": {
         "created": "Created an agent",
         "updated": "Changed an agent",
-        "removed": "Removed an agent"
+        "removed": "Removed an agent",
+        "app_connected": "Connected an app to an agent",
+        "app_disconnected": "Disconnected an app from an agent"
       },
       "token": {
         "created": "Created an access token",

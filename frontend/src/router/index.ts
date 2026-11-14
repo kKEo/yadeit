@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, type RouteLocationRaw } from 'vue-router'
 import { setUnauthorizedHandler } from '@/api/client'
 import { useAuthStore } from '@/stores/auth'
+import { leaveTo } from '@/lib/navigate'
+import { isOAuthReturn, redirectTarget } from '@/lib/redirect'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -116,7 +118,7 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach(async (to): Promise<RouteLocationRaw | undefined> => {
+router.beforeEach(async (to): Promise<RouteLocationRaw | false | undefined> => {
   const auth = useAuthStore()
   // One initial session probe; every later navigation reuses the settled promise.
   await auth.ensureInitialized()
@@ -125,7 +127,15 @@ router.beforeEach(async (to): Promise<RouteLocationRaw | undefined> => {
     if (to.meta.public) return undefined
     return { name: 'login', query: to.fullPath === '/' ? {} : { redirect: to.fullPath } }
   }
-  if (to.meta.guestOnly) return { name: 'home' }
+  if (to.meta.guestOnly) {
+    // Already signed in and sent here by an app asking for access: straight on to its consent screen.
+    const target = redirectTarget(to.query)
+    if (isOAuthReturn(target)) {
+      leaveTo(target)
+      return false
+    }
+    return { name: 'home' }
+  }
   if (to.meta.operator && !auth.user.is_operator) return { name: 'home' }
   if (to.name === 'home') {
     const first = auth.user.workspaces[0]

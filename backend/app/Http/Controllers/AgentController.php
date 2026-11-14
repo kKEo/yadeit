@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\UserType;
 use App\Enums\WorkspaceRole;
 use App\Exceptions\ApiException;
+use App\Models\McpConnection;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Workspace;
@@ -147,6 +148,27 @@ class AgentController extends Controller
         if ($deleted === 0) {
             throw new NotFoundHttpException('Token not found.');
         }
+
+        return response()->noContent();
+    }
+
+    /** The apps connected to this agent over OAuth (remote MCP clients). */
+    public function connections(Request $request, Workspace $workspace, int $agent): JsonResponse
+    {
+        $model = $this->manageable($request, $workspace, $agent);
+
+        return response()->json(['data' => McpConnection::query()->where('agent_id', $model->id)->orderByDesc('id')->get()
+            ->map(fn (McpConnection $c) => ['id' => $c->id, 'app' => $c->client_name, 'connected_at' => $c->updated_at])]);
+    }
+
+    /** Disconnects an app: its tokens stop working at once. */
+    public function disconnect(Request $request, Workspace $workspace, int $agent, int $connection): Response
+    {
+        $model = $this->manageable($request, $workspace, $agent);
+
+        $found = McpConnection::query()->where('agent_id', $model->id)->whereKey($connection)->first()
+            ?? throw new NotFoundHttpException('Connection not found.');
+        $found->revoke();
 
         return response()->noContent();
     }

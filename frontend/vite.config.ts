@@ -17,6 +17,10 @@ export default defineConfig({
     proxy: {
       '/api': { target: BACKEND, changeOrigin: true },
       '/sanctum': { target: BACKEND, changeOrigin: true },
+      // The MCP endpoint and the OAuth pages apps connect through live on the backend.
+      '/oauth': { target: BACKEND, changeOrigin: true },
+      '/.well-known': { target: BACKEND, changeOrigin: true },
+      '/mcp': { target: BACKEND, changeOrigin: true },
     },
   },
   build: {

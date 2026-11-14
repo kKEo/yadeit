@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DocsController;
+use App\Http\Controllers\OAuthConsentController;
 use App\Http\Middleware\RequireStripeSignature;
 use Illuminate\Support\Facades\Route;
 use Laravel\Cashier\Http\Controllers\WebhookController;
@@ -10,6 +11,9 @@ Route::get('/', fn () => response()->json([
     'name' => config('app.name'),
     'api' => url('/api/v1'),
 ]));
+
+// The consent screen's "Connect" button: remembers the chosen agent, then lets Passport finish.
+Route::post('/oauth/connect', [OAuthConsentController::class, 'approve'])->middleware(['auth', 'throttle:30,1'])->name('oauth.connect');
 
 // Stripe reports payments and cancellations here. Closed until a signing secret is configured.
 Route::post(config('cashier.path', 'stripe').'/webhook', [WebhookController::class, 'handleWebhook'])

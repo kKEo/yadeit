@@ -49,7 +49,8 @@ class EnforceTokenScope
         $routeName = (string) $request->route()?->getName();
 
         if ($user instanceof User && $user->isAgent()) {
-            if (! $token instanceof PersonalAccessToken) {
+            // The one other way in is an app connected over OAuth, whose request the MCP endpoint already turned into the agent's.
+            if (! $token instanceof PersonalAccessToken && ! $request->attributes->get('mcp.oauth')) {
                 throw new ApiException(403, 'agent_needs_token', 'Agents act through an access token only.');
             }
 
