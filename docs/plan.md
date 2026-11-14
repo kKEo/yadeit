@@ -167,7 +167,7 @@ Goal: agents become real team members.
   - Agent-workflow guide as a resource
 - [x] Build signed webhooks with a delivery log
   - HMAC signature, retries, auto-disable after repeated failures
-- [ ] Publish `llms.txt` and Markdown API docs
+- [x] Publish `llms.txt` and Markdown API docs
 - [ ] Enforce the agent guardrails
   - No delete, membership change or "done" for agents; user content marked untrusted in tool output; per-token rate limits; all actions attributed in the audit trail
 - [ ] Verify agents: Claude Code claims an item over MCP, posts a plan, asks a question, links a PR and submits for review; forbidden actions are refused; tool definitions stay under 5k tokens

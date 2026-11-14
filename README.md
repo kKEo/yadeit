@@ -82,6 +82,10 @@ Workspace admins can add webhooks under **Settings**. Yadeit then sends a JSON `
 - Addresses must be `https` and public. For local development set `WEBHOOKS_ALLOW_PRIVATE_TARGETS=true` in `backend/.env`.
 - Deliveries are sent from the queue, so `php artisan queue:work` must be running.
 
+## Documentation for agents
+
+The backend serves its own documentation as Markdown, without a sign-in: `/llms.txt` is the index, and `/docs/agents.md`, `/docs/api.md`, `/docs/reference.md` (generated from the OpenAPI file) and `/docs/webhooks.md` are the pages.
+
 ## API conventions
 
 - The full description is generated to `backend/public/openapi.json` (`php artisan scramble:export`, needs a migrated database) and served at `/openapi.json`.
