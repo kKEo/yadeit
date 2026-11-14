@@ -72,6 +72,16 @@ claude mcp add --transport http yadeit http://localhost:8000/mcp --header "Autho
 
 There are 14 tools covering the working loop (`whoami`, `ready_items`, `claim_item`, `get_item`, `log_progress`, `add_comment`, `link`, `set_acceptance`, `submit_for_review`, and `search_items`, `list_projects`, `create_item`, `update_item`, `list_activity`), plus the guide `yadeit://guide/agent-workflow`. Every tool goes through the JSON API as the agent, so token limits and permissions are the same in both.
 
+## Webhooks
+
+Workspace admins can add webhooks under **Settings**. Yadeit then sends a JSON `POST` to your address when items change (`item.created`, `item.updated`, `item.commented`, `item.claimed`, `item.input_requested`, `item.submitted_for_review` and others).
+
+- Every request is signed: the `X-Yadeit-Signature` header is `t=<unix time>,v1=<hex>`, where `v1` is HMAC-SHA256 of `<t>.<raw body>` with the webhook's secret. Reject requests whose `t` is old.
+- `X-Yadeit-Delivery` (also `id` in the body) stays the same across retries of one event; use it to ignore repeats.
+- Failed deliveries are retried after 10 s, 1 min, 5 min and 30 min. After 10 events in a row fail for good, the webhook switches itself off.
+- Addresses must be `https` and public. For local development set `WEBHOOKS_ALLOW_PRIVATE_TARGETS=true` in `backend/.env`.
+- Deliveries are sent from the queue, so `php artisan queue:work` must be running.
+
 ## API conventions
 
 - The full description is generated to `backend/public/openapi.json` (`php artisan scramble:export`, needs a migrated database) and served at `/openapi.json`.

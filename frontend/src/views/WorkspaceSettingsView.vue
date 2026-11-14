@@ -9,6 +9,7 @@ import { isValidSlug } from '@/lib/slug'
 import { useWorkspaceStore } from '@/stores/workspace'
 import ConfirmDialog from '@/components/app/ConfirmDialog.vue'
 import FormField from '@/components/app/FormField.vue'
+import WebhooksSection from '@/components/app/WebhooksSection.vue'
 import Alert from '@/components/ui/Alert.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
@@ -102,6 +103,8 @@ async function confirmDelete() {
         </CardFooter>
       </form>
     </Card>
+
+    <WebhooksSection v-if="canEdit" />
 
     <Card v-if="canDelete" class="border-destructive/50">
       <CardHeader>

@@ -5123,6 +5123,557 @@
                 }
             }
         },
+        "/workspaces/{workspace}/webhooks": {
+            "get": {
+                "operationId": "webhooks.index",
+                "tags": [
+                    "Webhook"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "url": {
+                                                        "type": "string"
+                                                    },
+                                                    "events": {
+                                                        "type": [
+                                                            "array",
+                                                            "null"
+                                                        ],
+                                                        "description": "null means every event.",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "disabled_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "format": "date-time",
+                                                        "description": "Set when the webhook switched itself off after repeated failures."
+                                                    },
+                                                    "created_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "url",
+                                                    "events",
+                                                    "is_active",
+                                                    "disabled_at",
+                                                    "created_at"
+                                                ]
+                                            }
+                                        },
+                                        "events": {
+                                            "type": "array",
+                                            "prefixItems": [
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.created"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.updated"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.deleted"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.commented"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.claimed"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.released"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.input_requested"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.input_provided"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.submitted_for_review"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "const": "item.run_failed"
+                                                }
+                                            ],
+                                            "minItems": 10,
+                                            "maxItems": 10
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "events"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "webhooks.store",
+                "summary": "The signing secret is returned once, in `secret`",
+                "tags": [
+                    "Webhook"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "events": {
+                                                    "type": [
+                                                        "array",
+                                                        "null"
+                                                    ],
+                                                    "description": "null means every event.",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean"
+                                                },
+                                                "disabled_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "format": "date-time",
+                                                    "description": "Set when the webhook switched itself off after repeated failures."
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "format": "date-time"
+                                                },
+                                                "secret": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name",
+                                                "url",
+                                                "events",
+                                                "is_active",
+                                                "disabled_at",
+                                                "created_at",
+                                                "secret"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/webhooks/{webhook}": {
+            "patch": {
+                "operationId": "webhooks.update",
+                "summary": "Setting is_active to true also clears a switch-off caused by repeated failures",
+                "tags": [
+                    "Webhook"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "webhook",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "events": {
+                                                    "type": [
+                                                        "array",
+                                                        "null"
+                                                    ],
+                                                    "description": "null means every event.",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean"
+                                                },
+                                                "disabled_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "format": "date-time",
+                                                    "description": "Set when the webhook switched itself off after repeated failures."
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name",
+                                                "url",
+                                                "events",
+                                                "is_active",
+                                                "disabled_at",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "webhooks.destroy",
+                "tags": [
+                    "Webhook"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "webhook",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/webhooks/{webhook}/deliveries": {
+            "get": {
+                "operationId": "webhooks.deliveries",
+                "summary": "The latest delivery attempts, newest first",
+                "tags": [
+                    "Webhook"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "webhook",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "event_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "event": {
+                                                        "type": "string"
+                                                    },
+                                                    "attempt": {
+                                                        "type": "integer"
+                                                    },
+                                                    "succeeded": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "status_code": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "error": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "duration_ms": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "event_id",
+                                                    "event",
+                                                    "attempt",
+                                                    "succeeded",
+                                                    "status_code",
+                                                    "error",
+                                                    "duration_ms",
+                                                    "created_at"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/webhooks/{webhook}/ping": {
+            "post": {
+                "operationId": "webhooks.ping",
+                "summary": "Sends a `ping` event so you can check the receiver and its signature check",
+                "tags": [
+                    "Webhook"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "webhook",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "event_id": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "event_id"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/workspaces/{workspace}/items": {
             "get": {
                 "operationId": "items.index",

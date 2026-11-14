@@ -16,6 +16,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SavedViewController;
 use App\Http\Controllers\StateController;
+use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
@@ -82,6 +83,13 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
         Route::post('agents/{agent}/tokens', [AgentController::class, 'createToken'])->whereNumber('agent')->name('agent-tokens.store');
         Route::delete('agents/{agent}/tokens/{token}', [AgentController::class, 'revokeToken'])
             ->whereNumber(['agent', 'token'])->name('agent-tokens.destroy');
+
+        Route::get('webhooks', [WebhookController::class, 'index'])->name('webhooks.index');
+        Route::post('webhooks', [WebhookController::class, 'store'])->name('webhooks.store');
+        Route::patch('webhooks/{webhook}', [WebhookController::class, 'update'])->whereNumber('webhook')->name('webhooks.update');
+        Route::delete('webhooks/{webhook}', [WebhookController::class, 'destroy'])->whereNumber('webhook')->name('webhooks.destroy');
+        Route::get('webhooks/{webhook}/deliveries', [WebhookController::class, 'deliveries'])->whereNumber('webhook')->name('webhooks.deliveries');
+        Route::post('webhooks/{webhook}/ping', [WebhookController::class, 'ping'])->whereNumber('webhook')->name('webhooks.ping');
 
         Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
         Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');

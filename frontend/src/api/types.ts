@@ -338,3 +338,32 @@ export interface ApiErrorBody {
     details?: { fields?: FieldErrors } & Record<string, unknown>
   }
 }
+
+/** Sends a signed HTTP request to `url` when items change. */
+export interface Webhook {
+  id: number
+  name: string
+  url: string
+  /** Event names; null means every event. */
+  events: string[] | null
+  is_active: boolean
+  /** Set when it switched itself off after repeated failures. */
+  disabled_at: string | null
+  created_at: string
+}
+export interface NewWebhook extends Webhook {
+  /** The signing secret; returned once at creation. */
+  secret: string
+}
+export interface SaveWebhookRequest { name?: string; url?: string; events?: string[] | null; is_active?: boolean }
+export interface WebhookDelivery {
+  id: number
+  event_id: string
+  event: string
+  attempt: number
+  succeeded: boolean
+  status_code: number | null
+  error: string | null
+  duration_ms: number | null
+  created_at: string
+}

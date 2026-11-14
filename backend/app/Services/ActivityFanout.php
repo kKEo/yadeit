@@ -31,6 +31,7 @@ class ActivityFanout
 
         DB::afterCommit(fn () => $this->current->runIn($workspace, function () use ($item, $key, $workspace, $event, $actorId, $changes): void {
             WorkspaceChanged::dispatch($workspace->id, $key, $event, $actorId);
+            app(WebhookDispatcher::class)->itemChanged($item, $workspace, $event, $actorId, $changes);
 
             foreach ($this->inboxEntries($item, $event, $actorId, $changes) as [$userId, $inboxEvent, $details]) {
                 $this->deliver($item, $workspace, $userId, $inboxEvent, $actorId, $details);

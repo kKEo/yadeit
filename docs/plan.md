@@ -165,7 +165,7 @@ Goal: agents become real team members.
   - Check `laravel/mcp` against the current MCP revision first
   - Tools: `whoami`, `list_projects`, `search_items`, `get_item`, `ready_items`, `claim_item`, `create_item`, `update_item`, `add_comment`, `set_acceptance`, `link`, `submit_for_review`, `list_activity`
   - Agent-workflow guide as a resource
-- [ ] Build signed webhooks with a delivery log
+- [x] Build signed webhooks with a delivery log
   - HMAC signature, retries, auto-disable after repeated failures
 - [ ] Publish `llms.txt` and Markdown API docs
 - [ ] Enforce the agent guardrails
