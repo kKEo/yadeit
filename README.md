@@ -27,7 +27,7 @@ cd backend
 composer setup                  # install, create .env, generate key, migrate
 php artisan serve               # http://localhost:8000
 php artisan queue:work          # emails and realtime signals are sent from the queue
-php artisan schedule:work       # daily housekeeping: closes cycles, rolls unfinished items over
+php artisan schedule:work       # daily housekeeping: cycles roll over, stale items return to the backlog
 php artisan reverb:start        # realtime updates over WebSocket, port 8080 (optional)
 
 cd ../frontend
@@ -58,6 +58,13 @@ npm run test
 ```
 
 The same checks run in GitHub Actions on every push and pull request.
+
+## Planning, docs and search
+
+- **Cycles:** switch them on per project (Projects → Planning) with a length of 1 to 8 weeks. The first cycle starts on the Monday of that week; when a cycle ends the next one opens and unfinished items move along. Work that starts joins the current cycle.
+- **Stale items:** optionally, open items nobody touched for N days return to the backlog. Items waiting for an answer are left alone.
+- **Docs:** Markdown pages for the workspace or a project, as drafts or published. A published page can get a link that works without signing in.
+- **Search:** `Cmd/Ctrl+K` finds items, comments and pages that contain every word typed. It is plain substring matching, the same on PostgreSQL and MariaDB.
 
 ## Realtime
 

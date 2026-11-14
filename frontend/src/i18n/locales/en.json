@@ -491,7 +491,8 @@
       "input_provided": "{actor} answered the question",
       "submitted_for_review": "{actor} submitted the work for review",
       "run_failed": "{actor} could not finish the work",
-      "rolled_over": "Not finished in {from}: moved to {to}"
+      "rolled_over": "Not finished in {from}: moved to {to}",
+      "decayed": "Untouched for {idle_days} days: returned to the backlog"
     },
     "needsInputOn": "{actor} marked the item as needing input",
     "needsInputOff": "{actor} marked the question as answered",

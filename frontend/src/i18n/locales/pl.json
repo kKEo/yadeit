@@ -491,7 +491,8 @@
       "input_provided": "{actor} odpowiedział(a) na pytanie",
       "submitted_for_review": "{actor} przekazał(a) pracę do przeglądu",
       "run_failed": "{actor} nie zdołał(a) dokończyć pracy",
-      "rolled_over": "Nieukończone w {from}: przeniesiono do {to}"
+      "rolled_over": "Nieukończone w {from}: przeniesiono do {to}",
+      "decayed": "Bez zmian przez {idle_days} dni: wróciło do backlogu"
     },
     "needsInputOn": "{actor} oznaczył(a) zadanie jako czekające na odpowiedź",
     "needsInputOff": "{actor} oznaczył(a) pytanie jako wyjaśnione",

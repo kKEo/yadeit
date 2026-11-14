@@ -21,5 +21,7 @@ describe('delegation', () => {
     expect(describeActivity(entry('submitted_for_review', {}), t)).toEqual(['Coder submitted the work for review'])
     expect(describeActivity(entry('updated', { needs_input: { from: true, to: false } }), t)).toEqual(['Coder marked the question as answered'])
     expect(describeActivity(entry('updated', { delegate: { from: null, to: 'Coder' } }), t)).toEqual(['Coder changed the agent from nothing to Coder'])
+    expect(describeActivity(entry('decayed', { state: { from: 'Todo', to: 'Backlog' }, idle_days: 30 }), t)).toEqual(['Untouched for 30 days: returned to the backlog'])
+    expect(describeActivity(entry('rolled_over', { cycle: { from: 'Cycle 1', to: 'Cycle 2' } }), t)).toEqual(['Not finished in Cycle 1: moved to Cycle 2'])
   })
 })
