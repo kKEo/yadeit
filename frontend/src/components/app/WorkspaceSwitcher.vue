@@ -25,7 +25,7 @@ const { t } = useI18n()
     <DropdownMenuLabel>{{ t('workspace.switcher.heading') }}</DropdownMenuLabel>
     <DropdownMenuItem
       v-for="workspace in store.list" :key="workspace.id"
-      @select="router.push({ name: 'workspace', params: { slug: workspace.slug } })"
+      @select="router.push({ name: 'items', params: { slug: workspace.slug } })"
     >
       <Check class="h-4 w-4" :class="workspace.slug === store.currentSlug ? 'opacity-100' : 'opacity-0'" />
       <span class="truncate">{{ workspace.name }}</span>

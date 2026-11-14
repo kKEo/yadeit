@@ -57,3 +57,24 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Rendered Markdown (descriptions, comments). The HTML is sanitised before it gets here. */
+@layer components {
+  .markdown { @apply break-words text-sm leading-relaxed; }
+  .markdown > * + * { @apply mt-3; }
+  .markdown h1 { @apply text-xl font-semibold; }
+  .markdown h2 { @apply text-lg font-semibold; }
+  .markdown h3, .markdown h4 { @apply font-semibold; }
+  .markdown ul { @apply list-disc pl-5; }
+  .markdown ol { @apply list-decimal pl-5; }
+  .markdown li + li { @apply mt-1; }
+  .markdown a { @apply text-blue-600 underline underline-offset-2; }
+  .markdown code { @apply rounded bg-muted px-1 py-0.5 font-mono text-[0.85em]; }
+  .markdown pre { @apply overflow-x-auto rounded-md bg-muted p-3; }
+  .markdown pre code { @apply bg-transparent p-0; }
+  .markdown blockquote { @apply border-l-2 pl-3 text-muted-foreground; }
+  .markdown table { @apply w-full border-collapse text-left; }
+  .markdown th, .markdown td { @apply border px-2 py-1; }
+  .markdown img { @apply max-w-full rounded-md; }
+  .markdown hr { @apply border-t; }
+}

@@ -1,58 +1,147 @@
-// Workflow state as a string literal union
-export type WorkItemState = 'backlog' | 'unstarted' | 'started' | 'completed' | 'cancelled'
+// ── Work items ───────────────────────────────────────────────────────────────
 
-export const WORK_ITEM_STATES: readonly WorkItemState[] = [
-  'backlog',
-  'unstarted',
-  'started',
-  'completed',
-  'cancelled',
-]
+/** The fixed meaning behind every custom state name, in workflow order. */
+export type StateGroup = 'triage' | 'backlog' | 'unstarted' | 'started' | 'completed' | 'cancelled'
+export const STATE_GROUPS: readonly StateGroup[] = ['triage', 'backlog', 'unstarted', 'started', 'completed', 'cancelled']
 
-export type WorkItemPriority = 'none' | 'low' | 'medium' | 'high' | 'urgent'
+export type Priority = 'none' | 'low' | 'medium' | 'high' | 'urgent'
+/** Most pressing first, the order pickers and board columns use. */
+export const PRIORITIES: readonly Priority[] = ['urgent', 'high', 'medium', 'low', 'none']
 
-export const WORK_ITEM_PRIORITIES: readonly WorkItemPriority[] = [
-  'none',
-  'low',
-  'medium',
-  'high',
-  'urgent',
-]
+export type ItemKind = 'task' | 'bug' | 'feature' | 'design' | 'research'
+export const ITEM_KINDS: readonly ItemKind[] = ['task', 'bug', 'feature', 'design', 'research']
 
-export interface Assignee {
-  id: string | number
-  name: string
-}
+export type LinkKind = 'pr' | 'branch' | 'design' | 'url'
+export const LINK_KINDS: readonly LinkKind[] = ['url', 'pr', 'branch', 'design']
 
-// Core entity. `key` (e.g. "WEB-143") is the identifier used in URLs.
-export interface WorkItem {
+export type RelationType = 'blocks' | 'blocked_by' | 'relates' | 'duplicate'
+/** Types the API accepts when adding; `blocked_by` is only the other side of `blocks`. */
+export const RELATION_TYPES: readonly Exclude<RelationType, 'blocked_by'>[] = ['blocks', 'relates', 'duplicate']
+
+export interface StateRef { id: number; name: string; group: StateGroup; color: string }
+export interface ProjectState extends StateRef { is_default: boolean }
+export interface LabelRef { id: number; name: string; color: string }
+export interface UserRef { id: number; name: string }
+
+/** A list row. `key` (e.g. "WEB-143") is the identifier used in URLs. */
+export interface Item {
   key: string
   title: string
-  /** Markdown source */
-  description: string
-  state: WorkItemState
-  priority: WorkItemPriority
-  assignee: Assignee | null
+  state: StateRef
+  priority: Priority
+  kind: ItemKind
+  assignee: UserRef | null
+  labels: LabelRef[]
+  project: { key: string; name: string }
+  parent: string | null
+  due_date: string | null
+  version: number
+  created_at: string
   updated_at: string
+  completed_at: string | null
 }
 
-// Summary for the list view (lighter than the full entity)
-export type WorkItemSummary = Omit<WorkItem, 'description'>
+export interface ItemReference { key: string; title: string; state: StateRef }
+export interface ChecklistEntry { id: number; text: string; is_done: boolean }
+export interface ItemLink { id: number; kind: LinkKind; url: string; title: string | null }
+export interface ItemRelation { id: number; type: RelationType; item: ItemReference }
+export interface Attachment { id: number; name: string; mime_type: string; size: number; is_image: boolean; created_at: string }
 
-export interface CreateWorkItemRequest {
+export interface ItemDetail extends Item {
+  /** Markdown source */
+  description: string | null
+  checklist: ChecklistEntry[]
+  links: ItemLink[]
+  children: ItemReference[]
+  relations: ItemRelation[]
+  attachments: Attachment[]
+  comment_count: number
+  subscribed: boolean
+}
+
+export interface CreateItemRequest {
+  project: string
   title: string
-  description?: string
-  state?: WorkItemState
-  priority?: WorkItemPriority
+  description?: string | null
+  /** State name or id */
+  state?: string | number
+  priority?: Priority
+  kind?: ItemKind
+  assignee?: number | 'me' | null
+  parent?: string | null
+  due_date?: string | null
+  /** Label names */
+  labels?: string[]
 }
 
-export type UpdateWorkItemRequest = Partial<CreateWorkItemRequest>
+export interface UpdateItemRequest extends Partial<Omit<CreateItemRequest, 'project'>> {
+  expected_version?: number
+}
 
-export interface ListWorkItemsParams {
-  state?: WorkItemState
-  cursor?: string
+/** Filter names shared by the item list, the URL and saved views. Values are strings, as stored. */
+export interface ItemFilters {
+  project?: string
+  state?: string
+  state_group?: StateGroup
+  priority?: Priority
+  kind?: ItemKind
+  /** Member id, "me" or "none" */
+  assignee?: string
+  label?: string
+  q?: string
+  /** "1" hides closed items */
+  open?: string
+}
+export const FILTER_NAMES = ['project', 'state', 'state_group', 'priority', 'kind', 'assignee', 'label', 'q', 'open'] as const
+export type FilterName = (typeof FILTER_NAMES)[number]
+
+export interface ListItemsParams extends ItemFilters {
+  parent?: string
+  sort?: string
   limit?: number
+  cursor?: string
 }
+
+export interface Comment { id: number; body: string; author: UserRef | null; created_at: string; edited_at: string | null }
+
+export interface ActivityChange { from: unknown; to: unknown }
+export interface ActivityEntry {
+  id: number
+  event: string
+  /** For `updated`: field → {from, to}. For other events: a few named values. */
+  changes: Record<string, unknown> | null
+  actor: UserRef | null
+  created_at: string
+}
+
+// ── Saved views ──────────────────────────────────────────────────────────────
+
+export type ViewLayout = 'list' | 'board'
+export type GroupBy = 'state' | 'priority' | 'assignee' | 'kind' | 'none'
+export const GROUPINGS: readonly GroupBy[] = ['state', 'priority', 'assignee', 'kind', 'none']
+export const SORT_FIELDS = ['updated_at', 'created_at', 'priority', 'due_date', 'sequence'] as const
+
+/** What the items page shows; lives in the URL and is what a saved view stores. */
+export interface ViewState { filters: ItemFilters; layout: ViewLayout; group_by: GroupBy; sort: string }
+
+export interface SavedView extends ViewState { id: number; name: string; is_shared: boolean; owner_id: number }
+export interface SaveViewRequest extends Partial<ViewState> { name?: string; is_shared?: boolean }
+
+// ── Inbox ────────────────────────────────────────────────────────────────────
+
+export type InboxEvent = 'assigned' | 'commented' | 'state_changed'
+export interface InboxEntry {
+  id: number
+  event: InboxEvent
+  details: { from?: string; to?: string } | null
+  item: { key: string; title: string }
+  actor: UserRef | null
+  read: boolean
+  snoozed_until: string | null
+  created_at: string
+}
+export interface InboxPage { data: InboxEntry[]; next_cursor: string | null; unread_count: number }
+export interface UpdateInboxRequest { read?: boolean; snoozed_until?: string | null }
 
 // ── Accounts and workspaces ──────────────────────────────────────────────────
 
@@ -65,6 +154,7 @@ export interface User {
   email: string
   locale: string
   email_verified: boolean
+  email_notifications: boolean
   created_at: string
 }
 
@@ -93,6 +183,7 @@ export interface RegisterRequest {
 export interface UpdateMeRequest {
   name?: string
   locale?: string
+  email_notifications?: boolean
 }
 
 export interface ResetPasswordRequest {
@@ -156,8 +247,14 @@ export interface Project {
   key: string
   name: string
   description: string | null
+  archived: boolean
   created_at: string
 }
+
+/** A project with its workflow, as `GET projects/{KEY}` returns it. */
+export interface ProjectDetail extends Project { states: ProjectState[]; labels: LabelRef[] }
+
+export interface CreateProjectRequest { name: string; key: string; description?: string | null }
 
 // ── Response envelopes ───────────────────────────────────────────────────────
 
@@ -180,6 +277,6 @@ export interface ApiErrorBody {
   error: {
     code: string
     message: string
-    details?: { fields?: FieldErrors }
+    details?: { fields?: FieldErrors } & Record<string, unknown>
   }
 }

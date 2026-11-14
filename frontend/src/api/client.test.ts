@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ApiError, createWorkItem, listWorkItems, login, updateWorkItem } from './client'
+import { ApiError, login } from './client'
+import { createItem, listItems, updateItem, uploadAttachment } from './items'
 
 function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
   return new Response(JSON.stringify(body), {
@@ -48,9 +49,9 @@ describe('api client', () => {
     document.cookie = 'XSRF-TOKEN=abc%3D%3D; path=/'
     fetchMock.mockResolvedValue(jsonResponse({ data: item }, { status: 201 }))
 
-    const res = await createWorkItem('acme', { title: 'Fix login' })
+    const res = await createItem('acme', { project: 'WEB', title: 'Fix login' })
 
-    expect(res.item.key).toBe('WEB-143')
+    expect(res.key).toBe('WEB-143')
     const { url, init, headers } = call()
     expect(url).toBe('/api/v1/workspaces/acme/items')
     expect(init.method).toBe('POST')
@@ -58,36 +59,61 @@ describe('api client', () => {
     expect(headers.Accept).toBe('application/json')
     expect(headers['Content-Type']).toBe('application/json')
     expect(headers['Idempotency-Key']).toMatch(/^[0-9a-f-]{36}$/)
-    expect(init.body).toBe(JSON.stringify({ title: 'Fix login' }))
+    expect(init.body).toBe(JSON.stringify({ project: 'WEB', title: 'Fix login' }))
   })
 
   it('includes credentials and omits the XSRF header on GET', async () => {
     document.cookie = 'XSRF-TOKEN=abc; path=/'
     fetchMock.mockResolvedValue(jsonResponse({ data: [], next_cursor: null }))
 
-    const res = await listWorkItems('acme', { state: 'started', cursor: 'c1' })
+    const res = await listItems('acme', { state_group: 'started', assignee: 'me', open: '1', cursor: 'c1' })
 
     expect(res).toEqual({ data: [], next_cursor: null })
     const { url, init, headers } = call()
-    expect(url).toBe('/api/v1/workspaces/acme/items?state=started&cursor=c1')
+    expect(url).toBe('/api/v1/workspaces/acme/items?state_group=started&assignee=me&open=1&cursor=c1')
     expect(init.credentials).toBe('include')
     expect(headers.Accept).toBe('application/json')
     expect(headers).not.toHaveProperty('X-XSRF-TOKEN')
   })
 
-  it('includes credentials on mutating requests and sends If-Match when given an etag', async () => {
+  it('sends only the changed fields plus expected_version on PATCH', async () => {
     document.cookie = 'XSRF-TOKEN=tok; path=/'
-    fetchMock.mockResolvedValue(jsonResponse({ data: item }, { headers: { ETag: '"v2"' } }))
+    fetchMock.mockResolvedValue(jsonResponse({ data: { ...item, version: 4 } }))
 
-    const res = await updateWorkItem('acme', 'WEB-143', { state: 'started' }, '"v1"')
+    const res = await updateItem('acme', 'WEB-143', { priority: 'high', expected_version: 3 })
 
-    expect(res.etag).toBe('"v2"')
+    expect(res.version).toBe(4)
     const { url, init, headers } = call()
     expect(url).toBe('/api/v1/workspaces/acme/items/WEB-143')
     expect(init.method).toBe('PATCH')
     expect(init.credentials).toBe('include')
-    expect(headers['If-Match']).toBe('"v1"')
+    expect(init.body).toBe(JSON.stringify({ priority: 'high', expected_version: 3 }))
     expect(headers['X-XSRF-TOKEN']).toBe('tok')
+  })
+
+  it('uploads attachments as multipart and lets the browser set the content type', async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ data: { id: 1, name: 'a.txt' } }, { status: 201 }))
+
+    await uploadAttachment('acme', 'WEB-143', new File(['hello'], 'a.txt'))
+
+    const { url, init, headers } = call()
+    expect(url).toBe('/api/v1/workspaces/acme/items/WEB-143/attachments')
+    expect(init.body).toBeInstanceOf(FormData)
+    expect((init.body as FormData).get('file')).toBeInstanceOf(File)
+    expect(headers).not.toHaveProperty('Content-Type')
+  })
+
+  it('keeps the details of a version conflict on the ApiError', async () => {
+    fetchMock.mockResolvedValue(jsonResponse(
+      { error: { code: 'version_mismatch', message: 'Changed.', details: { current_version: 5, expected_version: 3 } } },
+      { status: 412 },
+    ))
+
+    const err = (await updateItem('acme', 'WEB-143', { title: 'x', expected_version: 3 }).catch((e: unknown) => e)) as ApiError
+
+    expect(err.status).toBe(412)
+    expect(err.code).toBe('version_mismatch')
+    expect(err.details.current_version).toBe(5)
   })
 
   it('parses the error envelope into an ApiError with field errors', async () => {
@@ -104,7 +130,7 @@ describe('api client', () => {
       ),
     )
 
-    const err = await createWorkItem('acme', { title: '' }).catch((e: unknown) => e)
+    const err = await createItem('acme', { project: 'WEB', title: '' }).catch((e: unknown) => e)
 
     expect(err).toBeInstanceOf(ApiError)
     const apiError = err as ApiError
@@ -117,7 +143,7 @@ describe('api client', () => {
   it('falls back to a generic ApiError when the body is not the envelope', async () => {
     fetchMock.mockResolvedValue(new Response('<html>Bad Gateway</html>', { status: 502, statusText: 'Bad Gateway' }))
 
-    const err = (await listWorkItems('acme').catch((e: unknown) => e)) as ApiError
+    const err = (await listItems('acme').catch((e: unknown) => e)) as ApiError
 
     expect(err).toBeInstanceOf(ApiError)
     expect(err.status).toBe(502)

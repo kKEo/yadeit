@@ -94,9 +94,10 @@ class MemberController extends Controller
 
     private function guardLastOwner(Workspace $workspace): void
     {
-        $owners = $workspace->memberships()->where('role', WorkspaceRole::Owner)->lockForUpdate()->count();
+        // Lock the owner rows themselves: PostgreSQL refuses FOR UPDATE on an aggregate.
+        $ownerIds = $workspace->memberships()->where('role', WorkspaceRole::Owner)->lockForUpdate()->pluck('id')->all();
 
-        if ($owners <= 1) {
+        if (count($ownerIds) <= 1) {
             throw new ConflictHttpException('A workspace needs at least one owner. Make someone else an owner first.');
         }
     }

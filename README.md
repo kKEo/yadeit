@@ -26,6 +26,8 @@ docker compose up -d db         # PostgreSQL with the yadeit and yadeit_test dat
 cd backend
 composer setup                  # install, create .env, generate key, migrate
 php artisan serve               # http://localhost:8000
+php artisan queue:work          # emails and realtime signals are sent from the queue
+php artisan reverb:start        # realtime updates over WebSocket, port 8080 (optional)
 
 cd ../frontend
 npm install
@@ -56,7 +58,16 @@ npm run test
 
 The same checks run in GitHub Actions on every push and pull request.
 
+## Realtime
+
+Open browsers refresh themselves when something changes. The API sends small signals (identifiers only, never content) through Laravel Reverb; the web app then re-reads through the API. Copy the `REVERB_*` values from `backend/.env` into `frontend/.env.local` as `VITE_REVERB_APP_KEY`, `VITE_REVERB_HOST`, `VITE_REVERB_PORT` and `VITE_REVERB_SCHEME`. Without them the app works, just without live updates.
+
 ## API conventions
+
+- The full description is generated to `backend/public/openapi.json` (`php artisan scramble:export`, needs a migrated database) and served at `/openapi.json`.
+- Work items are addressed by key, for example `/api/v1/workspaces/acme/items/WEB-143`.
+- Lists page with `limit` and `cursor`; `fields` and `expand` shape the rows.
+- Creates accept an `Idempotency-Key` header and are safe to retry; updates accept `expected_version` and answer 412 when the item changed in the meantime.
 
 - All endpoints live under `/api/v1`.
 - The web app signs in with a cookie session; scripts and agents send `Authorization: Bearer <token>`.

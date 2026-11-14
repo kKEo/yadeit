@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password', 'locale'])]
+#[Fillable(['name', 'email', 'password', 'locale', 'email_notifications'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -22,7 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public const LOCALES = ['en', 'pl'];
 
     /** @var array<string, mixed> */
-    protected $attributes = ['locale' => 'en'];
+    protected $attributes = ['locale' => 'en', 'email_notifications' => true];
 
     /**
      * Get the attributes that should be cast.
@@ -34,6 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'email_notifications' => 'boolean',
         ];
     }
 

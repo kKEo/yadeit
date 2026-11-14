@@ -64,12 +64,14 @@ const router = createRouter({
       path: '/w/:slug',
       component: () => import('@/layouts/WorkspaceLayout.vue'),
       children: [
-        { path: '', name: 'workspace', component: () => import('@/views/ProjectListView.vue') },
+        // The items page is the landing page of a workspace.
+        { path: '', name: 'workspace', redirect: (to) => ({ name: 'items', params: to.params }) },
+        { path: 'projects', name: 'projects', component: () => import('@/views/ProjectListView.vue') },
+        { path: 'inbox', name: 'inbox', component: () => import('@/views/InboxView.vue') },
         { path: 'members', name: 'workspace-members', component: () => import('@/views/MembersView.vue') },
         { path: 'settings', name: 'workspace-settings', component: () => import('@/views/WorkspaceSettingsView.vue') },
-        { path: 'items', name: 'items', component: () => import('@/views/WorkItemListView.vue') },
-        { path: 'items/new', name: 'create-item', component: () => import('@/views/CreateWorkItemView.vue') },
-        { path: 'items/:key', name: 'item-detail', component: () => import('@/views/WorkItemDetailView.vue') },
+        { path: 'items', name: 'items', component: () => import('@/views/ItemsView.vue') },
+        { path: 'items/:key', name: 'item-detail', component: () => import('@/views/ItemDetailView.vue') },
       ],
     },
     {

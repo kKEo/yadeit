@@ -13,6 +13,14 @@ import CardTitle from '@/components/ui/CardTitle.vue'
 import CardDescription from '@/components/ui/CardDescription.vue'
 import CardFooter from '@/components/ui/CardFooter.vue'
 import Skeleton from '@/components/ui/Skeleton.vue'
+import ProfileDialog from '@/components/app/ProfileDialog.vue'
+import CommandPalette from '@/components/commands/CommandPalette.vue'
+import ShortcutsHelpDialog from '@/components/commands/ShortcutsHelpDialog.vue'
+import ItemPeekPanel from '@/components/items/ItemPeekPanel.vue'
+import ItemPropertyShortcut from '@/components/items/ItemPropertyShortcut.vue'
+import QuickCaptureDialog from '@/components/items/QuickCaptureDialog.vue'
+import { useRealtime } from '@/composables/useRealtime'
+import { useWorkspaceShortcuts } from '@/composables/useWorkspaceShortcuts'
 
 const store = useWorkspaceStore()
 const { t } = useI18n()
@@ -23,6 +31,9 @@ const slug = computed(() => store.currentSlug)
 watch(slug, (value) => {
   if (value) void store.load(value)
 }, { immediate: true })
+
+useWorkspaceShortcuts()
+useRealtime()
 </script>
 
 <template>
@@ -43,7 +54,7 @@ watch(slug, (value) => {
   <div v-else-if="slug" class="min-h-screen bg-background">
     <AppHeader :slug="slug" />
     <VerifyEmailBanner />
-    <main class="mx-auto max-w-6xl space-y-4 px-4 py-6">
+    <main class="mx-auto max-w-[100rem] space-y-4 px-4 py-6">
       <Alert v-if="store.loadError" variant="destructive" :title="store.loadError" />
       <div v-if="!store.current && store.loading" class="space-y-3" aria-busy="true">
         <Skeleton class="h-8 w-1/3" />
@@ -52,5 +63,13 @@ watch(slug, (value) => {
       <!-- Keyed by slug so a view never shows another workspace's data after a switch. -->
       <RouterView v-else-if="store.current" :key="slug" />
     </main>
+    <template v-if="store.current">
+      <ItemPeekPanel :key="slug" />
+      <QuickCaptureDialog />
+      <ItemPropertyShortcut />
+      <CommandPalette />
+      <ShortcutsHelpDialog />
+      <ProfileDialog />
+    </template>
   </div>
 </template>

@@ -6,12 +6,14 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\InboxController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\ItemPartsController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\MeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SavedViewController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
@@ -89,6 +91,16 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
             Route::patch('labels/{label}', [LabelController::class, 'update'])->whereNumber('label')->name('labels.update');
             Route::delete('labels/{label}', [LabelController::class, 'destroy'])->whereNumber('label')->name('labels.destroy');
         });
+
+        Route::get('views', [SavedViewController::class, 'index'])->name('views.index');
+        Route::post('views', [SavedViewController::class, 'store'])->name('views.store');
+        Route::patch('views/{view}', [SavedViewController::class, 'update'])->whereNumber('view')->name('views.update');
+        Route::delete('views/{view}', [SavedViewController::class, 'destroy'])->whereNumber('view')->name('views.destroy');
+
+        Route::get('inbox', [InboxController::class, 'index'])->name('inbox.index');
+        Route::post('inbox/read-all', [InboxController::class, 'readAll'])->name('inbox.read-all');
+        Route::patch('inbox/{entry}', [InboxController::class, 'update'])->whereNumber('entry')->name('inbox.update');
+        Route::delete('inbox/{entry}', [InboxController::class, 'destroy'])->whereNumber('entry')->name('inbox.destroy');
 
         // Work items are addressed by key, for example /items/WEB-143.
         Route::get('items', [WorkItemController::class, 'index'])->name('items.index');

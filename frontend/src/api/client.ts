@@ -1,28 +1,20 @@
-import { v4 as uuidv4 } from 'uuid'
 import type {
   AcceptedInvitation,
   ApiErrorBody,
   CreateInvitationRequest,
-  CreateWorkItemRequest,
   CreateWorkspaceRequest,
   FieldErrors,
   Invitation,
   InvitationPreview,
   ItemResponse,
-  ListResponse,
-  ListWorkItemsParams,
   Me,
   Member,
   MessageResponse,
-  Project,
   RegisterRequest,
   ResetPasswordRequest,
   UpdateMeRequest,
-  UpdateWorkItemRequest,
   UpdateWorkspaceRequest,
   VerifyEmailParams,
-  WorkItem,
-  WorkItemSummary,
   Workspace,
   WorkspaceRole,
 } from './types'
@@ -37,6 +29,8 @@ export class ApiError extends Error {
     public readonly code: string,
     message: string,
     public readonly fields: FieldErrors = {},
+    /** Extra machine-readable context, e.g. `current_version` on a 412. */
+    public readonly details: Record<string, unknown> = {},
   ) {
     super(message)
     this.name = 'ApiError'
@@ -69,18 +63,21 @@ async function toApiError(res: Response): Promise<ApiError> {
   let code = 'unknown_error'
   let message = res.statusText || `HTTP ${res.status}`
   let fields: FieldErrors = {}
+  let details: Record<string, unknown> = {}
   try {
     const body = (await res.json()) as Partial<ApiErrorBody>
     code = body.error?.code ?? code
     message = body.error?.message ?? message
     fields = body.error?.details?.fields ?? fields
+    details = body.error?.details ?? details
   } catch {
     // ignore parse error
   }
-  return new ApiError(res.status, code, message, fields)
+  return new ApiError(res.status, code, message, fields, details)
 }
 
-interface RequestOptions {
+export interface RequestOptions {
+  /** Sent as JSON, or as multipart when it is a `FormData`. */
   body?: unknown
   headers?: Record<string, string>
   /** Do not notify the unauthorized handler on 401 (session probe, login). */
@@ -97,7 +94,8 @@ async function send<T>(method: string, url: string, opts: RequestOptions = {}): 
     Accept: 'application/json',
     ...opts.headers,
   }
-  if (opts.body !== undefined) headers['Content-Type'] = 'application/json'
+  const multipart = opts.body instanceof FormData
+  if (opts.body !== undefined && !multipart) headers['Content-Type'] = 'application/json'
   if (method !== 'GET') {
     const xsrf = readCookie(XSRF_COOKIE)
     if (xsrf) headers['X-XSRF-TOKEN'] = xsrf
@@ -107,7 +105,7 @@ async function send<T>(method: string, url: string, opts: RequestOptions = {}): 
     method,
     headers,
     credentials: 'include',
-    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+    body: opts.body === undefined ? undefined : multipart ? (opts.body as FormData) : JSON.stringify(opts.body),
   })
 
   if (!res.ok) {
@@ -120,18 +118,8 @@ async function send<T>(method: string, url: string, opts: RequestOptions = {}): 
   return { body: (await res.json()) as T, etag }
 }
 
-async function request<T>(method: string, path: string, opts?: RequestOptions): Promise<T> {
+export async function request<T>(method: string, path: string, opts?: RequestOptions): Promise<T> {
   return (await send<T>(method, `${API_BASE_PATH}${path}`, opts)).body
-}
-
-function idempotencyKey(): string {
-  return uuidv4()
-}
-
-function mutationHeaders(etag?: string | null): Record<string, string> {
-  const headers: Record<string, string> = {}
-  if (etag) headers['If-Match'] = etag
-  return headers
 }
 
 // ── Auth (Laravel Sanctum cookie session) ────────────────────────────────────
@@ -191,7 +179,7 @@ export async function resendVerificationEmail(): Promise<void> {
 
 // ── Workspaces ───────────────────────────────────────────────────────────────
 
-const workspacePath = (slug: string) => `/workspaces/${encodeURIComponent(slug)}`
+export const workspacePath = (slug: string) => `/workspaces/${encodeURIComponent(slug)}`
 
 export async function createWorkspace(req: CreateWorkspaceRequest): Promise<Workspace> {
   return (await request<ItemResponse<Workspace>>('POST', '/workspaces', { body: req })).data
@@ -207,10 +195,6 @@ export async function updateWorkspace(slug: string, req: UpdateWorkspaceRequest)
 
 export async function deleteWorkspace(slug: string): Promise<void> {
   await request<void>('DELETE', workspacePath(slug))
-}
-
-export async function listProjects(slug: string): Promise<Project[]> {
-  return (await request<ItemResponse<Project[]>>('GET', `${workspacePath(slug)}/projects`)).data
 }
 
 // ── Members and invitations ──────────────────────────────────────────────────
@@ -250,57 +234,4 @@ export async function getInvitationPreview(token: string): Promise<InvitationPre
 export async function acceptInvitation(token: string): Promise<AcceptedInvitation> {
   const path = `/invitations/${encodeURIComponent(token)}/accept`
   return (await request<ItemResponse<AcceptedInvitation>>('POST', path)).data
-}
-
-// ── Work items ───────────────────────────────────────────────────────────────
-
-export interface WithEtag<T> {
-  item: T
-  /** Value of the response `ETag` header, if the server sent one. */
-  etag: string | null
-}
-
-const itemsPath = (slug: string) => `${workspacePath(slug)}/items`
-const itemPath = (slug: string, key: string) => `${itemsPath(slug)}/${encodeURIComponent(key)}`
-
-export async function listWorkItems(
-  slug: string,
-  params?: ListWorkItemsParams,
-): Promise<ListResponse<WorkItemSummary>> {
-  const qs = new URLSearchParams()
-  if (params?.state) qs.set('state', params.state)
-  if (params?.cursor) qs.set('cursor', params.cursor)
-  if (params?.limit != null) qs.set('limit', String(params.limit))
-  const query = qs.toString() ? `?${qs}` : ''
-  return request<ListResponse<WorkItemSummary>>('GET', `${itemsPath(slug)}${query}`)
-}
-
-export async function getWorkItem(slug: string, key: string): Promise<WithEtag<WorkItem>> {
-  const res = await send<ItemResponse<WorkItem>>('GET', `${API_BASE_PATH}${itemPath(slug, key)}`)
-  return { item: res.body.data, etag: res.etag }
-}
-
-export async function createWorkItem(slug: string, req: CreateWorkItemRequest): Promise<WithEtag<WorkItem>> {
-  const res = await send<ItemResponse<WorkItem>>('POST', `${API_BASE_PATH}${itemsPath(slug)}`, {
-    body: req,
-    headers: { 'Idempotency-Key': idempotencyKey() },
-  })
-  return { item: res.body.data, etag: res.etag }
-}
-
-export async function updateWorkItem(
-  slug: string,
-  key: string,
-  req: UpdateWorkItemRequest,
-  etag?: string | null,
-): Promise<WithEtag<WorkItem>> {
-  const res = await send<ItemResponse<WorkItem>>('PATCH', `${API_BASE_PATH}${itemPath(slug, key)}`, {
-    body: req,
-    headers: mutationHeaders(etag),
-  })
-  return { item: res.body.data, etag: res.etag }
-}
-
-export async function deleteWorkItem(slug: string, key: string, etag?: string | null): Promise<void> {
-  await request<void>('DELETE', itemPath(slug, key), { headers: mutationHeaders(etag) })
 }

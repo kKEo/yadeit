@@ -11,6 +11,7 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -37,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
         $this->pointEmailLinksAtTheFrontend();
 
         // Shown in the generated OpenAPI file: scripts and agents send a bearer token.
+        // The realtime channel sign-in is framework plumbing, not part of the documented API.
+        Scramble::configure()->routes(fn (RoutingRoute $route) => str_starts_with($route->uri(), 'api/v1')
+            && ! str_contains($route->uri(), 'broadcasting/auth'));
+
         Scramble::configure()->withDocumentTransformers(function (OpenApi $openApi): void {
             $openApi->secure(SecurityScheme::http('bearer'));
         });

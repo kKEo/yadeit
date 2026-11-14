@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ItemKind;
 use App\Enums\Priority;
 use App\Models\Concerns\BelongsToWorkspace;
+use App\Services\ActivityFanout;
 use Database\Factories\WorkItemFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -182,5 +183,7 @@ class WorkItem extends Model
             'diff' => $changes,
             'created_at' => now(),
         ]);
+
+        app(ActivityFanout::class)->dispatch($this, $event, $actorId, $changes);
     }
 }

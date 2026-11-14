@@ -92,11 +92,11 @@ Written for the plan-progress mod: every `Phase N` heading is one phase, and eve
 
 Goal: an empty, tested, runnable skeleton of both applications.
 
-- [ ] Tag the last Yii commit and remove the legacy code
+- [x] Tag the last Yii commit and remove the legacy code
   - Tag `legacy-yii`; delete Yii code, assets and the committed SQLite database from the working tree
 - [x] Create the Laravel backend skeleton
   - `backend/` with Sanctum, Pest, Pint, Larastan; `/api/v1` routing and uniform JSON errors
-- [ ] Add Docker Compose with PostgreSQL
+- [x] Add Docker Compose with PostgreSQL
 - [x] Scaffold the Vue frontend
   - `frontend-scaffold:scaffold-frontend`; add Pinia Colada, vue-i18n (en, pl), Vitest; dev proxy to Laravel
 - [x] Set up CI and the README
@@ -107,13 +107,13 @@ Goal: an empty, tested, runnable skeleton of both applications.
 
 Goal: people can sign up and work together in isolated workspaces.
 
-- [ ] Build registration, email verification, login and password reset
-- [ ] Build workspaces, memberships and roles
+- [x] Build registration, email verification, login and password reset
+- [x] Build workspaces, memberships and roles
   - Roles: owner, admin, member, guest; workspace switcher
-- [ ] Build email invitations
-- [ ] Enforce tenant scoping with policies
+- [x] Build email invitations
+- [x] Enforce tenant scoping with policies
   - `workspace_id` global scope; isolation tests for every resource
-- [ ] Build onboarding with a seeded sample project
+- [x] Build onboarding with a seeded sample project
   - First workspace wizard, helpful empty states
 - [ ] Verify accounts: sign-up to invited teammate works in the browser, cross-workspace access returns 404
 
@@ -121,33 +121,33 @@ Goal: people can sign up and work together in isolated workspaces.
 
 Goal: the data model and API that everything else builds on.
 
-- [ ] Build projects, states and labels
+- [x] Build projects, states and labels
   - Project key prefix; states in the five fixed groups plus triage; preset workflow
-- [ ] Build work items
+- [x] Build work items
   - Sequence keys (`WEB-143`), priority, assignee, kind, due date, parent, checklist, links, relations
-- [ ] Build comments, activity history and subscriptions
+- [x] Build comments, activity history and subscriptions
   - Activity stores field diffs
-- [ ] Build attachments on private storage
+- [x] Build attachments on private storage
   - Authorised download, size and type limits, image previews
-- [ ] Apply the API conventions and generate OpenAPI
+- [x] Apply the API conventions and generate OpenAPI
   - Cursor pagination, `fields`/`expand`, idempotency keys, version checks, rate-limit headers
-- [ ] Verify the core API: feature tests cover every endpoint and the OpenAPI document validates
+- [x] Verify the core API: feature tests cover every endpoint and the OpenAPI document validates
 
 ## Phase 4: Fast, friendly interface
 
 Goal: the experience that makes the tool pleasant; first usable release.
 
-- [ ] Build list and board layouts on one engine
+- [x] Build list and board layouts on one engine
   - Group, sort, drag to change state
-- [ ] Build filters and saved views
+- [x] Build filters and saved views
   - Filter chips ↔ URL ↔ saved view; personal and shared; built-in views (all, assigned to me, created by me, subscribed)
-- [ ] Build the peek panel and inline property editing
+- [x] Build the peek panel and inline property editing
   - One reusable property picker shared by mouse, keyboard and palette
-- [ ] Build the command palette, shortcuts and quick capture
+- [x] Build the command palette, shortcuts and quick capture
   - `Cmd+K`, single-key grammar, `?` overlay, "create more"
-- [ ] Add optimistic updates and realtime sync
+- [x] Add optimistic updates and realtime sync
   - Pinia Colada mutations with rollback; Reverb events patch the cache
-- [ ] Build the inbox and email notifications
+- [x] Build the inbox and email notifications
   - Unread, snooze, mark all read
 - [ ] Verify the interface: create, move, filter and save a view using only the keyboard, with two browsers staying in sync
 

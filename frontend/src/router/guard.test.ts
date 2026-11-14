@@ -77,15 +77,16 @@ describe('router guard', () => {
 
     const route = await visit('/')
 
-    expect(route.name).toBe('workspace')
-    expect(route.path).toBe('/w/acme')
+    // The workspace root lands on its items page.
+    expect(route.name).toBe('items')
+    expect(route.path).toBe('/w/acme/items')
   })
 
   it('sends a signed-in user away from login and register', async () => {
     sessionIs(makeMe({ workspaces: [makeWorkspace()] }))
 
-    expect((await visit('/login')).path).toBe('/w/acme')
-    expect((await visit('/register?email=x%40example.com')).path).toBe('/w/acme')
+    expect((await visit('/login')).path).toBe('/w/acme/items')
+    expect((await visit('/register?email=x%40example.com')).path).toBe('/w/acme/items')
   })
 
   it('serves work item pages under the workspace', async () => {

@@ -36,7 +36,8 @@
     "unstarted": "Do zrobienia",
     "started": "W toku",
     "completed": "Ukończone",
-    "cancelled": "Anulowane"
+    "cancelled": "Anulowane",
+    "triage": "Do oceny"
   },
   "priority": {
     "none": "Brak priorytetu",
@@ -47,14 +48,12 @@
   },
   "items": {
     "title": "Zadania",
-    "count": "Nie wczytano zadań | Wczytano {n} zadanie | Wczytano {n} zadania | Wczytano {n} zadań",
+    "count": "Brak zadań | Wczytano {n} zadanie | Wczytano {n} zadania | Wczytano {n} zadań",
     "new": "Nowe zadanie",
-    "filterAll": "Wszystkie",
     "loadMore": "Wczytaj więcej",
-    "empty": "Nie znaleziono żadnych zadań.",
-    "emptyCta": "Utwórz pierwsze",
     "unassigned": "Nieprzypisane",
     "noDescription": "Brak opisu.",
+    "noLabels": "Brak etykiet",
     "fields": {
       "key": "Klucz",
       "title": "Tytuł",
@@ -62,7 +61,14 @@
       "state": "Stan",
       "priority": "Priorytet",
       "assignee": "Osoba przypisana",
-      "updatedAt": "Zaktualizowano"
+      "labels": "Etykiety",
+      "kind": "Rodzaj",
+      "dueDate": "Termin",
+      "parent": "Zadanie nadrzędne",
+      "project": "Projekt",
+      "createdAt": "Utworzono",
+      "updatedAt": "Zaktualizowano",
+      "completedAt": "Ukończono"
     },
     "create": {
       "title": "Nowe zadanie",
@@ -72,17 +78,123 @@
       "submit": "Utwórz zadanie",
       "submitting": "Tworzenie…"
     },
+    "group": {
+      "all": "Wszystkie zadania",
+      "section": "Grupa",
+      "by": {
+        "state": "Grupuj: stan",
+        "priority": "Grupuj: priorytet",
+        "assignee": "Grupuj: osoba",
+        "kind": "Grupuj: rodzaj",
+        "none": "Bez grupowania"
+      }
+    },
+    "board": {
+      "column": "Kolumna",
+      "emptyColumn": "Nic tu nie ma.",
+      "noStateInGroup": "Projekt {project} nie ma stanu w grupie „{group}”."
+    },
+    "layout": {
+      "list": "Lista",
+      "board": "Tablica"
+    },
+    "toolbar": {
+      "layout": "Układ",
+      "groupBy": "Grupowanie: {group}",
+      "groupLabel": "Grupuj według",
+      "sortBy": "Sortowanie: {field}",
+      "sortLabel": "Sortuj według"
+    },
+    "sort": {
+      "updated_at": "Ostatnia zmiana",
+      "created_at": "Data utworzenia",
+      "priority": "Priorytet",
+      "due_date": "Termin",
+      "sequence": "Numer",
+      "ascending": "Rosnąco",
+      "descending": "Malejąco"
+    },
+    "toast": {
+      "changedElsewhere": "Zadanie {key} zostało zmienione przez kogoś innego. Wczytano je ponownie – sprawdź i spróbuj jeszcze raz."
+    },
+    "empty": {
+      "title": "Nie ma jeszcze żadnych zadań",
+      "description": "Zadania to prace, błędy i pomysły, nad którymi pracuje Twój zespół. Utwórz pierwsze, aby zacząć.",
+      "filteredTitle": "Nic nie pasuje do tych filtrów",
+      "filteredDescription": "Spróbuj usunąć któryś filtr albo zmienić szukany tekst.",
+      "noProjectsTitle": "Zacznij od projektu",
+      "noProjectsDescription": "Każde zadanie należy do projektu. Najpierw utwórz projekt, a potem dodawaj do niego zadania.",
+      "goToProjects": "Przejdź do projektów"
+    },
     "detail": {
-      "details": "Szczegóły",
-      "actions": "Akcje",
-      "changeState": "Zmień stan",
-      "tabDescription": "Opis",
-      "tabEdit": "Edycja",
+      "editDescription": "Edytuj opis",
+      "write": "Edycja",
+      "preview": "Podgląd",
+      "parentPlaceholder": "np. WEB-12",
+      "openParent": "Otwórz",
+      "subscribed": "Obserwujesz",
+      "subscribe": "Obserwuj",
+      "unsubscribe": "Przestań obserwować",
       "deleteItem": "Usuń zadanie",
       "deleteTitle": "Usunąć {key}?",
-      "deleteDescription": "Zadanie zostanie trwale usunięte. Tej operacji nie można cofnąć.",
+      "deleteDescription": "Zadanie zniknie ze wszystkich list. Tej operacji nie można tutaj cofnąć.",
       "deleting": "Usuwanie…",
-      "saved": "Zmiany zostały zapisane."
+      "openFull": "Otwórz na całej stronie",
+      "notFound": "To zadanie nie istnieje albo zostało usunięte.",
+      "panel": "Zadanie {key}"
+    },
+    "checklist": {
+      "title": "Lista kontrolna",
+      "add": "Dodaj pozycję do listy kontrolnej",
+      "remove": "Usuń „{text}”"
+    },
+    "links": {
+      "title": "Linki",
+      "add": "Dodaj link",
+      "remove": "Usuń link {url}",
+      "kindLabel": "Rodzaj linku",
+      "url": "Adres linku",
+      "kind": {
+        "url": "Link",
+        "pr": "Pull request",
+        "branch": "Gałąź",
+        "design": "Projekt graficzny"
+      }
+    },
+    "relations": {
+      "title": "Powiązania",
+      "add": "Dodaj",
+      "remove": "Usuń powiązanie z {key}",
+      "type": "Rodzaj powiązania",
+      "key": "Klucz zadania",
+      "keyPlaceholder": "Klucz zadania, np. WEB-7"
+    },
+    "attachments": {
+      "title": "Załączniki",
+      "upload": "Prześlij pliki",
+      "uploading": "Przesyłanie…",
+      "download": "Pobierz {name}",
+      "remove": "Usuń {name}",
+      "empty": "Brak załączników."
+    },
+    "children": {
+      "title": "Zadania podrzędne",
+      "add": "Dodaj zadanie podrzędne"
+    },
+    "comments": {
+      "title": "Komentarze ({n})",
+      "empty": "Nie ma jeszcze komentarzy.",
+      "edited": "(edytowano)",
+      "editLabel": "Edytuj komentarz",
+      "edit": "Edytuj",
+      "add": "Dodaj komentarz",
+      "placeholder": "Napisz komentarz… (obsługiwany Markdown)",
+      "sending": "Wysyłanie…",
+      "submit": "Skomentuj"
+    },
+    "activity": {
+      "title": "Historia",
+      "empty": "Brak historii."
     }
   },
   "register": {
@@ -175,7 +287,9 @@
     "label": "Przestrzeń robocza",
     "projects": "Projekty",
     "members": "Członkowie",
-    "settings": "Ustawienia"
+    "settings": "Ustawienia",
+    "items": "Zadania",
+    "inbox": "Skrzynka"
   },
   "userMenu": {
     "label": "Menu konta"
@@ -190,8 +304,19 @@
     "title": "Projekty",
     "subtitle": "Projekty w przestrzeni {workspace}",
     "emptyTitle": "Nie ma jeszcze żadnych projektów",
-    "emptyDescription": "Projekty grupują powiązane zadania pod krótkim kluczem, np. WEB. Gdy w tej przestrzeni roboczej powstanie projekt, pojawi się tutaj.",
-    "noDescription": "Brak opisu."
+    "emptyDescription": "Projekty grupują powiązane zadania pod krótkim kluczem, np. WEB. Utwórz projekt, aby zacząć dodawać zadania.",
+    "noDescription": "Brak opisu.",
+    "create": {
+      "open": "Nowy projekt",
+      "title": "Nowy projekt",
+      "description": "Zadania w tym projekcie są numerowane pod jego kluczem.",
+      "name": "Nazwa",
+      "namePlaceholder": "np. Strona internetowa",
+      "key": "Klucz",
+      "keyHint": "Od 2 do 10 liter lub cyfr, zaczynając od litery. Zadania będą się nazywać {example}. Klucza nie można później zmienić.",
+      "submit": "Utwórz projekt",
+      "submitting": "Tworzenie…"
+    }
   },
   "members": {
     "title": "Członkowie",
@@ -247,5 +372,219 @@
     "update": "Nie udało się zaktualizować zadania.",
     "delete": "Nie udało się usunąć zadania.",
     "register": "Nie udało się założyć konta."
+  },
+  "kind": {
+    "task": "Zadanie",
+    "bug": "Błąd",
+    "feature": "Funkcja",
+    "design": "Projekt graficzny",
+    "research": "Analiza"
+  },
+  "relation": {
+    "blocks": "Blokuje",
+    "blocked_by": "Blokowane przez",
+    "relates": "Powiązane z",
+    "duplicate": "Duplikat"
+  },
+  "picker": {
+    "none": "Brak",
+    "search": "Szukaj: {property}…",
+    "empty": "Brak pasujących pozycji."
+  },
+  "toast": {
+    "region": "Powiadomienia",
+    "dismiss": "Zamknij"
+  },
+  "filters": {
+    "me": "Ja",
+    "search": "Szukaj zadań",
+    "searchPlaceholder": "Szukaj…",
+    "add": "Filtruj",
+    "openOnly": "Tylko otwarte",
+    "active": "Aktywne filtry",
+    "remove": "Usuń filtr {filter}",
+    "clearAll": "Wyczyść wszystkie",
+    "name": {
+      "project": "Projekt",
+      "state": "Stan",
+      "state_group": "Grupa stanów",
+      "priority": "Priorytet",
+      "kind": "Rodzaj",
+      "assignee": "Osoba przypisana",
+      "label": "Etykieta",
+      "open": "Tylko otwarte"
+    }
+  },
+  "activity": {
+    "nothing": "brak",
+    "someone": "Ktoś",
+    "changed": "{actor} – zmiana pola „{field}”: {from} → {to}",
+    "changedDescription": "{actor} – zmiana opisu",
+    "field": {
+      "title": "tytuł",
+      "state": "stan",
+      "priority": "priorytet",
+      "kind": "rodzaj",
+      "assignee": "osoba przypisana",
+      "labels": "etykiety",
+      "due_date": "termin",
+      "parent": "zadanie nadrzędne",
+      "description": "opis"
+    },
+    "event": {
+      "created": "{actor} – utworzenie zadania",
+      "updated": "{actor} – aktualizacja zadania",
+      "deleted": "{actor} – usunięcie zadania",
+      "commented": "{actor} – nowy komentarz",
+      "checklist_added": "{actor} – dodanie „{text}” do listy kontrolnej",
+      "checklist_checked": "{actor} – odhaczenie „{text}”",
+      "checklist_unchecked": "{actor} – cofnięcie odhaczenia „{text}”",
+      "link_added": "{actor} – dodanie linku {url}",
+      "relation_added": "{actor} – nowe powiązanie: {type} {item}",
+      "attachment_added": "{actor} – dodanie załącznika {name}",
+      "attachment_removed": "{actor} – usunięcie załącznika {name}",
+      "other": "{actor}: {event}"
+    }
+  },
+  "capture": {
+    "noProjects": "Najpierw utwórz projekt – każde zadanie należy do jakiegoś projektu.",
+    "subItemOf": "Zadanie podrzędne dla {key}",
+    "createMore": "Utwórz kolejne",
+    "created": "Utworzono {key}."
+  },
+  "views": {
+    "saveTitle": "Zapisz widok",
+    "editTitle": "Edytuj widok",
+    "saveDescription": "Zapisuje pod wybraną nazwą bieżące filtry, układ, grupowanie i sortowanie.",
+    "name": "Nazwa",
+    "namePlaceholder": "np. Moje otwarte błędy",
+    "shared": "Udostępnij wszystkim w przestrzeni roboczej",
+    "builtIn": {
+      "all": "Wszystkie zadania",
+      "mine": "Przypisane do mnie",
+      "open": "Otwarte",
+      "recent": "Ostatnio zmienione"
+    },
+    "custom": "Widok niestandardowy",
+    "menu": "Widok: {view}",
+    "unsaved": "Niezapisane zmiany",
+    "saved": "Zapisane widoki",
+    "sharedBadge": "Udostępniony",
+    "saveAs": "Zapisz jako nowy widok…",
+    "save": "Zapisz widok",
+    "update": "Zaktualizuj widok",
+    "rename": "Zmień nazwę lub udostępnij…",
+    "delete": "Usuń widok…",
+    "savedToast": "Zapisano widok „{name}”.",
+    "deleteTitle": "Usunąć widok „{name}”?",
+    "deleteDescription": "Widok zniknie u wszystkich, którzy go widzą. Zadania pozostaną bez zmian."
+  },
+  "commands": {
+    "title": "Paleta poleceń",
+    "open": "Szukaj lub uruchom…",
+    "placeholder": "Wpisz polecenie albo szukaj zadań…",
+    "empty": "Brak pasujących poleceń i zadań.",
+    "searching": "Wyszukiwanie…",
+    "copyFailed": "Nie udało się skopiować do schowka.",
+    "change": {
+      "state": "Zmień stan zadania {key}…",
+      "priority": "Zmień priorytet zadania {key}…",
+      "assignee": "Zmień osobę przypisaną do {key}…",
+      "labels": "Zmień etykiety zadania {key}…"
+    },
+    "assignToMe": "Przypisz {key} do mnie",
+    "copyKey": "Skopiuj klucz {key}",
+    "copyLink": "Skopiuj link do {key}",
+    "copied": "Skopiowano {text}.",
+    "linkCopied": "Skopiowano link.",
+    "layout": {
+      "list": "Przełącz na układ listy",
+      "board": "Przełącz na układ tablicy"
+    },
+    "applyView": "Widok: {view}",
+    "switchWorkspace": "Przełącz na przestrzeń {workspace}",
+    "group": {
+      "item": "To zadanie",
+      "actions": "Akcje",
+      "navigate": "Przejdź do",
+      "views": "Widoki",
+      "workspaces": "Przestrzenie robocze",
+      "items": "Zadania"
+    }
+  },
+  "shortcuts": {
+    "title": "Skróty klawiszowe",
+    "description": "Skróty nie działają podczas pisania w polu tekstowym.",
+    "palette": "Otwórz paletę poleceń",
+    "help": "Pokaż skróty klawiszowe",
+    "create": "Utwórz zadanie",
+    "close": "Zamknij panel zadania",
+    "search": "Przejdź do pola wyszukiwania",
+    "next": "Następny wiersz",
+    "previous": "Poprzedni wiersz",
+    "open": "Otwórz zaznaczony wiersz",
+    "go": {
+      "items": "Przejdź do zadań",
+      "projects": "Przejdź do projektów",
+      "members": "Przejdź do członków",
+      "inbox": "Przejdź do skrzynki"
+    },
+    "item": {
+      "state": "Zmień stan",
+      "priority": "Zmień priorytet",
+      "assignee": "Zmień osobę przypisaną",
+      "labels": "Zmień etykiety",
+      "assignToMe": "Przypisz do mnie"
+    },
+    "inbox": {
+      "toggleRead": "Oznacz jako przeczytane lub nieprzeczytane",
+      "snooze": "Odłóż na później",
+      "delete": "Usuń powiadomienie"
+    },
+    "group": {
+      "general": "Ogólne",
+      "navigate": "Nawigacja",
+      "item": "Zaznaczone lub otwarte zadanie",
+      "list": "Lista zadań",
+      "inbox": "Skrzynka"
+    }
+  },
+  "profile": {
+    "title": "Profil i preferencje",
+    "saved": "Zapisano profil.",
+    "emailNotifications": "Powiadomienia e-mail",
+    "emailNotificationsHint": "Wysyłaj też e-mail o każdym nowym wpisie w skrzynce."
+  },
+  "inbox": {
+    "title": "Skrzynka",
+    "unreadSuffix": "nieprzeczytanych",
+    "unread": "Nieprzeczytane",
+    "unreadCount": "Brak nieprzeczytanych | {n} nieprzeczytane powiadomienie | {n} nieprzeczytane powiadomienia | {n} nieprzeczytanych powiadomień",
+    "markRead": "Oznacz jako przeczytane",
+    "markUnread": "Oznacz jako nieprzeczytane",
+    "snooze": "Odłóż na później",
+    "delete": "Usuń powiadomienie",
+    "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "snoozeFor": {
+      "laterToday": "Później dzisiaj",
+      "tomorrow": "Jutro",
+      "nextWeek": "W przyszłym tygodniu"
+    },
+    "filter": {
+      "all": "Wszystkie",
+      "unread": "Nieprzeczytane"
+    },
+    "empty": {
+      "title": "Skrzynka jest pusta",
+      "unreadTitle": "Brak nieprzeczytanych powiadomień",
+      "description": "Tutaj dowiesz się, gdy ktoś przypisze Ci zadanie albo gdy obserwowane zadanie dostanie komentarz lub zmieni stan.",
+      "showAll": "Pokaż wszystkie powiadomienia"
+    },
+    "event": {
+      "assigned": "{actor} przypisał(a) Ci to zadanie",
+      "commented": "{actor} dodał(a) komentarz",
+      "state_changed": "{actor} zmienił(a) stan",
+      "state_changed_to": "{actor} zmienił(a) stan z „{from}” na „{to}”"
+    }
   }
 }

@@ -36,7 +36,8 @@
     "unstarted": "To do",
     "started": "In progress",
     "completed": "Done",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "triage": "Triage"
   },
   "priority": {
     "none": "No priority",
@@ -46,15 +47,13 @@
     "urgent": "Urgent"
   },
   "items": {
-    "title": "Work items",
-    "count": "No items loaded | {n} item loaded | {n} items loaded",
+    "title": "Items",
+    "count": "No items | {n} item loaded | {n} items loaded",
     "new": "New item",
-    "filterAll": "All",
     "loadMore": "Load more",
-    "empty": "No work items found.",
-    "emptyCta": "Create the first one",
     "unassigned": "Unassigned",
     "noDescription": "No description.",
+    "noLabels": "No labels",
     "fields": {
       "key": "Key",
       "title": "Title",
@@ -62,27 +61,140 @@
       "state": "State",
       "priority": "Priority",
       "assignee": "Assignee",
-      "updatedAt": "Updated"
+      "labels": "Labels",
+      "kind": "Kind",
+      "dueDate": "Due date",
+      "parent": "Parent",
+      "project": "Project",
+      "createdAt": "Created",
+      "updatedAt": "Updated",
+      "completedAt": "Completed"
     },
     "create": {
-      "title": "New work item",
+      "title": "New item",
       "description": "Only the title is required.",
       "titlePlaceholder": "Short summary of the work",
       "descriptionPlaceholder": "Details (Markdown supported)",
       "submit": "Create item",
       "submitting": "Creating…"
     },
+    "group": {
+      "all": "All items",
+      "section": "Group",
+      "by": {
+        "state": "Group: state",
+        "priority": "Group: priority",
+        "assignee": "Group: assignee",
+        "kind": "Group: kind",
+        "none": "No grouping"
+      }
+    },
+    "board": {
+      "column": "Column",
+      "emptyColumn": "Nothing here.",
+      "noStateInGroup": "Project {project} has no state in the group “{group}”."
+    },
+    "layout": {
+      "list": "List",
+      "board": "Board"
+    },
+    "toolbar": {
+      "layout": "Layout",
+      "groupBy": "Grouping: {group}",
+      "groupLabel": "Group by",
+      "sortBy": "Sorted by: {field}",
+      "sortLabel": "Sort by"
+    },
+    "sort": {
+      "updated_at": "Last updated",
+      "created_at": "Created",
+      "priority": "Priority",
+      "due_date": "Due date",
+      "sequence": "Number",
+      "ascending": "Ascending",
+      "descending": "Descending"
+    },
+    "toast": {
+      "changedElsewhere": "{key} was changed by someone else. It has been reloaded; please check and try again."
+    },
+    "empty": {
+      "title": "No items yet",
+      "description": "Items are the tasks, bugs and ideas your team works on. Create the first one to get going.",
+      "filteredTitle": "Nothing matches these filters",
+      "filteredDescription": "Try removing a filter or changing the search text.",
+      "noProjectsTitle": "Start with a project",
+      "noProjectsDescription": "Every item belongs to a project. Create a project first, then add items to it.",
+      "goToProjects": "Go to projects"
+    },
     "detail": {
-      "details": "Details",
-      "actions": "Actions",
-      "changeState": "Change state",
-      "tabDescription": "Description",
-      "tabEdit": "Edit",
+      "editDescription": "Edit description",
+      "write": "Write",
+      "preview": "Preview",
+      "parentPlaceholder": "e.g. WEB-12",
+      "openParent": "Open",
+      "subscribed": "Subscribed",
+      "subscribe": "Subscribe",
+      "unsubscribe": "Unsubscribe",
       "deleteItem": "Delete item",
       "deleteTitle": "Delete {key}?",
-      "deleteDescription": "This permanently removes the work item. This action cannot be undone.",
+      "deleteDescription": "The item disappears from all lists. This action cannot be undone here.",
       "deleting": "Deleting…",
-      "saved": "Changes saved."
+      "openFull": "Open as full page",
+      "notFound": "This item does not exist or was deleted.",
+      "panel": "Item {key}"
+    },
+    "checklist": {
+      "title": "Checklist",
+      "add": "Add a checklist entry",
+      "remove": "Remove “{text}”"
+    },
+    "links": {
+      "title": "Links",
+      "add": "Add link",
+      "remove": "Remove link {url}",
+      "kindLabel": "Link kind",
+      "url": "Link address",
+      "kind": {
+        "url": "Link",
+        "pr": "Pull request",
+        "branch": "Branch",
+        "design": "Design"
+      }
+    },
+    "relations": {
+      "title": "Relations",
+      "add": "Add",
+      "remove": "Remove relation to {key}",
+      "type": "Relation type",
+      "key": "Item key",
+      "keyPlaceholder": "Item key, e.g. WEB-7"
+    },
+    "attachments": {
+      "title": "Attachments",
+      "upload": "Upload files",
+      "uploading": "Uploading…",
+      "download": "Download {name}",
+      "remove": "Remove {name}",
+      "empty": "No attachments."
+    },
+    "children": {
+      "title": "Sub-items",
+      "add": "Add sub-item"
+    },
+    "comments": {
+      "title": "Comments ({n})",
+      "empty": "No comments yet.",
+      "edited": "(edited)",
+      "editLabel": "Edit comment",
+      "edit": "Edit",
+      "add": "Add a comment",
+      "placeholder": "Write a comment… (Markdown supported)",
+      "sending": "Sending…",
+      "submit": "Comment"
+    },
+    "activity": {
+      "title": "Activity",
+      "empty": "No activity yet."
     }
   },
   "register": {
@@ -175,7 +287,9 @@
     "label": "Workspace",
     "projects": "Projects",
     "members": "Members",
-    "settings": "Settings"
+    "settings": "Settings",
+    "items": "Items",
+    "inbox": "Inbox"
   },
   "userMenu": {
     "label": "Account menu"
@@ -190,8 +304,19 @@
     "title": "Projects",
     "subtitle": "Projects in {workspace}",
     "emptyTitle": "No projects yet",
-    "emptyDescription": "Projects group related work items under a short key such as WEB. Once a project is created in this workspace, it will show up here.",
-    "noDescription": "No description."
+    "emptyDescription": "Projects group related items under a short key such as WEB. Create one to start adding items.",
+    "noDescription": "No description.",
+    "create": {
+      "open": "New project",
+      "title": "New project",
+      "description": "Items in this project are numbered under its key.",
+      "name": "Name",
+      "namePlaceholder": "e.g. Website",
+      "key": "Key",
+      "keyHint": "2–10 letters or digits, starting with a letter. Items will be called {example}. The key cannot be changed later.",
+      "submit": "Create project",
+      "submitting": "Creating…"
+    }
   },
   "members": {
     "title": "Members",
@@ -247,5 +372,219 @@
     "update": "Failed to update the work item.",
     "delete": "Failed to delete the work item.",
     "register": "Could not create the account."
+  },
+  "kind": {
+    "task": "Task",
+    "bug": "Bug",
+    "feature": "Feature",
+    "design": "Design",
+    "research": "Research"
+  },
+  "relation": {
+    "blocks": "Blocks",
+    "blocked_by": "Blocked by",
+    "relates": "Relates to",
+    "duplicate": "Duplicate of"
+  },
+  "picker": {
+    "none": "None",
+    "search": "Search {property}…",
+    "empty": "Nothing matches."
+  },
+  "toast": {
+    "region": "Notifications",
+    "dismiss": "Dismiss"
+  },
+  "filters": {
+    "me": "Me",
+    "search": "Search items",
+    "searchPlaceholder": "Search…",
+    "add": "Filter",
+    "openOnly": "Open only",
+    "active": "Active filters",
+    "remove": "Remove filter {filter}",
+    "clearAll": "Clear all",
+    "name": {
+      "project": "Project",
+      "state": "State",
+      "state_group": "State group",
+      "priority": "Priority",
+      "kind": "Kind",
+      "assignee": "Assignee",
+      "label": "Label",
+      "open": "Open only"
+    }
+  },
+  "activity": {
+    "nothing": "nothing",
+    "someone": "Someone",
+    "changed": "{actor} changed {field} from {from} to {to}",
+    "changedDescription": "{actor} changed the description",
+    "field": {
+      "title": "the title",
+      "state": "state",
+      "priority": "priority",
+      "kind": "kind",
+      "assignee": "the assignee",
+      "labels": "labels",
+      "due_date": "the due date",
+      "parent": "the parent",
+      "description": "the description"
+    },
+    "event": {
+      "created": "{actor} created the item",
+      "updated": "{actor} updated the item",
+      "deleted": "{actor} deleted the item",
+      "commented": "{actor} commented",
+      "checklist_added": "{actor} added “{text}” to the checklist",
+      "checklist_checked": "{actor} ticked “{text}”",
+      "checklist_unchecked": "{actor} unticked “{text}”",
+      "link_added": "{actor} added the link {url}",
+      "relation_added": "{actor} added a relation: {type} {item}",
+      "attachment_added": "{actor} attached {name}",
+      "attachment_removed": "{actor} removed the attachment {name}",
+      "other": "{actor}: {event}"
+    }
+  },
+  "capture": {
+    "noProjects": "Create a project first: every item belongs to one.",
+    "subItemOf": "Sub-item of {key}",
+    "createMore": "Create more",
+    "created": "{key} created."
+  },
+  "views": {
+    "saveTitle": "Save view",
+    "editTitle": "Edit view",
+    "saveDescription": "Keeps the current filters, layout, grouping and sorting under a name.",
+    "name": "Name",
+    "namePlaceholder": "e.g. My open bugs",
+    "shared": "Share with everyone in the workspace",
+    "builtIn": {
+      "all": "All items",
+      "mine": "Assigned to me",
+      "open": "Open",
+      "recent": "Recently updated"
+    },
+    "custom": "Custom view",
+    "menu": "View: {view}",
+    "unsaved": "Unsaved changes",
+    "saved": "Saved views",
+    "sharedBadge": "Shared",
+    "saveAs": "Save as new view…",
+    "save": "Save view",
+    "update": "Update view",
+    "rename": "Rename or share…",
+    "delete": "Delete view…",
+    "savedToast": "View “{name}” saved.",
+    "deleteTitle": "Delete the view “{name}”?",
+    "deleteDescription": "The view is removed for everyone who can see it. Items are not affected."
+  },
+  "commands": {
+    "title": "Command palette",
+    "open": "Search or run…",
+    "placeholder": "Type a command or search items…",
+    "empty": "No commands or items match.",
+    "searching": "Searching…",
+    "copyFailed": "Could not copy to the clipboard.",
+    "change": {
+      "state": "Change state of {key}…",
+      "priority": "Change priority of {key}…",
+      "assignee": "Change assignee of {key}…",
+      "labels": "Change labels of {key}…"
+    },
+    "assignToMe": "Assign {key} to me",
+    "copyKey": "Copy key {key}",
+    "copyLink": "Copy link to {key}",
+    "copied": "Copied {text}.",
+    "linkCopied": "Link copied.",
+    "layout": {
+      "list": "Switch to list layout",
+      "board": "Switch to board layout"
+    },
+    "applyView": "View: {view}",
+    "switchWorkspace": "Switch to workspace {workspace}",
+    "group": {
+      "item": "This item",
+      "actions": "Actions",
+      "navigate": "Go to",
+      "views": "Views",
+      "workspaces": "Workspaces",
+      "items": "Items"
+    }
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "description": "Shortcuts are off while you type in a field.",
+    "palette": "Open the command palette",
+    "help": "Show keyboard shortcuts",
+    "create": "Create an item",
+    "close": "Close the item panel",
+    "search": "Focus the search box",
+    "next": "Next row",
+    "previous": "Previous row",
+    "open": "Open the focused row",
+    "go": {
+      "items": "Go to items",
+      "projects": "Go to projects",
+      "members": "Go to members",
+      "inbox": "Go to inbox"
+    },
+    "item": {
+      "state": "Change state",
+      "priority": "Change priority",
+      "assignee": "Change assignee",
+      "labels": "Change labels",
+      "assignToMe": "Assign to me"
+    },
+    "inbox": {
+      "toggleRead": "Mark read or unread",
+      "snooze": "Snooze",
+      "delete": "Delete the notification"
+    },
+    "group": {
+      "general": "General",
+      "navigate": "Navigation",
+      "item": "Focused or open item",
+      "list": "Item list",
+      "inbox": "Inbox"
+    }
+  },
+  "profile": {
+    "title": "Profile and preferences",
+    "saved": "Profile saved.",
+    "emailNotifications": "Email notifications",
+    "emailNotificationsHint": "Also send an email for each new inbox entry."
+  },
+  "inbox": {
+    "title": "Inbox",
+    "unreadSuffix": "unread",
+    "unread": "Unread",
+    "unreadCount": "Nothing unread | {n} unread notification | {n} unread notifications",
+    "markRead": "Mark as read",
+    "markUnread": "Mark as unread",
+    "snooze": "Snooze",
+    "delete": "Delete notification",
+    "markAllRead": "Mark all read",
+    "snoozeFor": {
+      "laterToday": "Later today",
+      "tomorrow": "Tomorrow",
+      "nextWeek": "Next week"
+    },
+    "filter": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "empty": {
+      "title": "Your inbox is empty",
+      "unreadTitle": "Nothing unread",
+      "description": "You are notified here when an item is assigned to you, or when an item you follow gets a comment or changes state.",
+      "showAll": "Show all notifications"
+    },
+    "event": {
+      "assigned": "{actor} assigned this item to you",
+      "commented": "{actor} commented",
+      "state_changed": "{actor} changed the state",
+      "state_changed_to": "{actor} changed the state from {from} to {to}"
+    }
   }
 }

@@ -22,6 +22,7 @@ class MeController extends Controller
         $data = $request->validate([
             'name' => ['sometimes', 'string', 'max:100'],
             'locale' => ['sometimes', Rule::in(User::LOCALES)],
+            'email_notifications' => ['sometimes', 'boolean'],
         ]);
 
         $request->user()->update($data);
