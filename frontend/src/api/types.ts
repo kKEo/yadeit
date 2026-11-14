@@ -620,3 +620,12 @@ export interface AgentConnection {
   app: string
   connected_at: string
 }
+
+export type HealthStatus = 'ok' | 'warning' | 'failing'
+
+/** Whether the parts that keep the installation alive are working. */
+export interface HealthReport {
+  status: HealthStatus
+  checked_at: string
+  checks: Record<string, { status: HealthStatus; detail: string }>
+}

@@ -1083,6 +1083,23 @@
       "waiting": "{n} waiting",
       "failed": "{n} failed",
       "messages": "Messages"
+    },
+    "health": {
+      "title": "System",
+      "status": {
+        "ok": "All working",
+        "warning": "Needs a look",
+        "failing": "Something is down"
+      },
+      "check": {
+        "database": "Database",
+        "queue": "Queue worker",
+        "failed_jobs": "Failed jobs",
+        "scheduler": "Scheduler",
+        "storage": "Uploads",
+        "mail": "Announcements",
+        "backup": "Backups"
+      }
     }
   },
   "audit": {

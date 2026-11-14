@@ -3,3 +3,8 @@
 .vscode/
 .claude/
 *.local
+
+# Production settings hold secrets.
+.env.production
+.env.production.*
+!.env.production.example

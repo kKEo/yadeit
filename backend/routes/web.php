@@ -3,6 +3,8 @@
 use App\Http\Controllers\DocsController;
 use App\Http\Controllers\OAuthConsentController;
 use App\Http\Middleware\RequireStripeSignature;
+use App\Support\Health;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 
@@ -11,6 +13,17 @@ Route::get('/', fn () => response()->json([
     'name' => config('app.name'),
     'api' => url('/api/v1'),
 ]));
+
+// For uptime monitors: 200 while nothing is failing, 503 otherwise. Needs the HEALTH_TOKEN as a bearer token.
+Route::get('/health', function (Request $request) {
+    $token = (string) config('health.token');
+    abort_if($token === '', 404);
+    abort_unless(hash_equals($token, (string) $request->bearerToken()), 401);
+
+    $report = Health::report();
+
+    return response()->json($report, $report['status'] === 'failing' ? 503 : 200);
+})->withoutMiddleware('web')->middleware('throttle:60,1')->name('health');
 
 // The consent screen's "Connect" button: remembers the chosen agent, then lets Passport finish.
 Route::post('/oauth/connect', [OAuthConsentController::class, 'approve'])->middleware(['auth', 'throttle:30,1'])->name('oauth.connect');

@@ -1083,6 +1083,23 @@
       "waiting": "oczekuje: {n}",
       "failed": "błędy: {n}",
       "messages": "Wiadomości"
+    },
+    "health": {
+      "title": "System",
+      "status": {
+        "ok": "Wszystko działa",
+        "warning": "Wymaga uwagi",
+        "failing": "Coś nie działa"
+      },
+      "check": {
+        "database": "Baza danych",
+        "queue": "Kolejka zadań",
+        "failed_jobs": "Nieudane zadania",
+        "scheduler": "Harmonogram",
+        "storage": "Pliki",
+        "mail": "Ogłoszenia",
+        "backup": "Kopie zapasowe"
+      }
     }
   },
   "audit": {

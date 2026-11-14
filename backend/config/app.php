@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // Addresses of proxies in front of the application (comma separated, or * for all). Empty when there is none.
+    'trusted_proxies' => env('TRUSTED_PROXIES'),
+
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:5173'),
 
     /*

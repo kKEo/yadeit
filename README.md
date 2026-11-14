@@ -43,6 +43,19 @@ docker compose up -d mariadb
 
 and in `backend/.env` set `DB_CONNECTION=mariadb` and `DB_PORT=3306`. Both databases are supported equally: the code uses no database-specific SQL, and the test suite runs against both in CI.
 
+## Production
+
+`docs/deployment.md` describes running Yadeit for real: one Docker image for the web app and the API (`Dockerfile`), started with PostgreSQL, a queue worker, a scheduler and a backup job by `compose.prod.yaml`, configured in `.env.production` (template: `.env.production.example`).
+
+```sh
+cp .env.production.example .env.production   # fill it in
+docker compose --env-file .env.production -f compose.prod.yaml up -d --build
+```
+
+- Backups: a database dump and an archive of the uploads every day, kept 14 days, with a tested restore command. They stay on the same machine unless you copy them elsewhere.
+- Monitoring: a health report (database, queue worker, failed jobs, scheduler, uploads, announcements, backups) in the Operator area, at `GET /health` for uptime monitors (bearer token `HEALTH_TOKEN`), and as `php artisan app:health`.
+- Query counts of the read endpoints are held flat by `backend/tests/Feature/PerformanceTest.php`.
+
 ## Checks
 
 ```sh

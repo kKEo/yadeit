@@ -18,6 +18,7 @@ use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\RateLimiter;
@@ -47,6 +48,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Behind a load balancer or another proxy, its addresses are named here so that the caller's own address is used for limits and the audit log.
+        if (filled(config('app.trusted_proxies'))) {
+            TrustProxies::at(config('app.trusted_proxies') === '*' ? '*' : array_map('trim', explode(',', (string) config('app.trusted_proxies'))));
+        }
+
         // The workspace pays, not the person.
         Cashier::useCustomerModel(Workspace::class);
         Cashier::useSubscriptionModel(PlanSubscription::class);

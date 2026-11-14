@@ -46,6 +46,55 @@
                 }
             }
         },
+        "/admin/health": {
+            "get": {
+                "operationId": "admin.health",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "failing",
+                                                        "warning",
+                                                        "ok"
+                                                    ]
+                                                },
+                                                "checked_at": {
+                                                    "type": "string"
+                                                },
+                                                "checks": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "checked_at",
+                                                "checks"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/export": {
             "get": {
                 "operationId": "me.export",

@@ -239,9 +239,9 @@ Goal: safe and ready to deploy.
   - Passport with PKCE and audience validation
 - [x] Do a performance pass
   - Query counts, list virtualisation
-- [ ] Set up backups and monitoring
-- [ ] Write the production deployment and its docs
-- [ ] Verify launch readiness: a fresh production-like deployment passes the full walk-through
+- [x] Set up backups and monitoring
+- [x] Write the production deployment and its docs
+- [x] Verify launch readiness: a fresh production-like deployment passes the full walk-through
 
 ## Notes: outside the code
 

@@ -35,6 +35,9 @@ describe('AdminWorkspacesView', () => {
       if (path.endsWith('/admin/overview')) {
         return jsonResponse({ data: { workspaces: 2, suspended_workspaces: 1, people: 9, agents: 2, items: 40, signups_last_7_days: 3 } })
       }
+      if (path.endsWith('/admin/health')) {
+        return jsonResponse({ data: { status: 'failing', checked_at: '2026-01-01T00:00:00Z', checks: { database: { status: 'ok', detail: 'Answers.' }, scheduler: { status: 'failing', detail: 'No sign of the scheduler.' } } } })
+      }
       if (path.includes('/admin/workspaces') && method === 'GET') return jsonResponse({ data: rows, next_cursor: null })
       if (path.endsWith('/admin/workspaces/3') && method === 'PATCH') {
         return jsonResponse({ data: makeRow({ suspended_at: '2026-03-01T00:00:00Z' }) })
@@ -54,6 +57,8 @@ describe('AdminWorkspacesView', () => {
     const wrapper = await open()
 
     expect(wrapper.text()).toContain('Sign-ups, last 7 days')
+    expect(wrapper.find('[data-testid="health"]').text()).toContain('Something is down')
+    expect(wrapper.find('[data-testid="health"]').text()).toContain('Scheduler No sign of the scheduler.')
     const listed = wrapper.findAll('[data-testid="workspace-row"]')
     expect(listed).toHaveLength(2)
     expect(listed[0].text()).toContain('Acme')

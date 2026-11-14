@@ -1,6 +1,6 @@
 import { request, workspacePath } from './client'
 import type {
-  AdminOverview, AdminUser, AdminWorkspace, AuditEntry, Broadcast, BroadcastFilter, BroadcastPreview, CursorPage, ItemResponse,
+  AdminOverview, AdminUser, HealthReport, AdminWorkspace, AuditEntry, Broadcast, BroadcastFilter, BroadcastPreview, CursorPage, ItemResponse,
   MailPage, MailStatus, OutgoingEmail, OutgoingEmailDetail,
 } from './types'
 
@@ -13,6 +13,10 @@ function withQuery(path: string, query: Query): string {
   }
   const text = params.toString()
   return text ? `${path}?${text}` : path
+}
+
+export async function getHealth(): Promise<HealthReport> {
+  return (await request<ItemResponse<HealthReport>>('GET', '/admin/health')).data
 }
 
 export async function getOverview(): Promise<AdminOverview> {

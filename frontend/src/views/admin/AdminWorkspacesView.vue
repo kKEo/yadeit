@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import * as api from '@/api/operator'
-import type { AdminOverview, AdminWorkspace } from '@/api/types'
+import type { AdminOverview, AdminWorkspace, HealthReport } from '@/api/types'
 import { useApiForm } from '@/composables/useApiForm'
 import { usePagedList } from '@/composables/usePagedList'
 import { formatDate } from '@/lib/format'
@@ -25,6 +25,8 @@ const { t, locale } = useI18n()
 const q = ref('')
 const status = ref('all')
 const overview = ref<AdminOverview | null>(null)
+const health = ref<HealthReport | null>(null)
+const healthVariants = { ok: 'success', warning: 'warning', failing: 'destructive' } as const
 const action = useApiForm()
 const suspending = ref<AdminWorkspace | null>(null)
 
@@ -56,7 +58,7 @@ async function change(workspace: AdminWorkspace, changes: { suspended?: boolean;
 
 onMounted(async () => {
   void list.reload()
-  await action.submit(async () => { overview.value = await api.getOverview() })
+  await action.submit(async () => { [overview.value, health.value] = await Promise.all([api.getOverview(), api.getHealth()]) })
 })
 </script>
 
@@ -70,6 +72,19 @@ onMounted(async () => {
         <dd class="mt-1 text-2xl font-semibold tabular-nums">{{ tile.value }}</dd>
       </div>
     </dl>
+
+    <section v-if="health" class="rounded-lg border p-4" :aria-label="t('admin.health.title')" data-testid="health">
+      <h2 class="flex items-center gap-2 text-sm font-medium">
+        {{ t('admin.health.title') }}
+        <Badge :variant="healthVariants[health.status]">{{ t(`admin.health.status.${health.status}`) }}</Badge>
+      </h2>
+      <ul class="mt-2 grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
+        <li v-for="(check, name) in health.checks" :key="name" class="flex items-baseline gap-2">
+          <span class="mt-1 inline-block h-2 w-2 shrink-0 rounded-full" :class="check.status === 'ok' ? 'bg-green-500' : check.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'" aria-hidden="true" />
+          <span><span class="font-medium">{{ t(`admin.health.check.${name}`) }}</span> <span class="text-muted-foreground">{{ check.detail }}</span></span>
+        </li>
+      </ul>
+    </section>
 
     <div class="space-y-4">
       <form class="flex flex-wrap items-center gap-2" role="search" @submit.prevent="list.reload()">

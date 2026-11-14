@@ -30,6 +30,7 @@ use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceExportController;
+use App\Support\Health;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -76,6 +77,7 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
     // The operator area: the people who run the installation.
     Route::prefix('admin')->middleware('operator')->group(function () {
         Route::get('overview', [OperatorController::class, 'overview'])->name('admin.overview');
+        Route::get('health', fn () => response()->json(['data' => Health::report()]))->name('admin.health');
         Route::get('workspaces', [OperatorController::class, 'workspaces'])->name('admin.workspaces.index');
         Route::patch('workspaces/{id}', [OperatorController::class, 'updateWorkspace'])->whereNumber('id')->name('admin.workspaces.update');
         Route::get('users', [OperatorController::class, 'users'])->name('admin.users.index');
