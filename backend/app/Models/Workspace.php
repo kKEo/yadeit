@@ -4,17 +4,34 @@ namespace App\Models;
 
 use Database\Factories\WorkspaceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
+/**
+ * @property bool $ai_enabled
+ * @property string|null $ai_api_key
+ * @property int|null $ai_monthly_token_limit
+ */
 #[Fillable(['name', 'slug', 'created_by'])]
+#[Hidden(['ai_api_key'])]
 class Workspace extends Model
 {
     /** @use HasFactory<WorkspaceFactory> */
     use HasFactory;
+
+    /** @var array<string, mixed> */
+    protected $attributes = ['ai_enabled' => false];
+
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        // The workspace's own provider key is stored encrypted and never serialised.
+        return ['ai_enabled' => 'boolean', 'ai_api_key' => 'encrypted'];
+    }
 
     /** Slugs that would collide with application routes. */
     public const RESERVED_SLUGS = ['new', 'admin', 'api', 'login', 'register', 'settings', 'invitations', 'w'];

@@ -6,6 +6,7 @@
         "license": "proprietary",
     "require": {
         "php": "^8.3",
+        "anthropic-ai/sdk": "^1.8",
         "dedoc/scramble": "^0.13.53",
         "laravel/framework": "^13.17",
         "laravel/mcp": "^1.2",

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\AiController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -126,6 +127,12 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::delete('labels/{label}', [LabelController::class, 'destroy'])->whereNumber('label')->name('labels.destroy');
         });
 
+        Route::get('ai', [AiController::class, 'status'])->name('ai.status');
+        Route::put('ai', [AiController::class, 'configure'])->name('ai.configure');
+        Route::post('ai/draft-item', [AiController::class, 'draftItem'])->name('ai.draft-item');
+        Route::post('pages/{page}/ai/summary', [AiController::class, 'summarisePage'])->whereNumber('page')->name('ai.summarise-page');
+        Route::post('feedback/{feedback}/ai/triage', [AiController::class, 'triageFeedback'])->whereNumber('feedback')->name('ai.triage-feedback');
+
         Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
         Route::post('feedback', [FeedbackController::class, 'store'])->name('feedback.store');
         Route::prefix('feedback/{feedback}')->whereNumber('feedback')->group(function () {
@@ -168,6 +175,8 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::post('claim', [WorkItemController::class, 'claim'])->name('items.claim');
             Route::delete('claim', [WorkItemController::class, 'release'])->name('items.release');
             Route::post('ask', [WorkItemController::class, 'ask'])->name('items.ask');
+            Route::post('ai/split', [AiController::class, 'splitItem'])->name('ai.split-item');
+            Route::post('ai/summary', [AiController::class, 'summariseItem'])->name('ai.summarise-item');
             Route::get('runs', [WorkItemController::class, 'runs'])->name('items.runs');
             Route::post('log', [WorkItemController::class, 'log'])->name('items.log');
             Route::post('submit-for-review', [WorkItemController::class, 'submitForReview'])->name('items.submit-for-review');

@@ -203,7 +203,7 @@ Goal: collect outside input and track design and research work.
 
 Goal: helpful AI inside the app, always as confirmable suggestions.
 
-- [ ] Build the AI service, provider settings and usage metering
+- [x] Build the AI service, provider settings and usage metering
   - Per-workspace switch and limits
 - [ ] Add drafting a work item from one sentence
 - [ ] Add splitting an item into sub-items

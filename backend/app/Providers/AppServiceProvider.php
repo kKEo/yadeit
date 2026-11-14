@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Ai\AiProvider;
+use App\Ai\AnthropicProvider;
 use App\Models\WorkItem;
 use App\Support\CurrentWorkspace;
 use App\Support\UnknownFields;
@@ -25,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // One per request or job, so a workspace never leaks between them.
         $this->app->scoped(CurrentWorkspace::class);
+
+        // Tests replace this binding with a fake, so no request reaches a model provider.
+        $this->app->bind(AiProvider::class, AnthropicProvider::class);
     }
 
     public function boot(): void
