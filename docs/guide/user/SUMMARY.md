@@ -1,0 +1,22 @@
+# Summary
+
+[Welcome](README.md)
+
+- [Quick start](quick-start.md)
+- [The ideas in Yadeit](concepts.md)
+- [Workspaces and people](workspaces-and-people.md)
+- [Projects and planning](projects-and-planning.md)
+- [Everyday work with items](items.md)
+- [Lists, boards and saved views](lists-boards-views.md)
+- [Keyboard and command palette](keyboard.md)
+- [Inbox and notifications](inbox.md)
+- [Docs](docs.md)
+- [Feedback and design work](feedback.md)
+- [Working with AI agents](agents.md)
+- [Built-in AI help](ai-help.md)
+- [Workspace settings and plan](settings-and-plan.md)
+- [Your account](account.md)
+- [Use cases](use-cases.md)
+- [Trust and privacy](trust-and-privacy.md)
+- [FAQ and troubleshooting](faq.md)
+- [Glossary](glossary.md)

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="14" role="img" aria-labelledby="t d">
+  <title id="t">The shape of Yadeit</title>
+  <desc id="d">A workspace holds people, agents and projects. Each project holds items numbered under its key. An agent is owned by a person.</desc>
+  <rect width="720" height="300" rx="14" fill="#ffffff"/>
+  <rect x="16" y="16" width="688" height="268" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="34" y="42" font-weight="600" fill="#4c1d95">Workspace  /w/acme</text>
+  <rect x="34" y="60" width="200" height="206" rx="10" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="50" y="84" font-weight="600" fill="#1f2937">People</text>
+  <text x="50" y="112" fill="#374151">Ana · Owner</text>
+  <text x="50" y="136" fill="#374151">Ben · Admin</text>
+  <text x="50" y="160" fill="#374151">Cleo · Member</text>
+  <text x="50" y="184" fill="#374151">Dan · Guest</text>
+  <rect x="46" y="200" width="176" height="52" rx="8" fill="#ecfeff" stroke="#0891b2"/>
+  <text x="58" y="222" fill="#155e75" font-weight="600">Agent: Code assistant</text>
+  <text x="58" y="242" fill="#155e75" font-size="12">owned by Cleo</text>
+  <rect x="252" y="60" width="434" height="206" rx="10" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="268" y="84" font-weight="600" fill="#1f2937">Projects</text>
+  <rect x="268" y="98" width="196" height="152" rx="8" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="282" y="120" font-weight="600" fill="#1f2937">Website · WEB</text>
+  <text x="282" y="146" fill="#374151">WEB-1  Todo</text>
+  <text x="282" y="170" fill="#374151">WEB-2  In progress</text>
+  <text x="282" y="194" fill="#374151">WEB-3  Done</text>
+  <text x="282" y="226" fill="#6b7280" font-size="12">docs · feedback · cycles</text>
+  <rect x="476" y="98" width="196" height="152" rx="8" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="490" y="120" font-weight="600" fill="#1f2937">Mobile app · APP</text>
+  <text x="490" y="146" fill="#374151">APP-1  Backlog</text>
+  <text x="490" y="170" fill="#374151">APP-2  In review</text>
+  <text x="490" y="226" fill="#6b7280" font-size="12">docs · feedback · cycles</text>
+</svg>

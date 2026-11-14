@@ -8,3 +8,6 @@
 .env.production
 .env.production.*
 !.env.production.example
+
+# Built documentation (mdbook build docs/guide/user)
+/site/
