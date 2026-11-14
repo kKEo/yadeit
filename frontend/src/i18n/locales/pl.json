@@ -224,7 +224,10 @@
         "error": "Błąd"
       }
     },
-    "noCycle": "Bez cyklu"
+    "noCycle": "Bez cyklu",
+    "blocked": "Zablokowane",
+    "blockedBy": "Zablokowane przez: {items}",
+    "subItemsDone": "Ukończono {done} z {total} podzadań"
   },
   "register": {
     "title": "Załóż konto",
@@ -444,7 +447,8 @@
       "label": "Etykieta",
       "open": "Tylko otwarte",
       "cycle": "Cykl",
-      "needs_input": "Czeka na odpowiedź"
+      "needs_input": "Czeka na odpowiedź",
+      "blocked": "Zablokowane"
     },
     "currentCycle": "Bieżący cykl",
     "noCycle": "Bez cyklu"

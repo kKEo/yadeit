@@ -5887,7 +5887,7 @@
         "/workspaces/{workspace}/items": {
             "get": {
                 "operationId": "items.index",
-                "summary": "Filters: project (key), state (name or id), state_group, priority, kind,\nassignee (id, \"me\" or \"none\"), delegate (agent id, \"me\" or \"none\"),\nneeds_input (true = waiting for a person's answer),\ncycle (\"current\", \"none\" or a cycle number; use with project), label (name), parent (key or \"none\"),\nq (text in the title, or an exact key), open (true hides closed items).\nPaging: limit (default 25, max 100) and cursor. Shaping: expand, fields",
+                "summary": "Filters: project (key), state (name or id), state_group, priority, kind,\nassignee (id, \"me\" or \"none\"), delegate (agent id, \"me\" or \"none\"),\nneeds_input (true = waiting for a person's answer),\ncycle (\"current\", \"none\" or a cycle number; use with project),\nblocked (true = an open item must be finished first), label (name), parent (key or \"none\"),\nq (text in the title, or an exact key), open (true hides closed items).\nPaging: limit (default 25, max 100) and cursor. Shaping: expand, fields",
                 "tags": [
                     "WorkItem"
                 ],
@@ -5968,6 +5968,13 @@
                         "in": "query",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "blocked",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
                         }
                     },
                     {
@@ -6164,6 +6171,27 @@
                                                                     "name"
                                                                 ]
                                                             },
+                                                            "blocked": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "sub_items": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "total": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "total",
+                                                                    "done"
+                                                                ]
+                                                            },
                                                             "labels": {
                                                                 "type": "array",
                                                                 "items": {
@@ -6311,6 +6339,8 @@
                                                             "delegate",
                                                             "needs_input",
                                                             "cycle",
+                                                            "blocked",
+                                                            "sub_items",
                                                             "labels",
                                                             "project",
                                                             "parent",
@@ -6898,6 +6928,27 @@
                                                                     "name"
                                                                 ]
                                                             },
+                                                            "blocked": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "sub_items": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "total": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "total",
+                                                                    "done"
+                                                                ]
+                                                            },
                                                             "labels": {
                                                                 "type": "array",
                                                                 "items": {
@@ -7045,6 +7096,8 @@
                                                             "delegate",
                                                             "needs_input",
                                                             "cycle",
+                                                            "blocked",
+                                                            "sub_items",
                                                             "labels",
                                                             "project",
                                                             "parent",

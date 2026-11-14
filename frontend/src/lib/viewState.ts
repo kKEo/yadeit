@@ -17,6 +17,7 @@ const ALLOWED: Partial<Record<FilterName, readonly string[]>> = {
   kind: ITEM_KINDS,
   open: ['1'],
   needs_input: ['1'],
+  blocked: ['1'],
   cycle: ['current', 'none'],
 }
 

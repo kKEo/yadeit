@@ -36,6 +36,10 @@ export interface Item {
   /** Paused on a question to a person. */
   needs_input: boolean
   cycle: CycleRef | null
+  /** An open item must be finished before this one. */
+  blocked: boolean
+  /** How many sub-items exist and how many are done; null without sub-items. */
+  sub_items: { total: number; done: number } | null
   labels: LabelRef[]
   project: { key: string; name: string }
   parent: string | null
@@ -110,11 +114,13 @@ export interface ItemFilters {
   cycle?: string
   /** "1": waiting for a person's answer */
   needs_input?: string
+  /** "1": blocked by an open item */
+  blocked?: string
   q?: string
   /** "1" hides closed items */
   open?: string
 }
-export const FILTER_NAMES = ['project', 'state', 'state_group', 'priority', 'kind', 'assignee', 'label', 'cycle', 'needs_input', 'q', 'open'] as const
+export const FILTER_NAMES = ['project', 'state', 'state_group', 'priority', 'kind', 'assignee', 'label', 'cycle', 'needs_input', 'blocked', 'q', 'open'] as const
 export type FilterName = (typeof FILTER_NAMES)[number]
 
 export interface ListItemsParams extends ItemFilters {

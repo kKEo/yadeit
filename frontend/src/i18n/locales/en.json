@@ -224,7 +224,10 @@
         "error": "Error"
       }
     },
-    "noCycle": "No cycle"
+    "noCycle": "No cycle",
+    "blocked": "Blocked",
+    "blockedBy": "Blocked by {items}",
+    "subItemsDone": "{done} of {total} sub-items done"
   },
   "register": {
     "title": "Create your account",
@@ -444,7 +447,8 @@
       "label": "Label",
       "open": "Open only",
       "cycle": "Cycle",
-      "needs_input": "Needs input"
+      "needs_input": "Needs input",
+      "blocked": "Blocked"
     },
     "currentCycle": "Current cycle",
     "noCycle": "No cycle"

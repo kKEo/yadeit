@@ -136,6 +136,35 @@ class WorkItem extends Model
             ->whereHas('item', fn (Builder $blocker) => $blocker->withoutGlobalScope('token-projects')->whereNull('completed_at')));
     }
 
+    /**
+     * Adds what a list row shows beyond the item itself: whether an open item
+     * blocks it, and how many of its sub-items are done.
+     *
+     * @param  Builder<WorkItem>  $query
+     */
+    public function scopeWithProgress(Builder $query): void
+    {
+        $query
+            ->withExists(['incomingRelations as is_blocked' => fn (Builder $relation) => $relation
+                ->where('type', 'blocks')
+                ->whereHas('item', fn (Builder $blocker) => $blocker->withoutGlobalScope('token-projects')->whereNull('completed_at'))])
+            ->withCount(['children', 'children as children_done_count' => fn (Builder $child) => $child->whereNotNull('completed_at')]);
+    }
+
+    /** @return array{blocked: bool, sub_items: array{total: int, done: int}|null} */
+    public function progress(): array
+    {
+        // Lists load these in one query (withProgress); a single item works them out on demand.
+        $blocked = $this->getAttribute('is_blocked') ?? ($this->openBlockerKeys() !== []);
+        $total = $this->getAttribute('children_count') ?? $this->children()->count();
+        $done = $this->getAttribute('children_done_count') ?? $this->children()->whereNotNull('completed_at')->count();
+
+        return [
+            'blocked' => (bool) $blocked,
+            'sub_items' => $total > 0 ? ['total' => (int) $total, 'done' => (int) $done] : null,
+        ];
+    }
+
     /** @return list<string> keys of the open items blocking this one */
     public function openBlockerKeys(): array
     {

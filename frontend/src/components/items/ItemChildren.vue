@@ -4,6 +4,7 @@ import { Plus } from '@lucide/vue'
 import type { ItemDetail } from '@/api/types'
 import { useUiStore } from '@/stores/ui'
 import Button from '@/components/ui/Button.vue'
+import Progress from '@/components/ui/Progress.vue'
 import StateDot from './StateDot.vue'
 
 defineProps<{ item: ItemDetail; canEdit: boolean }>()
@@ -17,12 +18,13 @@ const ui = useUiStore()
     <div class="flex items-center justify-between gap-2">
       <h3 class="flex items-center gap-2 text-sm font-medium">
         {{ t('items.children.title') }}
-        <span v-if="item.children.length" class="text-xs font-normal text-muted-foreground">{{ item.children.length }}</span>
+        <span v-if="item.sub_items" class="text-xs font-normal text-muted-foreground">{{ t('items.subItemsDone', item.sub_items) }}</span>
       </h3>
       <Button v-if="canEdit" variant="outline" size="sm" class="h-8 gap-1.5" @click="ui.openQuickCapture(item.key)">
         <Plus class="h-3.5 w-3.5" />{{ t('items.children.add') }}
       </Button>
     </div>
+    <Progress v-if="item.sub_items" :model-value="Math.round((item.sub_items.done / item.sub_items.total) * 100)" class="h-1.5" />
     <ul v-if="item.children.length" class="divide-y rounded-md border">
       <li v-for="child in item.children" :key="child.key">
         <button

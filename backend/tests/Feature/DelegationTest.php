@@ -258,3 +258,29 @@ it('keeps read-only tokens and guests from claiming', function () {
     asAgent($readOnly)->getJson("{$this->base}/items/ready")->assertOk();
     asHuman($guest)->postJson("{$this->base}/items/{$key}/claim")->assertForbidden();
 });
+
+it('marks blocked items and counts finished sub-items in lists and details', function () {
+    $parent = item(['title' => 'Parent']);
+    $childA = item(['title' => 'Child A', 'parent' => $parent, 'state' => 'Done']);
+    item(['title' => 'Child B', 'parent' => $parent]);
+    $blocker = item(['title' => 'Blocker']);
+    $this->postJson("{$this->base}/items/{$blocker}/relations", ['type' => 'blocks', 'item' => $parent])->assertCreated();
+
+    $rows = collect($this->getJson("{$this->base}/items?sort=sequence")->assertOk()->json('data'))->keyBy('key');
+
+    expect($rows[$parent])->toMatchArray(['blocked' => true, 'sub_items' => ['total' => 2, 'done' => 1]])
+        ->and($rows[$childA])->toMatchArray(['blocked' => false, 'sub_items' => null])
+        ->and($rows[$blocker]['blocked'])->toBeFalse();
+
+    $this->getJson("{$this->base}/items/{$parent}")
+        ->assertJsonPath('data.blocked', true)
+        ->assertJsonPath('data.sub_items', ['total' => 2, 'done' => 1]);
+
+    $this->getJson("{$this->base}/items?blocked=1")->assertJsonCount(1, 'data')->assertJsonPath('data.0.key', $parent);
+    $this->getJson("{$this->base}/items?blocked=0")->assertJsonCount(3, 'data');
+
+    // Finishing the blocker frees the item.
+    $this->patchJson("{$this->base}/items/{$blocker}", ['state' => 'Done'])->assertOk();
+    $this->getJson("{$this->base}/items/{$parent}")->assertJsonPath('data.blocked', false);
+    $this->getJson("{$this->base}/items?blocked=1")->assertJsonCount(0, 'data');
+});

@@ -38,6 +38,8 @@ class ItemPresenter
             'delegate' => $item->delegate ? ['id' => $item->delegate->id, 'name' => $item->delegate->name] : null,
             'needs_input' => $item->needs_input,
             'cycle' => $item->cycle?->reference(),
+            // blocked: an open item must be finished first. sub_items: how many children are done.
+            ...$item->progress(),
             'labels' => $item->labels->map(fn (Label $l) => $l->summary())->values()->all(),
             'project' => ['key' => $item->project->key, 'name' => $item->project->name],
             'parent' => $item->parent?->key,

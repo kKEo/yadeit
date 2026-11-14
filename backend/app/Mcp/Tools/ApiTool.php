@@ -68,6 +68,8 @@ abstract class ApiTool extends Tool
             'assignee' => $item['assignee']['name'] ?? null,
             'agent' => $item['delegate']['name'] ?? null,
             'needs_input' => ($item['needs_input'] ?? false) ?: null,
+            'blocked' => ($item['blocked'] ?? false) ?: null,
+            'cycle' => $item['cycle']['name'] ?? null,
             'labels' => array_column($item['labels'] ?? [], 'name') ?: null,
             'parent' => $item['parent'] ?? null,
             'due_date' => $item['due_date'] ?? null,

@@ -35,7 +35,8 @@ class WorkItemController extends Controller
      * Filters: project (key), state (name or id), state_group, priority, kind,
      * assignee (id, "me" or "none"), delegate (agent id, "me" or "none"),
      * needs_input (true = waiting for a person's answer),
-     * cycle ("current", "none" or a cycle number; use with project), label (name), parent (key or "none"),
+     * cycle ("current", "none" or a cycle number; use with project),
+     * blocked (true = an open item must be finished first), label (name), parent (key or "none"),
      * q (text in the title, or an exact key), open (true hides closed items).
      * Paging: limit (default 25, max 100) and cursor. Shaping: expand, fields.
      */
@@ -51,6 +52,7 @@ class WorkItemController extends Controller
             'delegate' => ['sometimes', 'string'],
             'needs_input' => ['sometimes', 'boolean'],
             'cycle' => ['sometimes', 'string'],
+            'blocked' => ['sometimes', 'boolean'],
             'label' => ['sometimes', 'string'],
             'parent' => ['sometimes', 'string'],
             'q' => ['sometimes', 'string', 'max:200'],
@@ -65,7 +67,7 @@ class WorkItemController extends Controller
         $expand = array_values(array_intersect($this->csv($input['expand'] ?? ''), ItemPresenter::EXPANDABLE));
         $fields = $this->csv($input['fields'] ?? '');
 
-        $query = WorkItem::query()->with([...ItemPresenter::LIST_RELATIONS, ...array_diff($expand, ['description'])]);
+        $query = WorkItem::query()->withProgress()->with([...ItemPresenter::LIST_RELATIONS, ...array_diff($expand, ['description'])]);
         $this->applyFilters($query, $input, $request->user()->id);
         $this->applySort($query, $input['sort'] ?? '-updated_at');
 
@@ -151,6 +153,7 @@ class WorkItemController extends Controller
         $mine = $user->isAgent() ? 'delegate_id' : 'assignee_id';
 
         $query = WorkItem::query()
+            ->withProgress()
             ->with(ItemPresenter::LIST_RELATIONS)
             ->whereNull('completed_at')
             ->where('needs_input', false)
@@ -377,6 +380,14 @@ class WorkItemController extends Controller
                     ->whereNull('closed_at')->where('starts_on', '<=', now()->toDateString())),
                 default => $query->whereHas('cycle', fn (Builder $q) => $q->where('number', (int) $input['cycle'])),
             };
+        }
+
+        if (isset($input['blocked'])) {
+            $blocked = WorkItem::query()->select('work_items.id')->unblocked();
+
+            filter_var($input['blocked'], FILTER_VALIDATE_BOOLEAN)
+                ? $query->whereNotIn('work_items.id', $blocked)
+                : $query->whereIn('work_items.id', $blocked);
         }
 
         if (isset($input['needs_input'])) {

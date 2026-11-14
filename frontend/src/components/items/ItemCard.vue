@@ -7,6 +7,7 @@ import StateDot from './StateDot.vue'
 import UserInitials from './UserInitials.vue'
 import DelegateMark from './DelegateMark.vue'
 import NeedsInputBadge from './NeedsInputBadge.vue'
+import ProgressMarks from './ProgressMarks.vue'
 
 defineProps<{ item: Item; focused: boolean; selected: boolean; draggable: boolean; groupBy: GroupBy }>()
 const emit = defineEmits<{ open: []; focus: []; dragstart: [event: DragEvent]; dragend: [] }>()
@@ -23,6 +24,7 @@ const emit = defineEmits<{ open: []; focus: []; dragstart: [event: DragEvent]; d
     <span class="flex items-center justify-between gap-2">
       <span class="truncate font-mono text-xs text-muted-foreground">{{ item.key }}</span>
       <span class="flex items-center gap-1.5">
+        <ProgressMarks :item="item" />
         <NeedsInputBadge v-if="item.needs_input" compact />
         <DelegateMark v-if="item.delegate" :delegate="item.delegate" />
         <UserInitials v-if="groupBy !== 'assignee'" :user="item.assignee" />

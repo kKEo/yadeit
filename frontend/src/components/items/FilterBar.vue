@@ -26,7 +26,7 @@ const emit = defineEmits<{ set: [name: FilterName, value: string | null]; clear:
 const { t } = useI18n()
 
 type Dimension = Exclude<FilterName, 'q' | 'open'>
-const DIMENSIONS: Dimension[] = ['project', 'state_group', 'state', 'priority', 'kind', 'assignee', 'label', 'cycle', 'needs_input']
+const DIMENSIONS: Dimension[] = ['project', 'state_group', 'state', 'priority', 'kind', 'assignee', 'label', 'cycle', 'needs_input', 'blocked']
 
 const options = computed<Record<Dimension, PickerOption[]>>(() => ({
   project: props.projects.map((p) => ({ value: p.key, label: p.name, hint: p.key })),
@@ -41,6 +41,7 @@ const options = computed<Record<Dimension, PickerOption[]>>(() => ({
   ],
   cycle: [{ value: 'current', label: t('filters.currentCycle') }, { value: 'none', label: t('filters.noCycle') }],
   needs_input: [{ value: '1', label: t('items.needsInput') }],
+  blocked: [{ value: '1', label: t('items.blocked') }],
   label: (props.project ? props.project.labels.map((l) => l.name) : props.rowLabels).map((name) => ({ value: name, label: name })),
 }))
 

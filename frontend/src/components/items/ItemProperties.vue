@@ -17,6 +17,9 @@ const { t, locale } = useI18n()
 const ui = useUiStore()
 const { options, values, apply, update, agents, delegateOptions, delegateTo } = useItemProperties(() => props.item)
 const delegateOpen = ref(false)
+const blockers = computed(() => props.item.relations
+  .filter((r) => r.type === 'blocked_by' && r.item.state.group !== 'completed' && r.item.state.group !== 'cancelled')
+  .map((r) => r.item.key).join(', '))
 const cycleOpen = ref(false)
 const project = useProject(() => props.item.project.key)
 // A project that uses cycles offers its current one; an item keeps showing an older cycle it is still in.
@@ -109,6 +112,11 @@ const dates = computed(() => [
           @update:model-value="setCycle($event)"
         />
       </dd>
+    </template>
+
+    <template v-if="item.blocked">
+      <dt class="text-muted-foreground">{{ t('items.fields.status') }}</dt>
+      <dd class="flex items-center gap-1.5 px-2 py-1 text-sm text-destructive" data-mark="blocked">{{ t('items.blockedBy', { items: blockers }) }}</dd>
     </template>
 
     <template v-if="item.needs_input">
