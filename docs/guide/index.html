@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yadeit documentation</title>
+<meta name="description" content="Documentation for Yadeit, a simple project tool for people and AI agents: work items, boards, docs, feedback and agents as teammates.">
+<style>
+  :root {
+    --bg: #fbfaff; --fg: #1f2937; --muted: #6b7280; --card: #ffffff;
+    --border: #e5e7eb; --accent: #6d28d9; --accent-soft: #f5f3ff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12111a; --fg: #ececf1; --muted: #a1a1aa; --card: #1c1b26;
+      --border: #2e2c3d; --accent: #a78bfa; --accent-soft: #241f3a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 880px; margin: 0 auto; padding: 56px 16px 40px; }
+  h1 { font-size: 2.2rem; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .lede { font-size: 1.15rem; color: var(--muted); margin: 0 0 40px; max-width: 640px; }
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px 26px; transition: border-color .15s, transform .15s;
+  }
+  .card:hover, .card:focus-visible { border-color: var(--accent); transform: translateY(-1px); outline: none; }
+  .tag {
+    display: inline-block; font-size: .78rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--accent); background: var(--accent-soft);
+    padding: 3px 9px; border-radius: 999px; margin-bottom: 10px;
+  }
+  .card h2 { margin: 0 0 6px; font-size: 1.4rem; }
+  .card p { margin: 0 0 12px; color: var(--muted); }
+  .card ul { margin: 0; padding-left: 20px; columns: 2; column-gap: 32px; }
+  .card li { margin: 2px 0; break-inside: avoid; }
+  .more { margin-top: 28px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .more a {
+    display: block; padding: 14px 16px; border: 1px dashed var(--border); border-radius: 12px;
+    color: inherit; text-decoration: none;
+  }
+  .more a:hover, .more a:focus-visible { border-color: var(--accent); outline: none; }
+  .more strong { display: block; }
+  .more span { color: var(--muted); font-size: .92rem; }
+  footer { margin-top: 48px; color: var(--muted); font-size: .9rem; }
+  footer a { color: var(--accent); }
+  @media (max-width: 560px) { .card ul { columns: 1; } h1 { font-size: 1.8rem; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Yadeit documentation</h1>
+  <p class="lede">Project work that stays simple: plan, track and ship with your team, and let AI agents take real tasks as teammates.</p>
+
+  <a class="card" href="user/">
+    <div class="tag">For everyone</div>
+    <h2>User guide</h2>
+    <p>Start in ten minutes, then learn everyday work in plain words: items, boards, views, docs, feedback and agents.</p>
+    <ul>
+      <li>Quick start, from sign-up to your first board</li>
+      <li>Items, lists, boards and saved views</li>
+      <li>Keyboard shortcuts and the command palette</li>
+      <li>Docs, feedback and design work</li>
+      <li>Working with AI agents and built-in AI help</li>
+      <li>Trust and privacy, FAQ and glossary</li>
+    </ul>
+  </a>
+
+  <div class="more">
+    <a href="https://github.com/kKEo/yadeit/blob/master/docs/deployment.md">
+      <strong>Running your own installation</strong>
+      <span>Docker image, settings, backups and monitoring.</span>
+    </a>
+    <a href="https://github.com/kKEo/yadeit/blob/master/README.md">
+      <strong>For developers and agents</strong>
+      <span>The API, the MCP server, webhooks and local setup.</span>
+    </a>
+  </div>
+
+  <footer>
+    Source: <a href="https://github.com/kKEo/yadeit">github.com/kKEo/yadeit</a>.
+  </footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,1367 @@
+{
+  "app": {
+    "name": "Yadeit"
+  },
+  "common": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "language": "Language",
+    "refresh": "Refresh",
+    "save": "Save",
+    "saving": "Saving…",
+    "signOut": "Sign out",
+    "goHome": "Go to the home page"
+  },
+  "locale": {
+    "en": "English",
+    "pl": "Polski"
+  },
+  "auth": {
+    "title": "Sign in",
+    "description": "Enter your email and password to continue.",
+    "email": "Email",
+    "emailPlaceholder": "you{'@'}example.com",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "forgotLink": "Forgot your password?",
+    "noAccount": "New to Yadeit?",
+    "registerLink": "Create an account",
+    "backToLogin": "Back to sign in"
+  },
+  "state": {
+    "backlog": "Backlog",
+    "unstarted": "To do",
+    "started": "In progress",
+    "completed": "Done",
+    "cancelled": "Cancelled",
+    "triage": "Triage"
+  },
+  "priority": {
+    "none": "No priority",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "urgent": "Urgent"
+  },
+  "items": {
+    "title": "Items",
+    "count": "No items | {n} item loaded | {n} items loaded",
+    "new": "New item",
+    "loadMore": "Load more",
+    "unassigned": "Unassigned",
+    "noDescription": "No description.",
+    "noLabels": "No labels",
+    "fields": {
+      "key": "Key",
+      "title": "Title",
+      "description": "Description",
+      "state": "State",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "labels": "Labels",
+      "kind": "Kind",
+      "dueDate": "Due date",
+      "parent": "Parent",
+      "project": "Project",
+      "createdAt": "Created",
+      "updatedAt": "Updated",
+      "completedAt": "Completed",
+      "delegate": "Agent",
+      "status": "Status",
+      "cycle": "Cycle",
+      "demand": "Demand"
+    },
+    "create": {
+      "title": "New item",
+      "description": "Only the title is required.",
+      "titlePlaceholder": "Short summary of the work",
+      "descriptionPlaceholder": "Details (Markdown supported)",
+      "submit": "Create item",
+      "submitting": "Creating…"
+    },
+    "group": {
+      "all": "All items",
+      "section": "Group",
+      "by": {
+        "state": "Group: state",
+        "priority": "Group: priority",
+        "assignee": "Group: assignee",
+        "kind": "Group: kind",
+        "none": "No grouping"
+      }
+    },
+    "board": {
+      "column": "Column",
+      "emptyColumn": "Nothing here.",
+      "noStateInGroup": "Project {project} has no state in the group “{group}”."
+    },
+    "layout": {
+      "list": "List",
+      "board": "Board"
+    },
+    "toolbar": {
+      "layout": "Layout",
+      "groupBy": "Grouping: {group}",
+      "groupLabel": "Group by",
+      "sortBy": "Sorted by: {field}",
+      "sortLabel": "Sort by"
+    },
+    "sort": {
+      "updated_at": "Last updated",
+      "created_at": "Created",
+      "priority": "Priority",
+      "due_date": "Due date",
+      "sequence": "Number",
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "demand": "Demand"
+    },
+    "toast": {
+      "changedElsewhere": "{key} was changed by someone else. It has been reloaded; please check and try again."
+    },
+    "empty": {
+      "title": "No items yet",
+      "description": "Items are the tasks, bugs and ideas your team works on. Create the first one to get going.",
+      "filteredTitle": "Nothing matches these filters",
+      "filteredDescription": "Try removing a filter or changing the search text.",
+      "noProjectsTitle": "Start with a project",
+      "noProjectsDescription": "Every item belongs to a project. Create a project first, then add items to it.",
+      "goToProjects": "Go to projects"
+    },
+    "detail": {
+      "editDescription": "Edit description",
+      "write": "Write",
+      "preview": "Preview",
+      "parentPlaceholder": "e.g. WEB-12",
+      "openParent": "Open",
+      "subscribed": "Subscribed",
+      "subscribe": "Subscribe",
+      "unsubscribe": "Unsubscribe",
+      "deleteItem": "Delete item",
+      "deleteTitle": "Delete {key}?",
+      "deleteDescription": "The item disappears from all lists. This action cannot be undone here.",
+      "deleting": "Deleting…",
+      "openFull": "Open as full page",
+      "notFound": "This item does not exist or was deleted.",
+      "panel": "Item {key}"
+    },
+    "checklist": {
+      "title": "Checklist",
+      "add": "Add a checklist entry",
+      "remove": "Remove “{text}”"
+    },
+    "links": {
+      "title": "Links",
+      "add": "Add link",
+      "remove": "Remove link {url}",
+      "kindLabel": "Link kind",
+      "url": "Link address",
+      "kind": {
+        "url": "Link",
+        "pr": "Pull request",
+        "branch": "Branch",
+        "design": "Design",
+        "auto": "Detect"
+      },
+      "showPreview": "Show preview",
+      "hidePreview": "Hide preview"
+    },
+    "relations": {
+      "title": "Relations",
+      "add": "Add",
+      "remove": "Remove relation to {key}",
+      "type": "Relation type",
+      "key": "Item key",
+      "keyPlaceholder": "Item key, e.g. WEB-7"
+    },
+    "attachments": {
+      "title": "Attachments",
+      "upload": "Upload files",
+      "uploading": "Uploading…",
+      "download": "Download {name}",
+      "remove": "Remove {name}",
+      "empty": "No attachments.",
+      "view": "View {name}",
+      "previous": "Previous image",
+      "next": "Next image"
+    },
+    "children": {
+      "title": "Sub-items",
+      "add": "Add sub-item"
+    },
+    "comments": {
+      "title": "Comments ({n})",
+      "empty": "No comments yet.",
+      "edited": "(edited)",
+      "editLabel": "Edit comment",
+      "edit": "Edit",
+      "add": "Add a comment",
+      "placeholder": "Write a comment… (Markdown supported)",
+      "sending": "Sending…",
+      "submit": "Comment"
+    },
+    "activity": {
+      "title": "Activity",
+      "empty": "No activity yet."
+    },
+    "noDelegate": "No agent",
+    "needsInput": "Needs input",
+    "markAnswered": "Mark as answered",
+    "delegatedTo": "Delegated to {name}",
+    "runs": {
+      "title": "Agent runs",
+      "empty": "No agent has worked on this item yet.",
+      "noEntries": "Nothing logged yet.",
+      "started": "started {when}",
+      "status": {
+        "active": "Working",
+        "awaiting_input": "Waiting for an answer",
+        "completed": "Submitted",
+        "failed": "Failed",
+        "stopped": "Stopped",
+        "stale": "No sign of life"
+      },
+      "type": {
+        "thought": "Thought",
+        "action": "Action",
+        "question": "Question",
+        "response": "Result",
+        "error": "Error"
+      }
+    },
+    "noCycle": "No cycle",
+    "blocked": "Blocked",
+    "blockedBy": "Blocked by {items}",
+    "subItemsDone": "{done} of {total} sub-items done",
+    "hasDemand": "Asked for in feedback",
+    "demand": "No feedback | Asked for once | Asked for {n} times"
+  },
+  "register": {
+    "title": "Create your account",
+    "description": "Start with your name, email and a password.",
+    "name": "Name",
+    "passwordHint": "At least 8 characters.",
+    "passwordConfirmation": "Repeat password",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "haveAccount": "Already have an account?",
+    "agree": "By creating an account you agree to the"
+  },
+  "forgot": {
+    "title": "Reset your password",
+    "description": "Enter your email and we will send you a link to choose a new password.",
+    "sent": "If an account exists for this address, a reset link is on its way.",
+    "submit": "Send reset link",
+    "submitting": "Sending…"
+  },
+  "reset": {
+    "title": "Choose a new password",
+    "description": "Enter a new password for your account.",
+    "newPassword": "New password",
+    "submit": "Change password",
+    "missingToken": "This reset link is incomplete. Request a new one.",
+    "requestNew": "Request a new link",
+    "doneTitle": "Password changed",
+    "doneDescription": "You can now sign in with your new password."
+  },
+  "verify": {
+    "title": "Email confirmation",
+    "checking": "Confirming your email address…",
+    "confirmed": "Your email address is confirmed.",
+    "failed": "This confirmation link is invalid or has expired.",
+    "failedHint": "Sign in and use “Resend confirmation email” to get a new link.",
+    "continue": "Continue to Yadeit",
+    "continueSignedOut": "Continue to sign in"
+  },
+  "verifyBanner": {
+    "text": "Confirm your email address ({email}) to invite people to your workspaces.",
+    "sent": "A new confirmation link has been sent to {email}.",
+    "resend": "Resend confirmation email",
+    "resending": "Sending…",
+    "dismiss": "Dismiss"
+  },
+  "invitation": {
+    "title": "Join {workspace}",
+    "description": "This invitation was sent to {email}.",
+    "expires": "Valid until",
+    "signInHint": "Sign in to accept the invitation.",
+    "registerHint": "Create an account with this email address to accept the invitation.",
+    "accept": "Accept invitation",
+    "accepting": "Joining…",
+    "wrongAccountTitle": "You are signed in with a different account",
+    "wrongAccount": "You are signed in as {current}, but this invitation was sent to {invited}. Sign out, then sign in or register with that address.",
+    "invalidTitle": "Invitation not available",
+    "invalid": "This invitation has already been used, was withdrawn or has expired. Ask the person who invited you for a new one.",
+    "loadFailedTitle": "Could not load the invitation"
+  },
+  "welcome": {
+    "title": "Welcome, {name}",
+    "description": "Create your first workspace. A workspace holds your team's projects and members."
+  },
+  "workspace": {
+    "switcher": {
+      "label": "Switch workspace",
+      "placeholder": "Select a workspace",
+      "heading": "Your workspaces",
+      "create": "Create workspace"
+    },
+    "create": {
+      "title": "Create a workspace",
+      "description": "A separate space with its own projects and members.",
+      "submit": "Create workspace",
+      "submitting": "Creating…"
+    },
+    "fields": {
+      "name": "Workspace name",
+      "namePlaceholder": "Acme Inc.",
+      "slug": "Web address",
+      "slugHint": "Your workspace will be available at {path}.",
+      "slugRule": "Use 2–40 lowercase letters and digits, separated by single hyphens."
+    },
+    "notFound": {
+      "title": "Workspace not found",
+      "description": "This workspace does not exist or you are not a member of it. Check the address or ask an admin to invite you."
+    }
+  },
+  "nav": {
+    "label": "Workspace",
+    "projects": "Projects",
+    "members": "Members",
+    "settings": "Settings",
+    "items": "Items",
+    "inbox": "Inbox",
+    "agents": "Agents",
+    "docs": "Docs",
+    "feedback": "Feedback"
+  },
+  "userMenu": {
+    "label": "Account menu",
+    "operator": "Operator area"
+  },
+  "role": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
+    "guest": "Guest"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Projects in {workspace}",
+    "emptyTitle": "No projects yet",
+    "emptyDescription": "Projects group related items under a short key such as WEB. Create one to start adding items.",
+    "noDescription": "No description.",
+    "create": {
+      "open": "New project",
+      "title": "New project",
+      "description": "Items in this project are numbered under its key.",
+      "name": "Name",
+      "namePlaceholder": "e.g. Website",
+      "key": "Key",
+      "keyHint": "2–10 letters or digits, starting with a letter. Items will be called {example}. The key cannot be changed later.",
+      "submit": "Create project",
+      "submitting": "Creating…"
+    }
+  },
+  "members": {
+    "title": "Members",
+    "count": "No members | {n} member | {n} members",
+    "you": "(you)",
+    "fields": {
+      "name": "Name",
+      "role": "Role",
+      "joined": "Joined",
+      "actions": "Actions"
+    },
+    "changeRoleOf": "Change the role of {name}",
+    "remove": "Remove",
+    "removeNamed": "Remove {name}",
+    "removeTitle": "Remove {name}?",
+    "removeDescription": "They lose access to this workspace immediately. You can invite them again later.",
+    "leave": "Leave workspace",
+    "leaveTitle": "Leave {workspace}?",
+    "leaveDescription": "You lose access to this workspace and need a new invitation to come back."
+  },
+  "invitations": {
+    "title": "Invite people",
+    "description": "They receive an email with a link that is valid for a few days.",
+    "emailPlaceholder": "colleague{'@'}example.com",
+    "send": "Send invitation",
+    "sending": "Sending…",
+    "sent": "Invitation sent to {email}.",
+    "pending": "Pending invitations",
+    "empty": "No pending invitations.",
+    "expires": "Valid until {date}",
+    "withdraw": "Withdraw"
+  },
+  "settings": {
+    "title": "Workspace settings",
+    "general": "General",
+    "generalDescription": "Rename the workspace or change its web address.",
+    "readOnly": "Only admins and owners can change these settings.",
+    "slugHint": "The workspace is available at {path}. Changing it breaks existing links.",
+    "saved": "Changes saved.",
+    "dangerZone": "Delete workspace",
+    "deleteDescription": "Permanently removes the workspace with all its projects and members.",
+    "delete": "Delete workspace",
+    "deleting": "Deleting…",
+    "deleteTitle": "Delete {workspace}?",
+    "deleteConfirm": "Everything in this workspace is permanently removed for all members. This action cannot be undone.",
+    "export": {
+      "title": "Export",
+      "description": "One JSON file with the members, projects, items with their comments, pages and feedback of this workspace. Attachments are listed by name; the files are not included.",
+      "action": "Download the workspace"
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "login": "Could not sign in.",
+    "fetchList": "Failed to load work items.",
+    "fetchOne": "Failed to load the work item.",
+    "create": "Failed to create the work item.",
+    "update": "Failed to update the work item.",
+    "delete": "Failed to delete the work item.",
+    "register": "Could not create the account."
+  },
+  "kind": {
+    "task": "Task",
+    "bug": "Bug",
+    "feature": "Feature",
+    "design": "Design",
+    "research": "Research"
+  },
+  "relation": {
+    "blocks": "Blocks",
+    "blocked_by": "Blocked by",
+    "relates": "Relates to",
+    "duplicate": "Duplicate of"
+  },
+  "picker": {
+    "none": "None",
+    "search": "Search {property}…",
+    "empty": "Nothing matches."
+  },
+  "toast": {
+    "region": "Notifications",
+    "dismiss": "Dismiss"
+  },
+  "filters": {
+    "me": "Me",
+    "search": "Search items",
+    "searchPlaceholder": "Search…",
+    "add": "Filter",
+    "openOnly": "Open only",
+    "active": "Active filters",
+    "remove": "Remove filter {filter}",
+    "clearAll": "Clear all",
+    "name": {
+      "project": "Project",
+      "state": "State",
+      "state_group": "State group",
+      "priority": "Priority",
+      "kind": "Kind",
+      "assignee": "Assignee",
+      "label": "Label",
+      "open": "Open only",
+      "cycle": "Cycle",
+      "needs_input": "Needs input",
+      "blocked": "Blocked",
+      "demand": "Demand"
+    },
+    "currentCycle": "Current cycle",
+    "noCycle": "No cycle"
+  },
+  "activity": {
+    "nothing": "nothing",
+    "someone": "Someone",
+    "changed": "{actor} changed {field} from {from} to {to}",
+    "changedDescription": "{actor} changed the description",
+    "field": {
+      "title": "the title",
+      "state": "state",
+      "priority": "priority",
+      "kind": "kind",
+      "assignee": "the assignee",
+      "labels": "labels",
+      "due_date": "the due date",
+      "parent": "the parent",
+      "description": "the description",
+      "delegate": "the agent",
+      "cycle": "the cycle"
+    },
+    "event": {
+      "created": "{actor} created the item",
+      "updated": "{actor} updated the item",
+      "deleted": "{actor} deleted the item",
+      "commented": "{actor} commented",
+      "checklist_added": "{actor} added “{text}” to the checklist",
+      "checklist_checked": "{actor} ticked “{text}”",
+      "checklist_unchecked": "{actor} unticked “{text}”",
+      "link_added": "{actor} added the link {url}",
+      "relation_added": "{actor} added a relation: {type} {item}",
+      "attachment_added": "{actor} attached {name}",
+      "attachment_removed": "{actor} removed the attachment {name}",
+      "other": "{actor}: {event}",
+      "claimed": "{actor} took the item",
+      "released": "{actor} gave the item back",
+      "input_requested": "{actor} asked a question and is waiting for an answer",
+      "input_provided": "{actor} answered the question",
+      "submitted_for_review": "{actor} submitted the work for review",
+      "run_failed": "{actor} could not finish the work",
+      "rolled_over": "Not finished in {from}: moved to {to}",
+      "decayed": "Untouched for {idle_days} days: returned to the backlog"
+    },
+    "needsInputOn": "{actor} marked the item as needing input",
+    "needsInputOff": "{actor} marked the question as answered",
+    "viaToken": "via token “{token}”"
+  },
+  "capture": {
+    "noProjects": "Create a project first: every item belongs to one.",
+    "subItemOf": "Sub-item of {key}",
+    "createMore": "Create more",
+    "created": "{key} created."
+  },
+  "views": {
+    "saveTitle": "Save view",
+    "editTitle": "Edit view",
+    "saveDescription": "Keeps the current filters, layout, grouping and sorting under a name.",
+    "name": "Name",
+    "namePlaceholder": "e.g. My open bugs",
+    "shared": "Share with everyone in the workspace",
+    "builtIn": {
+      "all": "All items",
+      "mine": "Assigned to me",
+      "open": "Open",
+      "recent": "Recently updated"
+    },
+    "custom": "Custom view",
+    "menu": "View: {view}",
+    "unsaved": "Unsaved changes",
+    "saved": "Saved views",
+    "sharedBadge": "Shared",
+    "saveAs": "Save as new view…",
+    "save": "Save view",
+    "update": "Update view",
+    "rename": "Rename or share…",
+    "delete": "Delete view…",
+    "savedToast": "View “{name}” saved.",
+    "deleteTitle": "Delete the view “{name}”?",
+    "deleteDescription": "The view is removed for everyone who can see it. Items are not affected."
+  },
+  "commands": {
+    "title": "Command palette",
+    "open": "Search or run…",
+    "placeholder": "Type a command, or search items, comments and pages…",
+    "empty": "No commands or items match.",
+    "searching": "Searching…",
+    "copyFailed": "Could not copy to the clipboard.",
+    "change": {
+      "state": "Change state of {key}…",
+      "priority": "Change priority of {key}…",
+      "assignee": "Change assignee of {key}…",
+      "labels": "Change labels of {key}…"
+    },
+    "assignToMe": "Assign {key} to me",
+    "copyKey": "Copy key {key}",
+    "copyLink": "Copy link to {key}",
+    "copied": "Copied {text}.",
+    "linkCopied": "Link copied.",
+    "layout": {
+      "list": "Switch to list layout",
+      "board": "Switch to board layout"
+    },
+    "applyView": "View: {view}",
+    "switchWorkspace": "Switch to workspace {workspace}",
+    "group": {
+      "item": "This item",
+      "actions": "Actions",
+      "navigate": "Go to",
+      "views": "Views",
+      "workspaces": "Workspaces",
+      "items": "Items",
+      "comments": "Comments",
+      "pages": "Pages"
+    },
+    "designWork": "Show design work"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "description": "Shortcuts are off while you type in a field.",
+    "palette": "Open the command palette",
+    "help": "Show keyboard shortcuts",
+    "create": "Create an item",
+    "close": "Close the item panel",
+    "search": "Focus the search box",
+    "next": "Next row",
+    "previous": "Previous row",
+    "open": "Open the focused row",
+    "go": {
+      "items": "Go to items",
+      "projects": "Go to projects",
+      "members": "Go to members",
+      "inbox": "Go to inbox"
+    },
+    "item": {
+      "state": "Change state",
+      "priority": "Change priority",
+      "assignee": "Change assignee",
+      "labels": "Change labels",
+      "assignToMe": "Assign to me"
+    },
+    "inbox": {
+      "toggleRead": "Mark read or unread",
+      "snooze": "Snooze",
+      "delete": "Delete the notification"
+    },
+    "group": {
+      "general": "General",
+      "navigate": "Navigation",
+      "item": "Focused or open item",
+      "list": "Item list",
+      "inbox": "Inbox"
+    }
+  },
+  "profile": {
+    "title": "Profile and preferences",
+    "saved": "Profile saved.",
+    "emailNotifications": "Email notifications",
+    "emailNotificationsHint": "Also send an email for each new inbox entry.",
+    "data": {
+      "title": "Your data",
+      "exportHint": "A file with your profile and everything you wrote, in every workspace.",
+      "export": "Download my data",
+      "delete": "Delete my account…",
+      "deleteWarning": "This deletes your account for good. What you wrote in shared workspaces stays there without your name, a workspace only you are in is deleted too, and your agents are removed.",
+      "password": "Your password",
+      "confirmDelete": "Delete my account",
+      "deleting": "Deleting…"
+    }
+  },
+  "inbox": {
+    "title": "Inbox",
+    "unreadSuffix": "unread",
+    "unread": "Unread",
+    "unreadCount": "Nothing unread | {n} unread notification | {n} unread notifications",
+    "markRead": "Mark as read",
+    "markUnread": "Mark as unread",
+    "snooze": "Snooze",
+    "delete": "Delete notification",
+    "markAllRead": "Mark all read",
+    "snoozeFor": {
+      "laterToday": "Later today",
+      "tomorrow": "Tomorrow",
+      "nextWeek": "Next week"
+    },
+    "filter": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "empty": {
+      "title": "Your inbox is empty",
+      "unreadTitle": "Nothing unread",
+      "description": "You are notified here when an item is assigned to you, or when an item you follow gets a comment or changes state.",
+      "showAll": "Show all notifications"
+    },
+    "event": {
+      "assigned": "{actor} assigned this item to you",
+      "commented": "{actor} commented",
+      "state_changed": "{actor} changed the state",
+      "state_changed_to": "{actor} changed the state from {from} to {to}",
+      "input_requested": "{actor} needs your input",
+      "submitted_for_review": "{actor} submitted work for your review",
+      "run_failed": "{actor} could not finish the work"
+    }
+  },
+  "agents": {
+    "title": "Agents",
+    "subtitle": "Agents are members that work through access tokens: coding assistants, scripts and automations. Each one has a person who answers for it.",
+    "memberLabel": "Agent",
+    "emptyTitle": "No agents yet",
+    "emptyDescription": "Create an agent, give it a token, and it can read and update items like a teammate.",
+    "owner": "Owner: {name}",
+    "noOwner": "No owner",
+    "tokenCount": "No tokens | {n} token | {n} tokens",
+    "create": {
+      "open": "New agent",
+      "name": "Name",
+      "namePlaceholder": "e.g. Code assistant",
+      "description": "What it does (optional)",
+      "submit": "Create agent",
+      "submitting": "Creating…"
+    },
+    "remove": "Remove agent",
+    "removeTitle": "Remove {name}?",
+    "removeDescription": "All its tokens stop working immediately. What it already did stays in the history.",
+    "manage": "Tokens",
+    "hide": "Hide tokens",
+    "notYours": "Only the owner or a workspace admin can manage this agent.",
+    "tokens": {
+      "title": "Access tokens",
+      "empty": "No tokens. The agent cannot do anything until it has one.",
+      "name": "Token name",
+      "namePlaceholder": "e.g. CI server",
+      "access": "Access",
+      "read": "Read only",
+      "write": "Read and write",
+      "projects": "Projects",
+      "allProjects": "All projects",
+      "projectsHint": "Tick projects to limit the token to them. With none ticked it can reach every project.",
+      "expiry": "Expires",
+      "never": "Never",
+      "days": "In {n} days",
+      "create": "Create token",
+      "creating": "Creating…",
+      "revoke": "Revoke",
+      "revokeNamed": "Revoke token {name}",
+      "lastUsed": "Last used {date}",
+      "neverUsed": "Never used",
+      "expires": "Expires {date}",
+      "noExpiry": "Does not expire",
+      "limitedTo": "Limited to {projects}",
+      "secretTitle": "Copy this token now",
+      "secretDescription": "It is shown only this once. Store it where the agent runs; if it gets lost, revoke it and create a new one.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "done": "I have stored it"
+    },
+    "apps": {
+      "title": "Connected apps",
+      "since": "Connected over OAuth on {date}",
+      "disconnect": "Disconnect",
+      "disconnectNamed": "Disconnect {name}"
+    }
+  },
+  "webhooks": {
+    "title": "Webhooks",
+    "description": "Send a signed HTTP request to your own service when items change, for example to start an agent or post to a chat.",
+    "empty": "No webhooks yet.",
+    "name": "Name",
+    "namePlaceholder": "e.g. Agent runner",
+    "url": "Address",
+    "urlPlaceholder": "https://example.com/hooks/yadeit",
+    "events": "Events",
+    "allEvents": "All events",
+    "eventsHint": "Tick events to send only those. With none ticked, every event is sent.",
+    "create": "Add webhook",
+    "creating": "Adding…",
+    "remove": "Delete",
+    "removeNamed": "Delete webhook {name}",
+    "removeTitle": "Delete {name}?",
+    "removeDescription": "It stops receiving events and its delivery log is removed.",
+    "active": "On",
+    "inactive": "Off",
+    "switchedOff": "Switched off after repeated failures",
+    "turnOn": "Switch on",
+    "turnOff": "Switch off",
+    "ping": "Send test",
+    "pinged": "Test event queued. It appears in the log below in a moment.",
+    "log": "Deliveries",
+    "hideLog": "Hide deliveries",
+    "logEmpty": "Nothing has been sent yet.",
+    "refresh": "Refresh",
+    "attempt": "attempt {n}",
+    "ok": "Delivered",
+    "failed": "Failed",
+    "secretTitle": "Copy the signing secret now",
+    "secretDescription": "It is shown only this once. Your service uses it to check that a request really comes from here: HMAC-SHA256 of \"<t>.<body>\" must equal v1 in the X-Yadeit-Signature header.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "done": "I have stored it"
+  },
+  "planning": {
+    "open": "Planning",
+    "title": "Planning for {project}",
+    "description": "Cycles and tidying run by themselves once switched on.",
+    "cycles": "Cycles",
+    "cyclesHint": "Fixed stretches of time. When one ends, the next starts and unfinished items move along.",
+    "off": "Off",
+    "weeks": "{n} week | {n} weeks",
+    "stale": "Return untouched items to the backlog",
+    "staleHint": "Open items nobody changed for this long go back to the backlog, so the board shows what is really in progress.",
+    "days": "After {n} days",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved.",
+    "history": "Cycles so far",
+    "noCycles": "No cycles yet.",
+    "progress": "{done} of {total} done",
+    "status": {
+      "active": "Now",
+      "upcoming": "Next",
+      "completed": "Closed"
+    }
+  },
+  "docs": {
+    "title": "Docs",
+    "subtitle": "Written knowledge next to the work: decisions, how-tos, specifications.",
+    "new": "New page",
+    "newTitle": "Untitled page",
+    "creating": "Creating…",
+    "emptyTitle": "No pages yet",
+    "emptyDescription": "Write down what the team should not have to ask twice.",
+    "allProjects": "All pages",
+    "workspaceWide": "Workspace-wide",
+    "search": "Search pages",
+    "draft": "Draft",
+    "published": "Published",
+    "shared": "Shared by link",
+    "updated": "Updated {when} by {name}",
+    "updatedNoName": "Updated {when}",
+    "back": "All pages",
+    "titleLabel": "Title",
+    "project": "Belongs to",
+    "edit": "Edit",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "write": "Write",
+    "preview": "Preview",
+    "bodyPlaceholder": "Write in Markdown…",
+    "empty": "This page has no text yet.",
+    "publish": "Publish",
+    "unpublish": "Back to draft",
+    "share": "Share by link",
+    "unshare": "Stop sharing",
+    "shareHint": "Anyone with this link can read the page without signing in.",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "delete": "Delete page",
+    "deleteTitle": "Delete “{title}”?",
+    "deleteDescription": "The page disappears for everyone, and its public link stops working.",
+    "conflict": "Someone else changed this page while you were editing. Copy your text, reload, and apply it again.",
+    "notFound": "This page does not exist or you cannot see it.",
+    "publicNotFound": "This page does not exist or is no longer shared.",
+    "publicFooter": "Shared from Yadeit"
+  },
+  "feedback": {
+    "title": "Feedback",
+    "subtitle": "What people say they need. Decide here what becomes work.",
+    "send": "Send feedback",
+    "tabs": {
+      "new": "Inbox",
+      "snoozed": "Snoozed",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "duplicate": "Duplicates"
+    },
+    "emptyInbox": "The inbox is empty.",
+    "emptyInboxHint": "New feedback from the team, from agents and from the public form lands here.",
+    "empty": "Nothing here.",
+    "from": "From {name}",
+    "fromUnknown": "From someone",
+    "source": {
+      "app": "In the app",
+      "public": "Public form",
+      "agent": "Agent"
+    },
+    "accept": "Accept as new item",
+    "addTo": "Add to an item…",
+    "decline": "Decline",
+    "duplicate": "Duplicate of…",
+    "snooze": "Snooze",
+    "reopen": "Back to inbox",
+    "snoozeTomorrow": "Until tomorrow",
+    "snoozeWeek": "For a week",
+    "snoozedUntil": "Snoozed until {date}",
+    "countsFor": "Counts for {key}",
+    "demand": "asked for {n} time | asked for {n} times",
+    "declined": "Declined: {reason}",
+    "declinedNoReason": "Declined",
+    "duplicateOf": "Duplicate of #{id}",
+    "addToTitle": "Add to an existing item",
+    "addToHint": "The feedback counts as one more voice for that item.",
+    "itemKey": "Item key",
+    "itemKeyPlaceholder": "e.g. WEB-12",
+    "add": "Add",
+    "duplicateTitle": "Which feedback says the same?",
+    "duplicateHint": "Pick the original. If it is linked to an item, this one counts for it too.",
+    "noOthers": "There is no other feedback to pick from.",
+    "declineTitle": "Decline this feedback?",
+    "reason": "Reason (optional)",
+    "sendTitle": "Send feedback",
+    "sendHint": "Describe what you need or what went wrong. Someone will decide what happens to it.",
+    "project": "Project",
+    "what": "In one sentence",
+    "details": "Details (optional)",
+    "sending": "Sending…",
+    "sent": "Thank you. Your feedback is in the inbox.",
+    "publicTitle": "Public form",
+    "publicHint": "Let anyone send feedback for a project through a link, without an account.",
+    "publicOn": "Switch on",
+    "publicOff": "Switch off",
+    "copy": "Copy link",
+    "copied": "Copied",
+    "shortcuts": {
+      "accept": "Accept as a new item",
+      "decline": "Decline",
+      "duplicate": "Mark as duplicate",
+      "snooze": "Snooze until tomorrow",
+      "group": "Feedback"
+    }
+  },
+  "publicFeedback": {
+    "title": "Feedback for {project}",
+    "intro": "Tell us what you need or what went wrong. We read everything.",
+    "what": "In one sentence",
+    "details": "Details (optional)",
+    "name": "Your name (optional)",
+    "email": "Your email (optional)",
+    "emailHint": "Only if you want an answer.",
+    "website": "Leave this field empty",
+    "send": "Send",
+    "sending": "Sending…",
+    "thanks": "Thank you. Your feedback was received.",
+    "another": "Send another",
+    "closed": "This feedback form does not exist or is closed.",
+    "tooFast": "That was a lot at once. Please try again in a minute."
+  },
+  "ai": {
+    "label": "Suggested by AI. Check it before you use it.",
+    "working": "Thinking…",
+    "dismiss": "Dismiss",
+    "draft": {
+      "button": "Draft with AI",
+      "hint": "Write one sentence about what you need, then let AI draft the item.",
+      "description": "Description",
+      "acceptance": "Acceptance criteria",
+      "discard": "Discard the draft"
+    },
+    "split": {
+      "button": "Suggest sub-items",
+      "none": "This item looks small enough as it is.",
+      "create": "Create selected | Create {n} selected | Create {n} selected",
+      "creating": "Creating…"
+    },
+    "summary": {
+      "button": "Summarise",
+      "decisions": "Decided",
+      "open": "Still open",
+      "keyPoints": "Key points"
+    },
+    "triage": {
+      "button": "Suggest",
+      "duplicate": "Looks like a duplicate of #{id}",
+      "existing": "{key} already covers this",
+      "newItem": "New item: {kind}, priority {priority}",
+      "markDuplicate": "Mark as duplicate of #{id}",
+      "addTo": "Add to {key}",
+      "accept": "Accept as {kind}"
+    },
+    "settings": {
+      "title": "AI help",
+      "description": "Drafting items from a sentence, splitting them, summaries and triage suggestions. Everything AI produces is a suggestion a person confirms.",
+      "privacy": "When AI is on, the text involved (item titles, descriptions, comments, pages, feedback) is sent to the model provider, Anthropic, to produce the suggestion.",
+      "enable": "AI help for this workspace",
+      "usage": "{used} of {limit} tokens used this month",
+      "model": "Model: {model}",
+      "notConfigured": "No provider key is available. Add one below, or ask whoever runs this installation.",
+      "key": "Own Anthropic API key (optional)",
+      "keyHint": "Leave empty to use the installation's key. A saved key is never shown again.",
+      "keySet": "This workspace uses its own key.",
+      "removeKey": "Remove own key",
+      "limit": "Monthly token limit",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved."
+    }
+  },
+  "admin": {
+    "title": "Operator area",
+    "back": "Back to the app",
+    "search": "Search",
+    "more": "Load more",
+    "created": "Created",
+    "suspend": "Suspend",
+    "restore": "Restore",
+    "nav": {
+      "workspaces": "Workspaces",
+      "users": "People",
+      "mail": "Email",
+      "broadcasts": "Announcements",
+      "audit": "Audit log"
+    },
+    "status": {
+      "label": "Status",
+      "all": "All",
+      "active": "Active",
+      "suspended": "Suspended"
+    },
+    "plan": {
+      "free": "Free",
+      "team": "Team"
+    },
+    "overview": {
+      "workspaces": "Workspaces",
+      "suspended_workspaces": "Suspended",
+      "people": "People",
+      "agents": "Agents",
+      "items": "Items",
+      "signups_last_7_days": "Sign-ups, last 7 days"
+    },
+    "workspaces": {
+      "title": "Workspaces",
+      "search": "Name or web address",
+      "empty": "No workspace matches.",
+      "name": "Workspace",
+      "plan": "Plan",
+      "planOf": "Plan of {workspace}",
+      "members": "Members",
+      "items": "Items",
+      "suspendTitle": "Suspend {workspace}?",
+      "suspendDescription": "Its members and agents lose access until you restore it. Nothing is deleted."
+    },
+    "users": {
+      "title": "People",
+      "search": "Name or email",
+      "empty": "Nobody matches.",
+      "name": "Person",
+      "workspaces": "Workspaces",
+      "operator": "Operator",
+      "unverified": "Email not verified",
+      "suspendTitle": "Suspend {name}?",
+      "suspendDescription": "They are signed out everywhere, their tokens are revoked and their agents stop working. Nothing is deleted."
+    },
+    "audit": {
+      "title": "Audit log",
+      "workspace": "Workspace web address",
+      "action": "Action starts with, e.g. member."
+    },
+    "mail": {
+      "title": "Outgoing email",
+      "description": "Every email the installation sent in the last three months, and the announcement messages that still wait. Announcements leave in batches of 100 a minute. The text of sign-in, reset and notification emails is not kept.",
+      "search": "Recipient or subject",
+      "empty": "No email matches.",
+      "showAll": "Show all email",
+      "to": "To",
+      "subject": "Subject",
+      "when": "Sent or queued",
+      "details": "Details",
+      "sendNow": "Send now",
+      "attempts": "no attempts | one attempt | {n} attempts",
+      "error": "Last error",
+      "noBody": "The text of this email is not kept.",
+      "deleteTitle": "Delete this email?",
+      "deleteWaiting": "It will never be sent.",
+      "deleteSent": "It was already sent; this only removes it from the log.",
+      "status": {
+        "all": "All",
+        "waiting": "Waiting",
+        "sending": "Sending",
+        "sent": "Sent",
+        "failed": "Failed"
+      }
+    },
+    "broadcasts": {
+      "title": "Announcements",
+      "new": "New announcement",
+      "description": "An email to the people who use this installation. Agents, suspended accounts and unverified addresses never receive it.",
+      "subject": "Subject",
+      "body": "Text",
+      "bodyHint": "Markdown works: **bold**, lists, links.",
+      "preview": "Preview",
+      "noSubject": "(no subject yet)",
+      "to": "Send to",
+      "anyPlan": "Any plan",
+      "important": "Service notice: also send to people who turned email notifications off.",
+      "audience": {
+        "everyone": "Everyone",
+        "admins": "Workspace admins and owners",
+        "owners": "Workspace owners"
+      },
+      "check": "Check who receives it",
+      "reaches": "Reaches nobody. | Reaches one person. | Reaches {n} people.",
+      "sample": "For example: {list}",
+      "send": "Send",
+      "confirmTitle": "Send to nobody? | Send to one person? | Send to {n} people?",
+      "confirmDescription": "“{subject}” will be queued and sent over the next minutes. Messages that still wait can be deleted under Email.",
+      "queued": "Queued for {n} people. It leaves over the next minutes.",
+      "history": "Sent announcements",
+      "none": "No announcement has been sent yet.",
+      "progress": "{sent} of {total} sent",
+      "waiting": "{n} waiting",
+      "failed": "{n} failed",
+      "messages": "Messages"
+    },
+    "health": {
+      "title": "System",
+      "status": {
+        "ok": "All working",
+        "warning": "Needs a look",
+        "failing": "Something is down"
+      },
+      "check": {
+        "database": "Database",
+        "queue": "Queue worker",
+        "failed_jobs": "Failed jobs",
+        "scheduler": "Scheduler",
+        "storage": "Uploads",
+        "mail": "Announcements",
+        "backup": "Backups"
+      }
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "description": "Who changed access, sharing and settings, and who deleted what. Work on items is in each item's own history.",
+    "filter": "Show",
+    "empty": "Nothing recorded yet.",
+    "more": "Load more",
+    "when": "When",
+    "who": "Who",
+    "what": "What",
+    "details": "Details",
+    "workspace": "Workspace",
+    "ip": "Address",
+    "agent": "Agent",
+    "nobody": "Not signed in",
+    "viaToken": "with token “{token}”",
+    "area": {
+      "all": "Everything",
+      "member": "Members",
+      "invitation": "Invitations",
+      "agent": "Agents",
+      "token": "Tokens",
+      "webhook": "Webhooks",
+      "project": "Projects",
+      "workflow": "Workflow",
+      "page": "Docs",
+      "item": "Items",
+      "ai": "AI",
+      "workspace": "Workspace"
+    },
+    "action": {
+      "account": {
+        "signed_in": "Signed in",
+        "signed_out": "Signed out",
+        "sign_in_failed": "Sign-in failed",
+        "registered": "Registered",
+        "password_reset": "Reset the password",
+        "deleted": "Deleted the account",
+        "exported": "Exported personal data"
+      },
+      "invitation": {
+        "accepted": "Accepted an invitation",
+        "sent": "Invited someone",
+        "withdrawn": "Withdrew an invitation"
+      },
+      "workspace": {
+        "created": "Created the workspace",
+        "updated": "Changed workspace settings",
+        "deleted": "Deleted the workspace",
+        "exported": "Exported the workspace"
+      },
+      "member": {
+        "role_changed": "Changed a member's role",
+        "removed": "Removed a member"
+      },
+      "agent": {
+        "created": "Created an agent",
+        "updated": "Changed an agent",
+        "removed": "Removed an agent",
+        "app_connected": "Connected an app to an agent",
+        "app_disconnected": "Disconnected an app from an agent"
+      },
+      "token": {
+        "created": "Created an access token",
+        "revoked": "Revoked an access token"
+      },
+      "webhook": {
+        "created": "Created a webhook",
+        "updated": "Changed a webhook",
+        "deleted": "Deleted a webhook"
+      },
+      "project": {
+        "created": "Created a project",
+        "updated": "Changed a project",
+        "deleted": "Deleted a project"
+      },
+      "feedback_form": {
+        "changed": "Changed the public feedback form"
+      },
+      "workflow": {
+        "state_added": "Added a state",
+        "state_changed": "Changed a state",
+        "state_removed": "Removed a state"
+      },
+      "ai": {
+        "settings_changed": "Changed AI settings"
+      },
+      "billing": {
+        "checkout_started": "Started a plan change"
+      },
+      "page": {
+        "deleted": "Deleted a page",
+        "sharing_changed": "Changed how a page is shared"
+      },
+      "item": {
+        "deleted": "Deleted an item"
+      },
+      "operator": {
+        "workspace_changed": "Operator changed a workspace",
+        "user_changed": "Operator changed an account",
+        "mail_sent_now": "Operator sent a waiting email",
+        "mail_deleted": "Operator deleted an email",
+        "broadcast_sent": "Operator sent an announcement"
+      }
+    }
+  },
+  "billing": {
+    "title": "Plan",
+    "description": "What this workspace's plan allows and how much of it is used.",
+    "members": "People",
+    "projects": "Projects",
+    "usedOf": "{used} of {limit}",
+    "unlimited": "{used}, no limit",
+    "membersNote": "Open invitations count as people. Agents are free and never count.",
+    "aiNote": " Built-in AI: {n} tokens a month, unless the workspace uses its own provider key.",
+    "endsAt": "The paid plan was cancelled and runs until {date}.",
+    "moveTo": "Move to {plan}",
+    "manage": "Manage billing",
+    "ownersOnly": "Only an owner can change the plan.",
+    "returnedSuccess": "Thank you. The plan changes as soon as the payment is confirmed, usually within a minute.",
+    "returnedCancelled": "The payment was not completed. Nothing has changed."
+  },
+  "landing": {
+    "headline": "Project work that stays simple",
+    "lead": "Plan, track and ship with your team, and let AI agents take real tasks as teammates. One small set of ideas, a fast keyboard-first interface, nothing essential held back.",
+    "start": "Create a free account",
+    "free": "Free to start. No card needed.",
+    "footer": "About",
+    "forAgents": "For AI agents",
+    "features": {
+      "fast": {
+        "title": "Fast and calm",
+        "text": "List and board, saved views, a command palette and single-key shortcuts. Title is the only required field."
+      },
+      "agents": {
+        "title": "Agents as teammates",
+        "text": "Give an agent its own scoped access, delegate an item, and watch its plan, questions and results. A person always approves \"done\"."
+      },
+      "feedback": {
+        "title": "Feedback and UX work",
+        "text": "Collect feedback from a public form, triage it, and see how many people asked for each thing."
+      },
+      "docs": {
+        "title": "Docs next to the work",
+        "text": "Write pages in Markdown per project or workspace and share one by link when you want to."
+      }
+    }
+  },
+  "legal": {
+    "template": "This text is a template that describes how the software works. It is not legal advice, and whoever runs this installation has to review and complete it.",
+    "terms": {
+      "title": "Terms of service",
+      "intro": "These terms apply to this installation of Yadeit, run by {operator}. By creating an account you agree to them.",
+      "sections": [
+        {
+          "title": "The service",
+          "body": [
+            "Yadeit is a tool for planning and tracking project work. {operator} provides it as it is and may change, limit or end parts of it. Significant changes are announced by email or in the application."
+          ]
+        },
+        {
+          "title": "Your account",
+          "body": [
+            "You need a working email address and you keep your password to yourself. You are responsible for what happens under your account, including what agents you create do with the access you give them.",
+            "An account may be suspended when it is used against these terms or puts the service or other people at risk."
+          ]
+        },
+        {
+          "title": "Your content",
+          "body": [
+            "What you and your team put into a workspace stays yours. You give {operator} permission to store and process it only as far as needed to run the service for you.",
+            "Owners can download their whole workspace at any time, and every person can download their own data."
+          ]
+        },
+        {
+          "title": "Acceptable use",
+          "body": [
+            "Do not use the service to break the law, to send spam, to store malware, to attack or overload the service, or to get at data that is not yours. Public pages and public feedback forms must not be used to mislead people."
+          ]
+        },
+        {
+          "title": "Agents and built-in AI",
+          "body": [
+            "Agents act with the access their owner gives them and the owner answers for them. When a workspace switches built-in AI on, the text needed for a suggestion is sent to the AI provider. Suggestions can be wrong; a person decides what is kept."
+          ]
+        },
+        {
+          "title": "Plans and payment",
+          "body": [
+            "Some plans are paid. Prices and limits are shown before you buy, payments are handled by Stripe, and a paid plan renews until it is cancelled. You can cancel at any time in the billing portal; the plan then runs until the end of the paid period."
+          ]
+        },
+        {
+          "title": "Ending",
+          "body": [
+            "You can delete your account and owners can delete their workspace at any time. Deleted content is removed from the live service; copies in backups disappear as backups expire."
+          ]
+        },
+        {
+          "title": "Liability",
+          "body": [
+            "The service is provided without a guarantee that it is always available or free of errors. As far as the law allows, {operator} is not liable for indirect damage or lost profit, and liability is limited to what you paid in the last twelve months."
+          ]
+        },
+        {
+          "title": "Changes and contact",
+          "body": [
+            "These terms can change; the new version is announced before it applies. Questions go to {email}."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "This page explains which personal data this installation of Yadeit processes and why. The controller is {operator}; you can reach us at {email}.",
+      "sections": [
+        {
+          "title": "What we store",
+          "body": [
+            "Your account: name, email address, a hash of your password, your language and notification preference.",
+            "Your work: the items, comments, pages, attachments and feedback you and your team create, and the history of changes to them.",
+            "Technical records: sign-ins and changes to access and settings in an audit log (with IP address), and a log of emails sent to you (recipient, subject and time, not the text)."
+          ]
+        },
+        {
+          "title": "Why",
+          "body": [
+            "To provide the service you signed up for, to keep it secure, to send you the notifications you chose and announcements about the service, and to bill paid plans."
+          ]
+        },
+        {
+          "title": "Who else processes it",
+          "body": [
+            "The hosting and email providers of {operator}. Stripe, when a workspace buys a paid plan. The AI provider (Anthropic), only when a workspace has switched built-in AI on and only the text needed for a suggestion. Nothing is sold and nothing is used for advertising."
+          ]
+        },
+        {
+          "title": "Public content",
+          "body": [
+            "A page shared by link and a public feedback form are visible to anyone who has the link. Feedback sent through a public form, with the name and email address you choose to give, goes to the team that owns the form."
+          ]
+        },
+        {
+          "title": "Cookies",
+          "body": [
+            "Only the cookies needed to keep you signed in and to protect forms. No tracking and no advertising cookies."
+          ]
+        },
+        {
+          "title": "How long",
+          "body": [
+            "Account and work data stay until you delete them. The email log is kept for 90 days. Backups expire on their own schedule."
+          ]
+        },
+        {
+          "title": "Your rights",
+          "body": [
+            "You can see and correct your profile, download your data (Profile and preferences, \"Download my data\") and delete your account there as well. You can also ask us at {email} and complain to your data protection authority."
+          ]
+        }
+      ]
+    }
+  }
+}

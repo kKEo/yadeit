@@ -1,0 +1,117 @@
+# Production: the application, its worker and scheduler, PostgreSQL and backups.
+#
+#   cp .env.production.example .env.production      and fill it in
+#   docker compose --env-file .env.production -f compose.prod.yaml up -d --build
+#
+# docs/deployment.md explains every step.
+name: yadeit
+
+x-app: &app
+  image: yadeit:latest
+  build:
+    context: .
+    args:
+      VITE_OPERATOR_NAME: ${OPERATOR_NAME:-}
+      VITE_OPERATOR_EMAIL: ${OPERATOR_EMAIL:-}
+      VITE_REVERB_APP_KEY: ${VITE_REVERB_APP_KEY:-}
+      VITE_REVERB_HOST: ${VITE_REVERB_HOST:-}
+      VITE_REVERB_PORT: ${VITE_REVERB_PORT:-}
+      VITE_REVERB_SCHEME: ${VITE_REVERB_SCHEME:-}
+  env_file: ${ENV_FILE:-.env.production}
+  environment:
+    DB_CONNECTION: pgsql
+    DB_HOST: db
+    DB_PORT: 5432
+    BACKUP_HEARTBEAT: /backups/last-success
+  volumes:
+    - storage:/app/storage
+    - backups:/backups:ro
+  restart: unless-stopped
+
+services:
+  app:
+    <<: *app
+    ports:
+      - "${HTTP_PORT:-8080}:8080"
+      # With SERVER_NAME set to a domain the server speaks HTTPS itself: publish these instead.
+      # - "80:80"
+      # - "443:443"
+    volumes:
+      - storage:/app/storage
+      - backups:/backups:ro
+      - caddy:/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Sends notifications, emails and webhooks.
+  worker:
+    <<: *app
+    command: ["php", "artisan", "queue:work", "--tries=3", "--backoff=10", "--max-time=3600", "--sleep=1"]
+    healthcheck:
+      disable: true
+    depends_on:
+      app:
+        condition: service_healthy
+
+  # Runs what happens on a clock: cycles, announcements, clean-up, the health heartbeat.
+  scheduler:
+    <<: *app
+    command: ["php", "artisan", "schedule:work"]
+    healthcheck:
+      disable: true
+    depends_on:
+      app:
+        condition: service_healthy
+
+  # Realtime updates in the browser. Optional: start with  --profile realtime
+  reverb:
+    <<: *app
+    profiles: ["realtime"]
+    command: ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
+    healthcheck:
+      disable: true
+    depends_on:
+      app:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:?Set DB_USERNAME in .env.production}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env.production}
+      POSTGRES_DB: ${DB_DATABASE:?Set DB_DATABASE in .env.production}
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  # A database dump and an archive of the uploads every BACKUP_INTERVAL_HOURS, kept BACKUP_KEEP_DAYS.
+  backup:
+    image: postgres:17-alpine
+    entrypoint: ["/bin/sh", "/backup.sh"]
+    environment:
+      PGHOST: db
+      PGUSER: ${DB_USERNAME}
+      PGPASSWORD: ${DB_PASSWORD}
+      PGDATABASE: ${DB_DATABASE}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+      BACKUP_INTERVAL_HOURS: ${BACKUP_INTERVAL_HOURS:-24}
+    volumes:
+      - ./docker/prod/backup.sh:/backup.sh:ro
+      - backups:/backups
+      - storage:/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  db:
+  storage:
+  backups:
+  caddy:

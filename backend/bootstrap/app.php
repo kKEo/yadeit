@@ -1,0 +1,56 @@
+<?php
+
+use App\Http\ApiErrorRenderer;
+use App\Http\Middleware\AuditTrail;
+use App\Http\Middleware\EnforceTokenScope;
+use App\Http\Middleware\EnsureAccountActive;
+use App\Http\Middleware\EnsureOperator;
+use App\Http\Middleware\Idempotency;
+use App\Http\Middleware\ResolveWorkspace;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+        apiPrefix: 'api/v1',
+    )
+    // Channel sign-in for realtime updates goes through the API, with the same session or token.
+    ->withBroadcasting(__DIR__.'/../routes/channels.php', ['prefix' => 'api/v1', 'middleware' => ['api', 'auth:sanctum', 'active']])
+    ->withMiddleware(function (Middleware $middleware): void {
+        // The SPA signs in with a cookie session; API clients and agents use bearer tokens.
+        $middleware->statefulApi();
+
+        // The workspace must be known before tenant models are bound from the route.
+        $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class, 'token.scope' => EnforceTokenScope::class, 'active' => EnsureAccountActive::class, 'operator' => EnsureOperator::class]);
+        // There is no sign-in page on this side: a signed-out request gets a 401, also when a browser asks (a download link).
+        // The one exception is an app connecting over OAuth: its user signs in in the web app and comes back.
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('oauth/*')
+            ? rtrim((string) config('app.frontend_url'), '/').'/login?redirect='.urlencode($request->getRequestUri())
+            : null);
+        // Stripe posts its webhooks without a session.
+        $middleware->preventRequestForgery(except: ['stripe/*']);
+        // Every API request passes the audit trail, which records the ones on its list.
+        $middleware->appendToGroup('api', AuditTrail::class);
+        $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolveWorkspace::class);
+        // Token limits also apply before binding, so out-of-scope projects and items are simply not found.
+        $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: EnforceTokenScope::class);
+    })
+    ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->shouldRenderJsonWhen(
+            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
+        );
+
+        $exceptions->render(function (Throwable $e, Request $request) {
+            // The MCP endpoint answers in JSON as well, whatever goes wrong before a tool runs.
+            if ($request->is('api/*') || $request->is('mcp')) {
+                return app(ApiErrorRenderer::class)->render($e);
+            }
+        });
+    })->create();

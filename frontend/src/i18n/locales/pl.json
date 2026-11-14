@@ -1,0 +1,1367 @@
+{
+  "app": {
+    "name": "Yadeit"
+  },
+  "common": {
+    "back": "Wstecz",
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "delete": "Usuń",
+    "language": "Język",
+    "refresh": "Odśwież",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "signOut": "Wyloguj się",
+    "goHome": "Przejdź do strony głównej"
+  },
+  "locale": {
+    "en": "English",
+    "pl": "Polski"
+  },
+  "auth": {
+    "title": "Logowanie",
+    "description": "Podaj adres e-mail i hasło, aby kontynuować.",
+    "email": "E-mail",
+    "emailPlaceholder": "ty{'@'}example.com",
+    "password": "Hasło",
+    "submit": "Zaloguj się",
+    "submitting": "Logowanie…",
+    "forgotLink": "Nie pamiętasz hasła?",
+    "noAccount": "Nie masz jeszcze konta?",
+    "registerLink": "Załóż konto",
+    "backToLogin": "Wróć do logowania"
+  },
+  "state": {
+    "backlog": "Backlog",
+    "unstarted": "Do zrobienia",
+    "started": "W toku",
+    "completed": "Ukończone",
+    "cancelled": "Anulowane",
+    "triage": "Do oceny"
+  },
+  "priority": {
+    "none": "Brak priorytetu",
+    "low": "Niski",
+    "medium": "Średni",
+    "high": "Wysoki",
+    "urgent": "Pilny"
+  },
+  "items": {
+    "title": "Zadania",
+    "count": "Brak zadań | Wczytano {n} zadanie | Wczytano {n} zadania | Wczytano {n} zadań",
+    "new": "Nowe zadanie",
+    "loadMore": "Wczytaj więcej",
+    "unassigned": "Nieprzypisane",
+    "noDescription": "Brak opisu.",
+    "noLabels": "Brak etykiet",
+    "fields": {
+      "key": "Klucz",
+      "title": "Tytuł",
+      "description": "Opis",
+      "state": "Stan",
+      "priority": "Priorytet",
+      "assignee": "Osoba przypisana",
+      "labels": "Etykiety",
+      "kind": "Rodzaj",
+      "dueDate": "Termin",
+      "parent": "Zadanie nadrzędne",
+      "project": "Projekt",
+      "createdAt": "Utworzono",
+      "updatedAt": "Zaktualizowano",
+      "completedAt": "Ukończono",
+      "delegate": "Agent",
+      "status": "Status",
+      "cycle": "Cykl",
+      "demand": "Zapotrzebowanie"
+    },
+    "create": {
+      "title": "Nowe zadanie",
+      "description": "Wymagany jest tylko tytuł.",
+      "titlePlaceholder": "Krótkie podsumowanie pracy",
+      "descriptionPlaceholder": "Szczegóły (obsługiwany Markdown)",
+      "submit": "Utwórz zadanie",
+      "submitting": "Tworzenie…"
+    },
+    "group": {
+      "all": "Wszystkie zadania",
+      "section": "Grupa",
+      "by": {
+        "state": "Grupuj: stan",
+        "priority": "Grupuj: priorytet",
+        "assignee": "Grupuj: osoba",
+        "kind": "Grupuj: rodzaj",
+        "none": "Bez grupowania"
+      }
+    },
+    "board": {
+      "column": "Kolumna",
+      "emptyColumn": "Nic tu nie ma.",
+      "noStateInGroup": "Projekt {project} nie ma stanu w grupie „{group}”."
+    },
+    "layout": {
+      "list": "Lista",
+      "board": "Tablica"
+    },
+    "toolbar": {
+      "layout": "Układ",
+      "groupBy": "Grupowanie: {group}",
+      "groupLabel": "Grupuj według",
+      "sortBy": "Sortowanie: {field}",
+      "sortLabel": "Sortuj według"
+    },
+    "sort": {
+      "updated_at": "Ostatnia zmiana",
+      "created_at": "Data utworzenia",
+      "priority": "Priorytet",
+      "due_date": "Termin",
+      "sequence": "Numer",
+      "ascending": "Rosnąco",
+      "descending": "Malejąco",
+      "demand": "Zapotrzebowanie"
+    },
+    "toast": {
+      "changedElsewhere": "Zadanie {key} zostało zmienione przez kogoś innego. Wczytano je ponownie – sprawdź i spróbuj jeszcze raz."
+    },
+    "empty": {
+      "title": "Nie ma jeszcze żadnych zadań",
+      "description": "Zadania to prace, błędy i pomysły, nad którymi pracuje Twój zespół. Utwórz pierwsze, aby zacząć.",
+      "filteredTitle": "Nic nie pasuje do tych filtrów",
+      "filteredDescription": "Spróbuj usunąć któryś filtr albo zmienić szukany tekst.",
+      "noProjectsTitle": "Zacznij od projektu",
+      "noProjectsDescription": "Każde zadanie należy do projektu. Najpierw utwórz projekt, a potem dodawaj do niego zadania.",
+      "goToProjects": "Przejdź do projektów"
+    },
+    "detail": {
+      "editDescription": "Edytuj opis",
+      "write": "Edycja",
+      "preview": "Podgląd",
+      "parentPlaceholder": "np. WEB-12",
+      "openParent": "Otwórz",
+      "subscribed": "Obserwujesz",
+      "subscribe": "Obserwuj",
+      "unsubscribe": "Przestań obserwować",
+      "deleteItem": "Usuń zadanie",
+      "deleteTitle": "Usunąć {key}?",
+      "deleteDescription": "Zadanie zniknie ze wszystkich list. Tej operacji nie można tutaj cofnąć.",
+      "deleting": "Usuwanie…",
+      "openFull": "Otwórz na całej stronie",
+      "notFound": "To zadanie nie istnieje albo zostało usunięte.",
+      "panel": "Zadanie {key}"
+    },
+    "checklist": {
+      "title": "Lista kontrolna",
+      "add": "Dodaj pozycję do listy kontrolnej",
+      "remove": "Usuń „{text}”"
+    },
+    "links": {
+      "title": "Linki",
+      "add": "Dodaj link",
+      "remove": "Usuń link {url}",
+      "kindLabel": "Rodzaj linku",
+      "url": "Adres linku",
+      "kind": {
+        "url": "Link",
+        "pr": "Pull request",
+        "branch": "Gałąź",
+        "design": "Projekt graficzny",
+        "auto": "Wykryj"
+      },
+      "showPreview": "Pokaż podgląd",
+      "hidePreview": "Ukryj podgląd"
+    },
+    "relations": {
+      "title": "Powiązania",
+      "add": "Dodaj",
+      "remove": "Usuń powiązanie z {key}",
+      "type": "Rodzaj powiązania",
+      "key": "Klucz zadania",
+      "keyPlaceholder": "Klucz zadania, np. WEB-7"
+    },
+    "attachments": {
+      "title": "Załączniki",
+      "upload": "Prześlij pliki",
+      "uploading": "Przesyłanie…",
+      "download": "Pobierz {name}",
+      "remove": "Usuń {name}",
+      "empty": "Brak załączników.",
+      "view": "Zobacz {name}",
+      "previous": "Poprzedni obraz",
+      "next": "Następny obraz"
+    },
+    "children": {
+      "title": "Zadania podrzędne",
+      "add": "Dodaj zadanie podrzędne"
+    },
+    "comments": {
+      "title": "Komentarze ({n})",
+      "empty": "Nie ma jeszcze komentarzy.",
+      "edited": "(edytowano)",
+      "editLabel": "Edytuj komentarz",
+      "edit": "Edytuj",
+      "add": "Dodaj komentarz",
+      "placeholder": "Napisz komentarz… (obsługiwany Markdown)",
+      "sending": "Wysyłanie…",
+      "submit": "Skomentuj"
+    },
+    "activity": {
+      "title": "Historia",
+      "empty": "Brak historii."
+    },
+    "noDelegate": "Bez agenta",
+    "needsInput": "Czeka na odpowiedź",
+    "markAnswered": "Oznacz jako wyjaśnione",
+    "delegatedTo": "Powierzone agentowi {name}",
+    "runs": {
+      "title": "Praca agentów",
+      "empty": "Żaden agent jeszcze nie pracował nad tym zadaniem.",
+      "noEntries": "Brak wpisów.",
+      "started": "rozpoczęto {when}",
+      "status": {
+        "active": "Pracuje",
+        "awaiting_input": "Czeka na odpowiedź",
+        "completed": "Przekazano",
+        "failed": "Niepowodzenie",
+        "stopped": "Zatrzymano",
+        "stale": "Brak oznak życia"
+      },
+      "type": {
+        "thought": "Myśl",
+        "action": "Działanie",
+        "question": "Pytanie",
+        "response": "Wynik",
+        "error": "Błąd"
+      }
+    },
+    "noCycle": "Bez cyklu",
+    "blocked": "Zablokowane",
+    "blockedBy": "Zablokowane przez: {items}",
+    "subItemsDone": "Ukończono {done} z {total} podzadań",
+    "hasDemand": "Zgłaszane w opiniach",
+    "demand": "Brak opinii | Zgłoszone raz | Zgłoszone {n} razy | Zgłoszone {n} razy"
+  },
+  "register": {
+    "title": "Załóż konto",
+    "description": "Podaj imię i nazwisko, adres e-mail oraz hasło.",
+    "name": "Imię i nazwisko",
+    "passwordHint": "Co najmniej 8 znaków.",
+    "passwordConfirmation": "Powtórz hasło",
+    "submit": "Załóż konto",
+    "submitting": "Zakładanie konta…",
+    "haveAccount": "Masz już konto?",
+    "agree": "Zakładając konto, akceptujesz:"
+  },
+  "forgot": {
+    "title": "Zresetuj hasło",
+    "description": "Podaj adres e-mail, a wyślemy Ci link do ustawienia nowego hasła.",
+    "sent": "Jeśli istnieje konto z tym adresem, link do zmiany hasła jest już w drodze.",
+    "submit": "Wyślij link",
+    "submitting": "Wysyłanie…"
+  },
+  "reset": {
+    "title": "Ustaw nowe hasło",
+    "description": "Wpisz nowe hasło do swojego konta.",
+    "newPassword": "Nowe hasło",
+    "submit": "Zmień hasło",
+    "missingToken": "Ten link do zmiany hasła jest niekompletny. Poproś o nowy.",
+    "requestNew": "Poproś o nowy link",
+    "doneTitle": "Hasło zostało zmienione",
+    "doneDescription": "Możesz teraz zalogować się nowym hasłem."
+  },
+  "verify": {
+    "title": "Potwierdzenie adresu e-mail",
+    "checking": "Potwierdzamy Twój adres e-mail…",
+    "confirmed": "Twój adres e-mail został potwierdzony.",
+    "failed": "Ten link potwierdzający jest nieprawidłowy lub wygasł.",
+    "failedHint": "Zaloguj się i użyj przycisku „Wyślij ponownie e-mail potwierdzający”, aby otrzymać nowy link.",
+    "continue": "Przejdź do Yadeit",
+    "continueSignedOut": "Przejdź do logowania"
+  },
+  "verifyBanner": {
+    "text": "Potwierdź swój adres e-mail ({email}), aby móc zapraszać osoby do swoich przestrzeni roboczych.",
+    "sent": "Nowy link potwierdzający został wysłany na adres {email}.",
+    "resend": "Wyślij ponownie e-mail potwierdzający",
+    "resending": "Wysyłanie…",
+    "dismiss": "Ukryj"
+  },
+  "invitation": {
+    "title": "Dołącz do {workspace}",
+    "description": "To zaproszenie zostało wysłane na adres {email}.",
+    "expires": "Ważne do",
+    "signInHint": "Zaloguj się, aby przyjąć zaproszenie.",
+    "registerHint": "Załóż konto z tym adresem e-mail, aby przyjąć zaproszenie.",
+    "accept": "Przyjmij zaproszenie",
+    "accepting": "Dołączanie…",
+    "wrongAccountTitle": "Jesteś zalogowany(-a) na inne konto",
+    "wrongAccount": "Jesteś zalogowany(-a) jako {current}, a to zaproszenie zostało wysłane na adres {invited}. Wyloguj się, a następnie zaloguj lub zarejestruj, używając tego adresu.",
+    "invalidTitle": "Zaproszenie jest niedostępne",
+    "invalid": "To zaproszenie zostało już wykorzystane, wycofane albo wygasło. Poproś osobę zapraszającą o nowe.",
+    "loadFailedTitle": "Nie udało się wczytać zaproszenia"
+  },
+  "welcome": {
+    "title": "Witaj, {name}",
+    "description": "Utwórz swoją pierwszą przestrzeń roboczą. Przestrzeń robocza zawiera projekty i członków Twojego zespołu."
+  },
+  "workspace": {
+    "switcher": {
+      "label": "Przełącz przestrzeń roboczą",
+      "placeholder": "Wybierz przestrzeń roboczą",
+      "heading": "Twoje przestrzenie robocze",
+      "create": "Utwórz przestrzeń roboczą"
+    },
+    "create": {
+      "title": "Utwórz przestrzeń roboczą",
+      "description": "Osobna przestrzeń z własnymi projektami i członkami.",
+      "submit": "Utwórz przestrzeń roboczą",
+      "submitting": "Tworzenie…"
+    },
+    "fields": {
+      "name": "Nazwa przestrzeni roboczej",
+      "namePlaceholder": "Acme sp. z o.o.",
+      "slug": "Adres internetowy",
+      "slugHint": "Przestrzeń robocza będzie dostępna pod adresem {path}.",
+      "slugRule": "Użyj od 2 do 40 małych liter i cyfr, rozdzielonych pojedynczymi łącznikami."
+    },
+    "notFound": {
+      "title": "Nie znaleziono przestrzeni roboczej",
+      "description": "Ta przestrzeń robocza nie istnieje albo nie jesteś jej członkiem. Sprawdź adres lub poproś administratora o zaproszenie."
+    }
+  },
+  "nav": {
+    "label": "Przestrzeń robocza",
+    "projects": "Projekty",
+    "members": "Członkowie",
+    "settings": "Ustawienia",
+    "items": "Zadania",
+    "inbox": "Skrzynka",
+    "agents": "Agenci",
+    "docs": "Dokumenty",
+    "feedback": "Opinie"
+  },
+  "userMenu": {
+    "label": "Menu konta",
+    "operator": "Panel operatora"
+  },
+  "role": {
+    "owner": "Właściciel",
+    "admin": "Administrator",
+    "member": "Członek",
+    "guest": "Gość"
+  },
+  "projects": {
+    "title": "Projekty",
+    "subtitle": "Projekty w przestrzeni {workspace}",
+    "emptyTitle": "Nie ma jeszcze żadnych projektów",
+    "emptyDescription": "Projekty grupują powiązane zadania pod krótkim kluczem, np. WEB. Utwórz projekt, aby zacząć dodawać zadania.",
+    "noDescription": "Brak opisu.",
+    "create": {
+      "open": "Nowy projekt",
+      "title": "Nowy projekt",
+      "description": "Zadania w tym projekcie są numerowane pod jego kluczem.",
+      "name": "Nazwa",
+      "namePlaceholder": "np. Strona internetowa",
+      "key": "Klucz",
+      "keyHint": "Od 2 do 10 liter lub cyfr, zaczynając od litery. Zadania będą się nazywać {example}. Klucza nie można później zmienić.",
+      "submit": "Utwórz projekt",
+      "submitting": "Tworzenie…"
+    }
+  },
+  "members": {
+    "title": "Członkowie",
+    "count": "Brak członków | {n} członek | {n} członkowie | {n} członków",
+    "you": "(Ty)",
+    "fields": {
+      "name": "Imię i nazwisko",
+      "role": "Rola",
+      "joined": "Data dołączenia",
+      "actions": "Akcje"
+    },
+    "changeRoleOf": "Zmień rolę użytkownika {name}",
+    "remove": "Usuń",
+    "removeNamed": "Usuń użytkownika {name}",
+    "removeTitle": "Usunąć użytkownika {name}?",
+    "removeDescription": "Ta osoba natychmiast straci dostęp do tej przestrzeni roboczej. Później możesz zaprosić ją ponownie.",
+    "leave": "Opuść przestrzeń roboczą",
+    "leaveTitle": "Opuścić przestrzeń {workspace}?",
+    "leaveDescription": "Stracisz dostęp do tej przestrzeni roboczej, a żeby wrócić, będziesz potrzebować nowego zaproszenia."
+  },
+  "invitations": {
+    "title": "Zaproś osoby",
+    "description": "Zaproszone osoby otrzymają e-mail z linkiem ważnym przez kilka dni.",
+    "emailPlaceholder": "kolega{'@'}example.com",
+    "send": "Wyślij zaproszenie",
+    "sending": "Wysyłanie…",
+    "sent": "Zaproszenie zostało wysłane na adres {email}.",
+    "pending": "Oczekujące zaproszenia",
+    "empty": "Brak oczekujących zaproszeń.",
+    "expires": "Ważne do {date}",
+    "withdraw": "Wycofaj"
+  },
+  "settings": {
+    "title": "Ustawienia przestrzeni roboczej",
+    "general": "Ogólne",
+    "generalDescription": "Zmień nazwę przestrzeni roboczej lub jej adres internetowy.",
+    "readOnly": "Te ustawienia mogą zmieniać tylko administratorzy i właściciele.",
+    "slugHint": "Przestrzeń robocza jest dostępna pod adresem {path}. Zmiana adresu sprawi, że dotychczasowe linki przestaną działać.",
+    "saved": "Zmiany zostały zapisane.",
+    "dangerZone": "Usuń przestrzeń roboczą",
+    "deleteDescription": "Trwale usuwa przestrzeń roboczą wraz ze wszystkimi projektami i członkami.",
+    "delete": "Usuń przestrzeń roboczą",
+    "deleting": "Usuwanie…",
+    "deleteTitle": "Usunąć przestrzeń {workspace}?",
+    "deleteConfirm": "Cała zawartość tej przestrzeni roboczej zostanie trwale usunięta dla wszystkich członków. Tej operacji nie można cofnąć.",
+    "export": {
+      "title": "Eksport",
+      "description": "Jeden plik JSON z członkami, projektami, zadaniami wraz z komentarzami, stronami i opiniami tej przestrzeni roboczej. Załączniki są wymienione z nazwy; same pliki nie są dołączane.",
+      "action": "Pobierz przestrzeń roboczą"
+    }
+  },
+  "errors": {
+    "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+    "login": "Nie udało się zalogować.",
+    "fetchList": "Nie udało się wczytać zadań.",
+    "fetchOne": "Nie udało się wczytać zadania.",
+    "create": "Nie udało się utworzyć zadania.",
+    "update": "Nie udało się zaktualizować zadania.",
+    "delete": "Nie udało się usunąć zadania.",
+    "register": "Nie udało się założyć konta."
+  },
+  "kind": {
+    "task": "Zadanie",
+    "bug": "Błąd",
+    "feature": "Funkcja",
+    "design": "Projekt graficzny",
+    "research": "Analiza"
+  },
+  "relation": {
+    "blocks": "Blokuje",
+    "blocked_by": "Blokowane przez",
+    "relates": "Powiązane z",
+    "duplicate": "Duplikat"
+  },
+  "picker": {
+    "none": "Brak",
+    "search": "Szukaj: {property}…",
+    "empty": "Brak pasujących pozycji."
+  },
+  "toast": {
+    "region": "Powiadomienia",
+    "dismiss": "Zamknij"
+  },
+  "filters": {
+    "me": "Ja",
+    "search": "Szukaj zadań",
+    "searchPlaceholder": "Szukaj…",
+    "add": "Filtruj",
+    "openOnly": "Tylko otwarte",
+    "active": "Aktywne filtry",
+    "remove": "Usuń filtr {filter}",
+    "clearAll": "Wyczyść wszystkie",
+    "name": {
+      "project": "Projekt",
+      "state": "Stan",
+      "state_group": "Grupa stanów",
+      "priority": "Priorytet",
+      "kind": "Rodzaj",
+      "assignee": "Osoba przypisana",
+      "label": "Etykieta",
+      "open": "Tylko otwarte",
+      "cycle": "Cykl",
+      "needs_input": "Czeka na odpowiedź",
+      "blocked": "Zablokowane",
+      "demand": "Zapotrzebowanie"
+    },
+    "currentCycle": "Bieżący cykl",
+    "noCycle": "Bez cyklu"
+  },
+  "activity": {
+    "nothing": "brak",
+    "someone": "Ktoś",
+    "changed": "{actor} – zmiana pola „{field}”: {from} → {to}",
+    "changedDescription": "{actor} – zmiana opisu",
+    "field": {
+      "title": "tytuł",
+      "state": "stan",
+      "priority": "priorytet",
+      "kind": "rodzaj",
+      "assignee": "osoba przypisana",
+      "labels": "etykiety",
+      "due_date": "termin",
+      "parent": "zadanie nadrzędne",
+      "description": "opis",
+      "delegate": "agenta",
+      "cycle": "cykl"
+    },
+    "event": {
+      "created": "{actor} – utworzenie zadania",
+      "updated": "{actor} – aktualizacja zadania",
+      "deleted": "{actor} – usunięcie zadania",
+      "commented": "{actor} – nowy komentarz",
+      "checklist_added": "{actor} – dodanie „{text}” do listy kontrolnej",
+      "checklist_checked": "{actor} – odhaczenie „{text}”",
+      "checklist_unchecked": "{actor} – cofnięcie odhaczenia „{text}”",
+      "link_added": "{actor} – dodanie linku {url}",
+      "relation_added": "{actor} – nowe powiązanie: {type} {item}",
+      "attachment_added": "{actor} – dodanie załącznika {name}",
+      "attachment_removed": "{actor} – usunięcie załącznika {name}",
+      "other": "{actor}: {event}",
+      "claimed": "{actor} podjął(-ęła) zadanie",
+      "released": "{actor} oddał(a) zadanie",
+      "input_requested": "{actor} zadał(a) pytanie i czeka na odpowiedź",
+      "input_provided": "{actor} odpowiedział(a) na pytanie",
+      "submitted_for_review": "{actor} przekazał(a) pracę do przeglądu",
+      "run_failed": "{actor} nie zdołał(a) dokończyć pracy",
+      "rolled_over": "Nieukończone w {from}: przeniesiono do {to}",
+      "decayed": "Bez zmian przez {idle_days} dni: wróciło do backlogu"
+    },
+    "needsInputOn": "{actor} oznaczył(a) zadanie jako czekające na odpowiedź",
+    "needsInputOff": "{actor} oznaczył(a) pytanie jako wyjaśnione",
+    "viaToken": "przez token „{token}”"
+  },
+  "capture": {
+    "noProjects": "Najpierw utwórz projekt – każde zadanie należy do jakiegoś projektu.",
+    "subItemOf": "Zadanie podrzędne dla {key}",
+    "createMore": "Utwórz kolejne",
+    "created": "Utworzono {key}."
+  },
+  "views": {
+    "saveTitle": "Zapisz widok",
+    "editTitle": "Edytuj widok",
+    "saveDescription": "Zapisuje pod wybraną nazwą bieżące filtry, układ, grupowanie i sortowanie.",
+    "name": "Nazwa",
+    "namePlaceholder": "np. Moje otwarte błędy",
+    "shared": "Udostępnij wszystkim w przestrzeni roboczej",
+    "builtIn": {
+      "all": "Wszystkie zadania",
+      "mine": "Przypisane do mnie",
+      "open": "Otwarte",
+      "recent": "Ostatnio zmienione"
+    },
+    "custom": "Widok niestandardowy",
+    "menu": "Widok: {view}",
+    "unsaved": "Niezapisane zmiany",
+    "saved": "Zapisane widoki",
+    "sharedBadge": "Udostępniony",
+    "saveAs": "Zapisz jako nowy widok…",
+    "save": "Zapisz widok",
+    "update": "Zaktualizuj widok",
+    "rename": "Zmień nazwę lub udostępnij…",
+    "delete": "Usuń widok…",
+    "savedToast": "Zapisano widok „{name}”.",
+    "deleteTitle": "Usunąć widok „{name}”?",
+    "deleteDescription": "Widok zniknie u wszystkich, którzy go widzą. Zadania pozostaną bez zmian."
+  },
+  "commands": {
+    "title": "Paleta poleceń",
+    "open": "Szukaj lub uruchom…",
+    "placeholder": "Wpisz polecenie albo szukaj zadań, komentarzy i stron…",
+    "empty": "Brak pasujących poleceń i zadań.",
+    "searching": "Wyszukiwanie…",
+    "copyFailed": "Nie udało się skopiować do schowka.",
+    "change": {
+      "state": "Zmień stan zadania {key}…",
+      "priority": "Zmień priorytet zadania {key}…",
+      "assignee": "Zmień osobę przypisaną do {key}…",
+      "labels": "Zmień etykiety zadania {key}…"
+    },
+    "assignToMe": "Przypisz {key} do mnie",
+    "copyKey": "Skopiuj klucz {key}",
+    "copyLink": "Skopiuj link do {key}",
+    "copied": "Skopiowano {text}.",
+    "linkCopied": "Skopiowano link.",
+    "layout": {
+      "list": "Przełącz na układ listy",
+      "board": "Przełącz na układ tablicy"
+    },
+    "applyView": "Widok: {view}",
+    "switchWorkspace": "Przełącz na przestrzeń {workspace}",
+    "group": {
+      "item": "To zadanie",
+      "actions": "Akcje",
+      "navigate": "Przejdź do",
+      "views": "Widoki",
+      "workspaces": "Przestrzenie robocze",
+      "items": "Zadania",
+      "comments": "Komentarze",
+      "pages": "Strony"
+    },
+    "designWork": "Pokaż prace projektowe"
+  },
+  "shortcuts": {
+    "title": "Skróty klawiszowe",
+    "description": "Skróty nie działają podczas pisania w polu tekstowym.",
+    "palette": "Otwórz paletę poleceń",
+    "help": "Pokaż skróty klawiszowe",
+    "create": "Utwórz zadanie",
+    "close": "Zamknij panel zadania",
+    "search": "Przejdź do pola wyszukiwania",
+    "next": "Następny wiersz",
+    "previous": "Poprzedni wiersz",
+    "open": "Otwórz zaznaczony wiersz",
+    "go": {
+      "items": "Przejdź do zadań",
+      "projects": "Przejdź do projektów",
+      "members": "Przejdź do członków",
+      "inbox": "Przejdź do skrzynki"
+    },
+    "item": {
+      "state": "Zmień stan",
+      "priority": "Zmień priorytet",
+      "assignee": "Zmień osobę przypisaną",
+      "labels": "Zmień etykiety",
+      "assignToMe": "Przypisz do mnie"
+    },
+    "inbox": {
+      "toggleRead": "Oznacz jako przeczytane lub nieprzeczytane",
+      "snooze": "Odłóż na później",
+      "delete": "Usuń powiadomienie"
+    },
+    "group": {
+      "general": "Ogólne",
+      "navigate": "Nawigacja",
+      "item": "Zaznaczone lub otwarte zadanie",
+      "list": "Lista zadań",
+      "inbox": "Skrzynka"
+    }
+  },
+  "profile": {
+    "title": "Profil i preferencje",
+    "saved": "Zapisano profil.",
+    "emailNotifications": "Powiadomienia e-mail",
+    "emailNotificationsHint": "Wysyłaj też e-mail o każdym nowym wpisie w skrzynce.",
+    "data": {
+      "title": "Twoje dane",
+      "exportHint": "Plik z Twoim profilem i wszystkim, co napisałeś(-aś), ze wszystkich przestrzeni roboczych.",
+      "export": "Pobierz moje dane",
+      "delete": "Usuń moje konto…",
+      "deleteWarning": "Konto zostanie trwale usunięte. To, co napisałeś(-aś) we wspólnych przestrzeniach, pozostanie tam bez Twojego imienia, przestrzeń, w której jesteś tylko Ty, również zostanie usunięta, a Twoi agenci zostaną usunięci.",
+      "password": "Twoje hasło",
+      "confirmDelete": "Usuń moje konto",
+      "deleting": "Usuwanie…"
+    }
+  },
+  "inbox": {
+    "title": "Skrzynka",
+    "unreadSuffix": "nieprzeczytanych",
+    "unread": "Nieprzeczytane",
+    "unreadCount": "Brak nieprzeczytanych | {n} nieprzeczytane powiadomienie | {n} nieprzeczytane powiadomienia | {n} nieprzeczytanych powiadomień",
+    "markRead": "Oznacz jako przeczytane",
+    "markUnread": "Oznacz jako nieprzeczytane",
+    "snooze": "Odłóż na później",
+    "delete": "Usuń powiadomienie",
+    "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "snoozeFor": {
+      "laterToday": "Później dzisiaj",
+      "tomorrow": "Jutro",
+      "nextWeek": "W przyszłym tygodniu"
+    },
+    "filter": {
+      "all": "Wszystkie",
+      "unread": "Nieprzeczytane"
+    },
+    "empty": {
+      "title": "Skrzynka jest pusta",
+      "unreadTitle": "Brak nieprzeczytanych powiadomień",
+      "description": "Tutaj dowiesz się, gdy ktoś przypisze Ci zadanie albo gdy obserwowane zadanie dostanie komentarz lub zmieni stan.",
+      "showAll": "Pokaż wszystkie powiadomienia"
+    },
+    "event": {
+      "assigned": "{actor} przypisał(a) Ci to zadanie",
+      "commented": "{actor} dodał(a) komentarz",
+      "state_changed": "{actor} zmienił(a) stan",
+      "state_changed_to": "{actor} zmienił(a) stan z „{from}” na „{to}”",
+      "input_requested": "{actor} potrzebuje Twojej odpowiedzi",
+      "submitted_for_review": "{actor} przekazał(a) pracę do Twojego przeglądu",
+      "run_failed": "{actor} nie zdołał(a) dokończyć pracy"
+    }
+  },
+  "agents": {
+    "title": "Agenci",
+    "subtitle": "Agenci to członkowie działający przez tokeny dostępu: asystenci kodowania, skrypty i automatyzacje. Za każdego odpowiada konkretna osoba.",
+    "memberLabel": "Agent",
+    "emptyTitle": "Brak agentów",
+    "emptyDescription": "Utwórz agenta, nadaj mu token, a będzie mógł czytać i aktualizować zadania jak członek zespołu.",
+    "owner": "Właściciel: {name}",
+    "noOwner": "Brak właściciela",
+    "tokenCount": "Brak tokenów | {n} token | {n} tokeny | {n} tokenów",
+    "create": {
+      "open": "Nowy agent",
+      "name": "Nazwa",
+      "namePlaceholder": "np. Asystent kodu",
+      "description": "Czym się zajmuje (opcjonalnie)",
+      "submit": "Utwórz agenta",
+      "submitting": "Tworzenie…"
+    },
+    "remove": "Usuń agenta",
+    "removeTitle": "Usunąć agenta {name}?",
+    "removeDescription": "Wszystkie jego tokeny natychmiast przestaną działać. To, co już zrobił, pozostanie w historii.",
+    "manage": "Tokeny",
+    "hide": "Ukryj tokeny",
+    "notYours": "Tym agentem może zarządzać tylko jego właściciel lub administrator przestrzeni.",
+    "tokens": {
+      "title": "Tokeny dostępu",
+      "empty": "Brak tokenów. Bez tokenu agent nie może nic zrobić.",
+      "name": "Nazwa tokenu",
+      "namePlaceholder": "np. Serwer CI",
+      "access": "Dostęp",
+      "read": "Tylko odczyt",
+      "write": "Odczyt i zapis",
+      "projects": "Projekty",
+      "allProjects": "Wszystkie projekty",
+      "projectsHint": "Zaznacz projekty, aby ograniczyć do nich token. Bez zaznaczenia token ma dostęp do wszystkich projektów.",
+      "expiry": "Wygasa",
+      "never": "Nigdy",
+      "days": "Za {n} dni",
+      "create": "Utwórz token",
+      "creating": "Tworzenie…",
+      "revoke": "Unieważnij",
+      "revokeNamed": "Unieważnij token {name}",
+      "lastUsed": "Ostatnio użyty {date}",
+      "neverUsed": "Nigdy nie użyty",
+      "expires": "Wygasa {date}",
+      "noExpiry": "Nie wygasa",
+      "limitedTo": "Ograniczony do: {projects}",
+      "secretTitle": "Skopiuj ten token teraz",
+      "secretDescription": "Jest pokazywany tylko ten jeden raz. Zapisz go tam, gdzie działa agent; jeśli zginie, unieważnij go i utwórz nowy.",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano",
+      "done": "Token zapisany"
+    },
+    "apps": {
+      "title": "Połączone aplikacje",
+      "since": "Połączono przez OAuth: {date}",
+      "disconnect": "Odłącz",
+      "disconnectNamed": "Odłącz aplikację {name}"
+    }
+  },
+  "webhooks": {
+    "title": "Webhooki",
+    "description": "Wysyłaj podpisane żądanie HTTP do własnej usługi, gdy zmieniają się zadania, na przykład aby uruchomić agenta lub napisać na czacie.",
+    "empty": "Brak webhooków.",
+    "name": "Nazwa",
+    "namePlaceholder": "np. Uruchamianie agenta",
+    "url": "Adres",
+    "urlPlaceholder": "https://example.com/hooks/yadeit",
+    "events": "Zdarzenia",
+    "allEvents": "Wszystkie zdarzenia",
+    "eventsHint": "Zaznacz zdarzenia, aby wysyłać tylko je. Bez zaznaczenia wysyłane są wszystkie.",
+    "create": "Dodaj webhook",
+    "creating": "Dodawanie…",
+    "remove": "Usuń",
+    "removeNamed": "Usuń webhook {name}",
+    "removeTitle": "Usunąć {name}?",
+    "removeDescription": "Przestanie otrzymywać zdarzenia, a jego dziennik dostaw zostanie usunięty.",
+    "active": "Włączony",
+    "inactive": "Wyłączony",
+    "switchedOff": "Wyłączony po powtarzających się błędach",
+    "turnOn": "Włącz",
+    "turnOff": "Wyłącz",
+    "ping": "Wyślij test",
+    "pinged": "Zdarzenie testowe w kolejce. Za chwilę pojawi się w dzienniku poniżej.",
+    "log": "Dostawy",
+    "hideLog": "Ukryj dostawy",
+    "logEmpty": "Nic jeszcze nie wysłano.",
+    "refresh": "Odśwież",
+    "attempt": "próba {n}",
+    "ok": "Dostarczono",
+    "failed": "Niepowodzenie",
+    "secretTitle": "Skopiuj teraz sekret podpisu",
+    "secretDescription": "Jest pokazywany tylko ten jeden raz. Twoja usługa sprawdza nim, czy żądanie naprawdę pochodzi stąd: HMAC-SHA256 z \"<t>.<treść>\" musi być równy v1 w nagłówku X-Yadeit-Signature.",
+    "copy": "Kopiuj",
+    "copied": "Skopiowano",
+    "done": "Sekret zapisany"
+  },
+  "planning": {
+    "open": "Planowanie",
+    "title": "Planowanie: {project}",
+    "description": "Po włączeniu cykle i porządkowanie działają same.",
+    "cycles": "Cykle",
+    "cyclesHint": "Stałe odcinki czasu. Gdy jeden się kończy, zaczyna się następny, a nieukończone zadania przechodzą dalej.",
+    "off": "Wyłączone",
+    "weeks": "{n} tydzień | {n} tygodnie | {n} tygodni",
+    "stale": "Odsyłaj nieruszane zadania do backlogu",
+    "staleHint": "Otwarte zadania, których nikt nie zmienił przez ten czas, wracają do backlogu, dzięki czemu tablica pokazuje to, nad czym naprawdę trwa praca.",
+    "days": "Po {n} dniach",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "saved": "Zapisano.",
+    "history": "Dotychczasowe cykle",
+    "noCycles": "Brak cykli.",
+    "progress": "Ukończono {done} z {total}",
+    "status": {
+      "active": "Teraz",
+      "upcoming": "Następny",
+      "completed": "Zamknięty"
+    }
+  },
+  "docs": {
+    "title": "Dokumenty",
+    "subtitle": "Spisana wiedza obok pracy: decyzje, instrukcje, specyfikacje.",
+    "new": "Nowa strona",
+    "newTitle": "Strona bez tytułu",
+    "creating": "Tworzenie…",
+    "emptyTitle": "Brak stron",
+    "emptyDescription": "Zapisz to, o co zespół nie powinien pytać dwa razy.",
+    "allProjects": "Wszystkie strony",
+    "workspaceWide": "Cała przestrzeń",
+    "search": "Szukaj stron",
+    "draft": "Szkic",
+    "published": "Opublikowana",
+    "shared": "Udostępniona linkiem",
+    "updated": "Zaktualizowano {when}, {name}",
+    "updatedNoName": "Zaktualizowano {when}",
+    "back": "Wszystkie strony",
+    "titleLabel": "Tytuł",
+    "project": "Należy do",
+    "edit": "Edytuj",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "cancel": "Anuluj",
+    "write": "Pisz",
+    "preview": "Podgląd",
+    "bodyPlaceholder": "Pisz w Markdownie…",
+    "empty": "Ta strona nie ma jeszcze treści.",
+    "publish": "Opublikuj",
+    "unpublish": "Wróć do szkicu",
+    "share": "Udostępnij linkiem",
+    "unshare": "Zakończ udostępnianie",
+    "shareHint": "Każdy, kto ma ten link, może przeczytać stronę bez logowania.",
+    "copyLink": "Kopiuj link",
+    "copied": "Skopiowano",
+    "delete": "Usuń stronę",
+    "deleteTitle": "Usunąć „{title}”?",
+    "deleteDescription": "Strona zniknie dla wszystkich, a jej publiczny link przestanie działać.",
+    "conflict": "Ktoś inny zmienił tę stronę podczas Twojej edycji. Skopiuj swój tekst, odśwież i wprowadź go ponownie.",
+    "notFound": "Ta strona nie istnieje albo nie masz do niej dostępu.",
+    "publicNotFound": "Ta strona nie istnieje albo nie jest już udostępniana.",
+    "publicFooter": "Udostępniono z Yadeit"
+  },
+  "feedback": {
+    "title": "Opinie",
+    "subtitle": "To, czego ludzie potrzebują. Tutaj zdecyduj, co stanie się pracą.",
+    "send": "Wyślij opinię",
+    "tabs": {
+      "new": "Skrzynka",
+      "snoozed": "Odłożone",
+      "accepted": "Przyjęte",
+      "declined": "Odrzucone",
+      "duplicate": "Duplikaty"
+    },
+    "emptyInbox": "Skrzynka jest pusta.",
+    "emptyInboxHint": "Trafiają tu nowe opinie od zespołu, od agentów i z formularza publicznego.",
+    "empty": "Nic tu nie ma.",
+    "from": "Od: {name}",
+    "fromUnknown": "Od nieznanej osoby",
+    "source": {
+      "app": "W aplikacji",
+      "public": "Formularz publiczny",
+      "agent": "Agent"
+    },
+    "accept": "Przyjmij jako nowe zadanie",
+    "addTo": "Dodaj do zadania…",
+    "decline": "Odrzuć",
+    "duplicate": "Duplikat…",
+    "snooze": "Odłóż",
+    "reopen": "Wróć do skrzynki",
+    "snoozeTomorrow": "Do jutra",
+    "snoozeWeek": "Na tydzień",
+    "snoozedUntil": "Odłożone do {date}",
+    "countsFor": "Liczy się dla {key}",
+    "demand": "zgłoszone {n} raz | zgłoszone {n} razy | zgłoszone {n} razy",
+    "declined": "Odrzucono: {reason}",
+    "declinedNoReason": "Odrzucono",
+    "duplicateOf": "Duplikat #{id}",
+    "addToTitle": "Dodaj do istniejącego zadania",
+    "addToHint": "Opinia liczy się jako kolejny głos za tym zadaniem.",
+    "itemKey": "Klucz zadania",
+    "itemKeyPlaceholder": "np. WEB-12",
+    "add": "Dodaj",
+    "duplicateTitle": "Która opinia mówi to samo?",
+    "duplicateHint": "Wskaż oryginał. Jeśli jest powiązany z zadaniem, ta opinia też będzie się dla niego liczyć.",
+    "noOthers": "Nie ma innej opinii do wskazania.",
+    "declineTitle": "Odrzucić tę opinię?",
+    "reason": "Powód (opcjonalnie)",
+    "sendTitle": "Wyślij opinię",
+    "sendHint": "Opisz, czego potrzebujesz albo co poszło nie tak. Ktoś zdecyduje, co się z tym stanie.",
+    "project": "Projekt",
+    "what": "W jednym zdaniu",
+    "details": "Szczegóły (opcjonalnie)",
+    "sending": "Wysyłanie…",
+    "sent": "Dziękujemy. Twoja opinia jest w skrzynce.",
+    "publicTitle": "Formularz publiczny",
+    "publicHint": "Pozwól każdemu wysyłać opinie o projekcie przez link, bez konta.",
+    "publicOn": "Włącz",
+    "publicOff": "Wyłącz",
+    "copy": "Kopiuj link",
+    "copied": "Skopiowano",
+    "shortcuts": {
+      "accept": "Przyjmij jako nowe zadanie",
+      "decline": "Odrzuć",
+      "duplicate": "Oznacz jako duplikat",
+      "snooze": "Odłóż do jutra",
+      "group": "Opinie"
+    }
+  },
+  "publicFeedback": {
+    "title": "Opinia o projekcie {project}",
+    "intro": "Napisz, czego potrzebujesz albo co poszło nie tak. Czytamy wszystko.",
+    "what": "W jednym zdaniu",
+    "details": "Szczegóły (opcjonalnie)",
+    "name": "Twoje imię (opcjonalnie)",
+    "email": "Twój e-mail (opcjonalnie)",
+    "emailHint": "Tylko jeśli chcesz odpowiedzi.",
+    "website": "Pozostaw to pole puste",
+    "send": "Wyślij",
+    "sending": "Wysyłanie…",
+    "thanks": "Dziękujemy. Otrzymaliśmy Twoją opinię.",
+    "another": "Wyślij kolejną",
+    "closed": "Ten formularz nie istnieje albo jest zamknięty.",
+    "tooFast": "To było dużo naraz. Spróbuj ponownie za minutę."
+  },
+  "ai": {
+    "label": "Propozycja AI. Sprawdź ją, zanim z niej skorzystasz.",
+    "working": "Myślę…",
+    "dismiss": "Odrzuć",
+    "draft": {
+      "button": "Szkic z AI",
+      "hint": "Napisz jedno zdanie o tym, czego potrzebujesz, a AI przygotuje szkic zadania.",
+      "description": "Opis",
+      "acceptance": "Kryteria akceptacji",
+      "discard": "Odrzuć szkic"
+    },
+    "split": {
+      "button": "Zaproponuj podzadania",
+      "none": "To zadanie wygląda na wystarczająco małe.",
+      "create": "Utwórz zaznaczone | Utwórz {n} zaznaczone | Utwórz {n} zaznaczone | Utwórz {n} zaznaczonych",
+      "creating": "Tworzenie…"
+    },
+    "summary": {
+      "button": "Podsumuj",
+      "decisions": "Ustalono",
+      "open": "Nadal otwarte",
+      "keyPoints": "Najważniejsze punkty"
+    },
+    "triage": {
+      "button": "Zaproponuj",
+      "duplicate": "Wygląda na duplikat #{id}",
+      "existing": "{key} już to obejmuje",
+      "newItem": "Nowe zadanie: {kind}, priorytet {priority}",
+      "markDuplicate": "Oznacz jako duplikat #{id}",
+      "addTo": "Dodaj do {key}",
+      "accept": "Przyjmij jako: {kind}"
+    },
+    "settings": {
+      "title": "Pomoc AI",
+      "description": "Szkice zadań z jednego zdania, dzielenie zadań, podsumowania i propozycje przy opiniach. Wszystko, co tworzy AI, jest propozycją zatwierdzaną przez człowieka.",
+      "privacy": "Gdy AI jest włączone, odpowiedni tekst (tytuły zadań, opisy, komentarze, strony, opinie) jest wysyłany do dostawcy modelu, firmy Anthropic, aby przygotować propozycję.",
+      "enable": "Pomoc AI w tej przestrzeni",
+      "usage": "Wykorzystano {used} z {limit} tokenów w tym miesiącu",
+      "model": "Model: {model}",
+      "notConfigured": "Brak klucza dostawcy. Dodaj go poniżej albo poproś administratora instalacji.",
+      "key": "Własny klucz API Anthropic (opcjonalnie)",
+      "keyHint": "Zostaw puste, aby używać klucza instalacji. Zapisany klucz nie jest już nigdy pokazywany.",
+      "keySet": "Ta przestrzeń używa własnego klucza.",
+      "removeKey": "Usuń własny klucz",
+      "limit": "Miesięczny limit tokenów",
+      "save": "Zapisz",
+      "saving": "Zapisywanie…",
+      "saved": "Zapisano."
+    }
+  },
+  "admin": {
+    "title": "Panel operatora",
+    "back": "Wróć do aplikacji",
+    "search": "Szukaj",
+    "more": "Wczytaj więcej",
+    "created": "Utworzono",
+    "suspend": "Zawieś",
+    "restore": "Przywróć",
+    "nav": {
+      "workspaces": "Przestrzenie robocze",
+      "users": "Osoby",
+      "mail": "Poczta",
+      "broadcasts": "Ogłoszenia",
+      "audit": "Dziennik zdarzeń"
+    },
+    "status": {
+      "label": "Stan",
+      "all": "Wszystkie",
+      "active": "Aktywne",
+      "suspended": "Zawieszone"
+    },
+    "plan": {
+      "free": "Darmowy",
+      "team": "Zespół"
+    },
+    "overview": {
+      "workspaces": "Przestrzenie robocze",
+      "suspended_workspaces": "Zawieszone",
+      "people": "Osoby",
+      "agents": "Agenci",
+      "items": "Zadania",
+      "signups_last_7_days": "Rejestracje z 7 dni"
+    },
+    "workspaces": {
+      "title": "Przestrzenie robocze",
+      "search": "Nazwa lub adres",
+      "empty": "Żadna przestrzeń robocza nie pasuje.",
+      "name": "Przestrzeń robocza",
+      "plan": "Plan",
+      "planOf": "Plan przestrzeni {workspace}",
+      "members": "Członkowie",
+      "items": "Zadania",
+      "suspendTitle": "Zawiesić przestrzeń {workspace}?",
+      "suspendDescription": "Jej członkowie i agenci stracą dostęp do czasu przywrócenia. Nic nie zostanie usunięte."
+    },
+    "users": {
+      "title": "Osoby",
+      "search": "Imię lub e-mail",
+      "empty": "Nikt nie pasuje.",
+      "name": "Osoba",
+      "workspaces": "Przestrzenie",
+      "operator": "Operator",
+      "unverified": "E-mail niepotwierdzony",
+      "suspendTitle": "Zawiesić konto: {name}?",
+      "suspendDescription": "Ta osoba zostanie wszędzie wylogowana, jej tokeny zostaną unieważnione, a jej agenci przestaną działać. Nic nie zostanie usunięte."
+    },
+    "audit": {
+      "title": "Dziennik zdarzeń",
+      "workspace": "Adres przestrzeni roboczej",
+      "action": "Początek nazwy zdarzenia, np. member."
+    },
+    "mail": {
+      "title": "Poczta wychodząca",
+      "description": "Wszystkie wiadomości wysłane przez instalację w ostatnich trzech miesiącach oraz wiadomości ogłoszeń, które jeszcze czekają. Ogłoszenia wychodzą partiami po 100 na minutę. Treść wiadomości logowania, resetu hasła i powiadomień nie jest przechowywana.",
+      "search": "Odbiorca lub temat",
+      "empty": "Żadna wiadomość nie pasuje.",
+      "showAll": "Pokaż całą pocztę",
+      "to": "Do",
+      "subject": "Temat",
+      "when": "Wysłano lub dodano",
+      "details": "Szczegóły",
+      "sendNow": "Wyślij teraz",
+      "attempts": "bez prób | jedna próba | prób: {n}",
+      "error": "Ostatni błąd",
+      "noBody": "Treść tej wiadomości nie jest przechowywana.",
+      "deleteTitle": "Usunąć tę wiadomość?",
+      "deleteWaiting": "Nie zostanie nigdy wysłana.",
+      "deleteSent": "Została już wysłana; zniknie tylko z dziennika.",
+      "status": {
+        "all": "Wszystkie",
+        "waiting": "Oczekuje",
+        "sending": "Wysyłanie",
+        "sent": "Wysłano",
+        "failed": "Błąd"
+      }
+    },
+    "broadcasts": {
+      "title": "Ogłoszenia",
+      "new": "Nowe ogłoszenie",
+      "description": "Wiadomość e-mail do osób korzystających z tej instalacji. Agenci, zawieszone konta i niepotwierdzone adresy nigdy jej nie otrzymują.",
+      "subject": "Temat",
+      "body": "Treść",
+      "bodyHint": "Działa Markdown: **pogrubienie**, listy, linki.",
+      "preview": "Podgląd",
+      "noSubject": "(brak tematu)",
+      "to": "Wyślij do",
+      "anyPlan": "Dowolny plan",
+      "important": "Komunikat serwisowy: wyślij także do osób, które wyłączyły powiadomienia e-mail.",
+      "audience": {
+        "everyone": "Wszyscy",
+        "admins": "Administratorzy i właściciele przestrzeni",
+        "owners": "Właściciele przestrzeni"
+      },
+      "check": "Sprawdź odbiorców",
+      "reaches": "Nie trafi do nikogo. | Trafi do jednej osoby. | Liczba odbiorców: {n}.",
+      "sample": "Na przykład: {list}",
+      "send": "Wyślij",
+      "confirmTitle": "Wysłać do nikogo? | Wysłać do jednej osoby? | Wysłać do {n} odbiorców?",
+      "confirmDescription": "Ogłoszenie „{subject}” trafi do kolejki i zostanie wysłane w ciągu kilku minut. Oczekujące wiadomości można usunąć w zakładce Poczta.",
+      "queued": "Dodano do kolejki, odbiorców: {n}. Wysyłka potrwa kilka minut.",
+      "history": "Wysłane ogłoszenia",
+      "none": "Nie wysłano jeszcze żadnego ogłoszenia.",
+      "progress": "wysłano {sent} z {total}",
+      "waiting": "oczekuje: {n}",
+      "failed": "błędy: {n}",
+      "messages": "Wiadomości"
+    },
+    "health": {
+      "title": "System",
+      "status": {
+        "ok": "Wszystko działa",
+        "warning": "Wymaga uwagi",
+        "failing": "Coś nie działa"
+      },
+      "check": {
+        "database": "Baza danych",
+        "queue": "Kolejka zadań",
+        "failed_jobs": "Nieudane zadania",
+        "scheduler": "Harmonogram",
+        "storage": "Pliki",
+        "mail": "Ogłoszenia",
+        "backup": "Kopie zapasowe"
+      }
+    }
+  },
+  "audit": {
+    "title": "Dziennik zdarzeń",
+    "description": "Kto zmieniał dostęp, udostępnianie i ustawienia oraz kto co usunął. Praca nad zadaniami jest w historii każdego zadania.",
+    "filter": "Pokaż",
+    "empty": "Nic jeszcze nie zapisano.",
+    "more": "Wczytaj więcej",
+    "when": "Kiedy",
+    "who": "Kto",
+    "what": "Co",
+    "details": "Szczegóły",
+    "workspace": "Przestrzeń robocza",
+    "ip": "Adres",
+    "agent": "Agent",
+    "nobody": "Bez logowania",
+    "viaToken": "tokenem „{token}”",
+    "area": {
+      "all": "Wszystko",
+      "member": "Członkowie",
+      "invitation": "Zaproszenia",
+      "agent": "Agenci",
+      "token": "Tokeny",
+      "webhook": "Webhooki",
+      "project": "Projekty",
+      "workflow": "Stany",
+      "page": "Dokumenty",
+      "item": "Zadania",
+      "ai": "AI",
+      "workspace": "Przestrzeń robocza"
+    },
+    "action": {
+      "account": {
+        "signed_in": "Logowanie",
+        "signed_out": "Wylogowanie",
+        "sign_in_failed": "Nieudane logowanie",
+        "registered": "Rejestracja",
+        "password_reset": "Zmiana hasła po resecie",
+        "deleted": "Usunięcie konta",
+        "exported": "Eksport danych osobowych"
+      },
+      "invitation": {
+        "accepted": "Przyjęcie zaproszenia",
+        "sent": "Wysłanie zaproszenia",
+        "withdrawn": "Wycofanie zaproszenia"
+      },
+      "workspace": {
+        "created": "Utworzenie przestrzeni roboczej",
+        "updated": "Zmiana ustawień przestrzeni roboczej",
+        "deleted": "Usunięcie przestrzeni roboczej",
+        "exported": "Eksport przestrzeni roboczej"
+      },
+      "member": {
+        "role_changed": "Zmiana roli członka",
+        "removed": "Usunięcie członka"
+      },
+      "agent": {
+        "created": "Utworzenie agenta",
+        "updated": "Zmiana agenta",
+        "removed": "Usunięcie agenta",
+        "app_connected": "Połączenie aplikacji z agentem",
+        "app_disconnected": "Odłączenie aplikacji od agenta"
+      },
+      "token": {
+        "created": "Utworzenie tokenu dostępu",
+        "revoked": "Unieważnienie tokenu dostępu"
+      },
+      "webhook": {
+        "created": "Utworzenie webhooka",
+        "updated": "Zmiana webhooka",
+        "deleted": "Usunięcie webhooka"
+      },
+      "project": {
+        "created": "Utworzenie projektu",
+        "updated": "Zmiana projektu",
+        "deleted": "Usunięcie projektu"
+      },
+      "feedback_form": {
+        "changed": "Zmiana publicznego formularza opinii"
+      },
+      "workflow": {
+        "state_added": "Dodanie stanu",
+        "state_changed": "Zmiana stanu",
+        "state_removed": "Usunięcie stanu"
+      },
+      "ai": {
+        "settings_changed": "Zmiana ustawień AI"
+      },
+      "billing": {
+        "checkout_started": "Rozpoczęcie zmiany planu"
+      },
+      "page": {
+        "deleted": "Usunięcie strony",
+        "sharing_changed": "Zmiana udostępniania strony"
+      },
+      "item": {
+        "deleted": "Usunięcie zadania"
+      },
+      "operator": {
+        "workspace_changed": "Operator zmienił przestrzeń roboczą",
+        "user_changed": "Operator zmienił konto",
+        "mail_sent_now": "Operator wysłał oczekującą wiadomość",
+        "mail_deleted": "Operator usunął wiadomość",
+        "broadcast_sent": "Operator wysłał ogłoszenie"
+      }
+    }
+  },
+  "billing": {
+    "title": "Plan",
+    "description": "Na co pozwala plan tej przestrzeni roboczej i ile z niego wykorzystano.",
+    "members": "Osoby",
+    "projects": "Projekty",
+    "usedOf": "{used} z {limit}",
+    "unlimited": "{used}, bez limitu",
+    "membersNote": "Otwarte zaproszenia liczą się jak osoby. Agenci są bezpłatni i nigdy się nie liczą.",
+    "aiNote": " Wbudowane AI: {n} tokenów miesięcznie, chyba że przestrzeń używa własnego klucza dostawcy.",
+    "endsAt": "Płatny plan został anulowany i działa do {date}.",
+    "moveTo": "Przejdź na plan {plan}",
+    "manage": "Zarządzaj płatnościami",
+    "ownersOnly": "Plan może zmienić tylko właściciel.",
+    "returnedSuccess": "Dziękujemy. Plan zmieni się, gdy tylko płatność zostanie potwierdzona, zwykle w ciągu minuty.",
+    "returnedCancelled": "Płatność nie została dokończona. Nic się nie zmieniło."
+  },
+  "landing": {
+    "headline": "Praca nad projektem, która pozostaje prosta",
+    "lead": "Planuj, śledź i dowoź pracę z zespołem, a agentom AI powierzaj prawdziwe zadania jak członkom zespołu. Niewiele pojęć, szybki interfejs obsługiwany z klawiatury i nic istotnego za dopłatą.",
+    "start": "Załóż bezpłatne konto",
+    "free": "Na start bezpłatnie. Bez karty.",
+    "footer": "Informacje",
+    "forAgents": "Dla agentów AI",
+    "features": {
+      "fast": {
+        "title": "Szybko i spokojnie",
+        "text": "Lista i tablica, zapisane widoki, paleta poleceń i skróty jednoklawiszowe. Wymagany jest tylko tytuł."
+      },
+      "agents": {
+        "title": "Agenci jak członkowie zespołu",
+        "text": "Daj agentowi własny, ograniczony dostęp, przekaż mu zadanie i śledź jego plan, pytania i wyniki. Zakończenie zawsze zatwierdza człowiek."
+      },
+      "feedback": {
+        "title": "Opinie i praca nad UX",
+        "text": "Zbieraj opinie przez publiczny formularz, porządkuj je i sprawdzaj, ile osób prosiło o daną rzecz."
+      },
+      "docs": {
+        "title": "Dokumenty obok pracy",
+        "text": "Pisz strony w Markdownie dla projektu lub całej przestrzeni i udostępniaj wybrane linkiem."
+      }
+    }
+  },
+  "legal": {
+    "template": "Ten tekst jest szablonem opisującym działanie oprogramowania. Nie stanowi porady prawnej; podmiot prowadzący tę instalację musi go sprawdzić i uzupełnić.",
+    "terms": {
+      "title": "Regulamin",
+      "intro": "Regulamin dotyczy tej instalacji Yadeit, prowadzonej przez: {operator}. Zakładając konto, akceptujesz go.",
+      "sections": [
+        {
+          "title": "Usługa",
+          "body": [
+            "Yadeit to narzędzie do planowania i śledzenia pracy nad projektami. {operator} udostępnia je w obecnym kształcie i może zmieniać, ograniczać lub wycofywać jego części. O istotnych zmianach informujemy e-mailem lub w aplikacji."
+          ]
+        },
+        {
+          "title": "Twoje konto",
+          "body": [
+            "Potrzebujesz działającego adresu e-mail, a hasło zachowujesz dla siebie. Odpowiadasz za to, co dzieje się na Twoim koncie, także za działania agentów, którym nadajesz dostęp.",
+            "Konto może zostać zawieszone, jeśli jest używane niezgodnie z regulaminem albo zagraża usłudze lub innym osobom."
+          ]
+        },
+        {
+          "title": "Twoje treści",
+          "body": [
+            "To, co Ty i Twój zespół umieszczacie w przestrzeni roboczej, pozostaje Wasze. {operator} przechowuje i przetwarza te treści tylko w zakresie potrzebnym do świadczenia usługi.",
+            "Właściciele mogą w każdej chwili pobrać całą przestrzeń roboczą, a każda osoba może pobrać własne dane."
+          ]
+        },
+        {
+          "title": "Dozwolone użycie",
+          "body": [
+            "Nie używaj usługi do łamania prawa, rozsyłania spamu, przechowywania złośliwego oprogramowania, atakowania lub przeciążania usługi ani do uzyskiwania cudzych danych. Publiczne strony i formularze opinii nie mogą służyć do wprowadzania ludzi w błąd."
+          ]
+        },
+        {
+          "title": "Agenci i wbudowane AI",
+          "body": [
+            "Agenci działają w ramach dostępu nadanego przez właściciela, który za nich odpowiada. Gdy przestrzeń robocza włączy wbudowane AI, tekst potrzebny do przygotowania sugestii jest przesyłany do dostawcy AI. Sugestie mogą być błędne; o tym, co zostaje, decyduje człowiek."
+          ]
+        },
+        {
+          "title": "Plany i płatności",
+          "body": [
+            "Niektóre plany są płatne. Ceny i limity są widoczne przed zakupem, płatności obsługuje Stripe, a płatny plan odnawia się do czasu anulowania. Anulować można w każdej chwili w portalu płatności; plan działa wtedy do końca opłaconego okresu."
+          ]
+        },
+        {
+          "title": "Zakończenie",
+          "body": [
+            "Możesz w każdej chwili usunąć konto, a właściciele mogą usunąć swoją przestrzeń roboczą. Usunięte treści znikają z działającej usługi; kopie w kopiach zapasowych wygasają wraz z nimi."
+          ]
+        },
+        {
+          "title": "Odpowiedzialność",
+          "body": [
+            "Usługa jest świadczona bez gwarancji ciągłej dostępności i bezbłędnego działania. W zakresie dopuszczonym przez prawo {operator} nie odpowiada za szkody pośrednie ani utracone korzyści, a odpowiedzialność jest ograniczona do kwoty zapłaconej w ostatnich dwunastu miesiącach."
+          ]
+        },
+        {
+          "title": "Zmiany i kontakt",
+          "body": [
+            "Regulamin może się zmieniać; nową wersję ogłaszamy, zanim zacznie obowiązywać. Pytania prosimy kierować na adres {email}."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Polityka prywatności",
+      "intro": "Ta strona wyjaśnia, jakie dane osobowe przetwarza ta instalacja Yadeit i w jakim celu. Administratorem danych jest: {operator}; kontakt: {email}.",
+      "sections": [
+        {
+          "title": "Co przechowujemy",
+          "body": [
+            "Twoje konto: imię i nazwisko lub nazwę, adres e-mail, skrót hasła, język i ustawienie powiadomień.",
+            "Twoją pracę: zadania, komentarze, strony, załączniki i opinie tworzone przez Ciebie i Twój zespół oraz historię ich zmian.",
+            "Zapisy techniczne: logowania oraz zmiany dostępu i ustawień w dzienniku zdarzeń (z adresem IP), a także dziennik wysłanych do Ciebie wiadomości (odbiorca, temat i czas, bez treści)."
+          ]
+        },
+        {
+          "title": "W jakim celu",
+          "body": [
+            "Aby świadczyć usługę, z której korzystasz, dbać o jej bezpieczeństwo, wysyłać wybrane przez Ciebie powiadomienia i komunikaty o usłudze oraz rozliczać płatne plany."
+          ]
+        },
+        {
+          "title": "Kto jeszcze przetwarza dane",
+          "body": [
+            "Dostawcy hostingu i poczty, z których korzysta {operator}. Stripe, gdy przestrzeń robocza kupuje płatny plan. Dostawca AI (Anthropic), tylko gdy przestrzeń robocza włączyła wbudowane AI i tylko w zakresie tekstu potrzebnego do sugestii. Niczego nie sprzedajemy i niczego nie używamy do reklam."
+          ]
+        },
+        {
+          "title": "Treści publiczne",
+          "body": [
+            "Strona udostępniona linkiem i publiczny formularz opinii są widoczne dla każdego, kto ma link. Opinia wysłana przez publiczny formularz, wraz z podanym dobrowolnie imieniem i adresem e-mail, trafia do zespołu, do którego należy formularz."
+          ]
+        },
+        {
+          "title": "Pliki cookie",
+          "body": [
+            "Tylko pliki cookie potrzebne do utrzymania logowania i ochrony formularzy. Bez śledzenia i bez reklam."
+          ]
+        },
+        {
+          "title": "Jak długo",
+          "body": [
+            "Dane konta i pracy pozostają do czasu ich usunięcia przez Ciebie. Dziennik poczty jest przechowywany 90 dni. Kopie zapasowe wygasają według własnego harmonogramu."
+          ]
+        },
+        {
+          "title": "Twoje prawa",
+          "body": [
+            "Możesz przeglądać i poprawiać swój profil, pobrać swoje dane (Profil i preferencje, „Pobierz moje dane”) i tam również usunąć konto. Możesz też napisać do nas na adres {email} oraz złożyć skargę do organu ochrony danych."
+          ]
+        }
+      ]
+    }
+  }
+}

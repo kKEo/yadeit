@@ -1,0 +1,43 @@
+# Local development services. The Laravel and Vite dev servers run on the host.
+# Yadeit supports PostgreSQL and MariaDB; start the one you use:
+#   docker compose up -d db        (PostgreSQL, the default)
+#   docker compose up -d mariadb
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: yadeit
+      POSTGRES_PASSWORD: yadeit
+      POSTGRES_DB: yadeit
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yadeit -d yadeit"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mariadb:
+    image: mariadb:11.8
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_USER: yadeit
+      MARIADB_PASSWORD: yadeit
+      MARIADB_DATABASE: yadeit
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - ./docker/mariadb/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  db-data:
+  mariadb-data:

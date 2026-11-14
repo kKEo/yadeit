@@ -1,0 +1,47 @@
+# The web server of the production image. One address serves everything:
+# the API and the other backend addresses go to PHP, realtime goes to Reverb,
+# and the rest is the web app.
+#
+# SERVER_NAME decides how it listens:
+#   :8080               plain HTTP on port 8080, for use behind your own proxy (the default)
+#   yadeit.example.com  HTTPS on 443 with a certificate obtained automatically
+{
+	skip_install_trust
+	{$CADDY_GLOBAL_OPTIONS}
+
+	frankenphp {
+		{$FRANKENPHP_CONFIG}
+	}
+}
+
+{$SERVER_NAME::8080} {
+	encode zstd br gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+		-X-Powered-By
+	}
+
+	@backend path /api/* /oauth/* /mcp /.well-known/oauth-* /sanctum/* /stripe/* /llms.txt /docs/* /openapi.json /up /health /storage/*
+	handle @backend {
+		root * /app/public
+		php_server
+	}
+
+	# Realtime updates (Laravel Reverb), when that service runs.
+	@realtime path /app/* /apps/*
+	handle @realtime {
+		reverse_proxy {$REVERB_UPSTREAM:reverb:8080}
+	}
+
+	handle {
+		root * /app/spa
+		# The built files carry a hash in their name, so they can be kept for good.
+		header /assets/* Cache-Control "public, max-age=31536000, immutable"
+		try_files {path} /index.html
+		file_server
+	}
+}

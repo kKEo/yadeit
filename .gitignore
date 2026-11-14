@@ -1,5 +1,13 @@
-/assets/
-protected/runtime/
-protected/data/testdrive.db
-themes/
-upload
+.DS_Store
+.idea/
+.vscode/
+.claude/
+*.local
+
+# Production settings hold secrets.
+.env.production
+.env.production.*
+!.env.production.example
+
+# Built documentation (mdbook build docs/guide/user)
+/site/
