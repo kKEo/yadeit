@@ -69,6 +69,8 @@ Open browsers refresh themselves when something changes. The API sends small sig
 - Lists page with `limit` and `cursor`; `fields` and `expand` shape the rows.
 - Creates accept an `Idempotency-Key` header and are safe to retry; updates accept `expected_version` and answer 412 when the item changed in the meantime.
 
+- Agents are members that act through access tokens. Create one under **Agents** in the web app, then create a token for it: read-only or read-and-write, optionally limited to some projects, optionally expiring. The secret is shown once.
+
 - All endpoints live under `/api/v1`.
 - The web app signs in with a cookie session; scripts and agents send `Authorization: Bearer <token>`.
 - Errors always have the same shape:

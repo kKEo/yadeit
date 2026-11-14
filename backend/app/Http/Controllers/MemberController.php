@@ -38,6 +38,10 @@ class MemberController extends Controller
             $membership = $this->find($workspace, $user);
             $this->guardOwnerChange($current, $membership, $newRole);
 
+            if ($membership->user->isAgent() && $newRole->atLeast(WorkspaceRole::Admin)) {
+                throw new ConflictHttpException('An agent can be a member or a guest, not an admin or owner.');
+            }
+
             if ($membership->role === WorkspaceRole::Owner && $newRole !== WorkspaceRole::Owner) {
                 $this->guardLastOwner($workspace);
             }
@@ -71,6 +75,11 @@ class MemberController extends Controller
             }
 
             $membership->delete();
+
+            // An agent outside the workspace has nothing left to do: revoke its tokens.
+            if ($membership->user->isAgent()) {
+                $membership->user->tokens()->delete();
+            }
         });
 
         return response()->noContent();
@@ -108,7 +117,9 @@ class MemberController extends Controller
         return [
             'id' => $membership->user_id,
             'name' => $membership->user->name,
-            'email' => $membership->user->email,
+            // Agents have no mailbox.
+            'email' => $membership->user->isAgent() ? null : $membership->user->email,
+            'type' => $membership->user->type->value,
             'role' => $membership->role->value,
             'joined_at' => $membership->created_at,
         ];

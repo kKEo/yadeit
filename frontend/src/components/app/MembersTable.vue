@@ -54,7 +54,7 @@ function onRoleSelected(member: Member, value: string) {
               {{ member.name }}
               <span v-if="member.id === currentUserId" class="font-normal text-muted-foreground">{{ t('members.you') }}</span>
             </p>
-            <p class="text-xs text-muted-foreground">{{ member.email }}</p>
+            <p class="text-xs text-muted-foreground">{{ member.type === 'agent' ? t('agents.memberLabel') : member.email }}</p>
           </TableCell>
           <TableCell><RoleBadge :role="member.role" /></TableCell>
           <TableCell class="hidden whitespace-nowrap text-muted-foreground md:table-cell">

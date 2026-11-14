@@ -42,6 +42,7 @@ export function makeTestRouter(): Router {
       { path: '/w/:slug/inbox', name: 'inbox', component: blank },
       { path: '/w/:slug/projects', name: 'projects', component: blank },
       { path: '/w/:slug/members', name: 'workspace-members', component: blank },
+      { path: '/w/:slug/agents', name: 'agents', component: blank },
       { path: '/w/:slug/settings', name: 'workspace-settings', component: blank },
     ],
   })

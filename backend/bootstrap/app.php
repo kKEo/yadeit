@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\ApiErrorRenderer;
+use App\Http\Middleware\EnforceTokenScope;
 use App\Http\Middleware\Idempotency;
 use App\Http\Middleware\ResolveWorkspace;
 use Illuminate\Foundation\Application;
@@ -24,8 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
 
         // The workspace must be known before tenant models are bound from the route.
-        $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class]);
+        $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class, 'token.scope' => EnforceTokenScope::class]);
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolveWorkspace::class);
+        // Token limits also apply before binding, so out-of-scope projects and items are simply not found.
+        $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: EnforceTokenScope::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

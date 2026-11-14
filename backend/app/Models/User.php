@@ -2,16 +2,22 @@
 
 namespace App\Models;
 
+use App\Enums\UserType;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property UserType $type
+ * @property-read User|null $owner
+ */
 #[Fillable(['name', 'email', 'password', 'locale', 'email_notifications'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
@@ -22,7 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public const LOCALES = ['en', 'pl'];
 
     /** @var array<string, mixed> */
-    protected $attributes = ['locale' => 'en', 'email_notifications' => true];
+    protected $attributes = ['locale' => 'en', 'email_notifications' => true, 'type' => 'human'];
 
     /**
      * Get the attributes that should be cast.
@@ -35,7 +41,23 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'email_notifications' => 'boolean',
+            'type' => UserType::class,
         ];
+    }
+
+    public function isAgent(): bool
+    {
+        return $this->type === UserType::Agent;
+    }
+
+    /**
+     * The human who answers for an agent.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'owner_id');
     }
 
     /** @return HasMany<Membership, $this> */

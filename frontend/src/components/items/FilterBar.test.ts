@@ -10,7 +10,7 @@ function setup(filters: ItemFilters) {
     props: {
       filters, project: null, rowLabels: ['backend'],
       projects: [makeProject()].map(({ states: _s, labels: _l, ...p }) => p),
-      members: [{ id: 12, name: 'Bob', email: 'bob@example.com', role: 'member' as const, joined_at: '' }],
+      members: [{ id: 12, name: 'Bob', email: 'bob@example.com', type: 'human' as const, role: 'member' as const, joined_at: '' }],
     },
     global: { plugins: [i18n] },
   })

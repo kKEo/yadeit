@@ -155,7 +155,7 @@ Goal: the experience that makes the tool pleasant; first usable release.
 
 Goal: agents become real team members.
 
-- [ ] Build agent members and scoped tokens
+- [x] Build agent members and scoped tokens
   - Agent owned by a human; token abilities by project and read/write; expiry; management screen
 - [ ] Build delegation, ready-work query and atomic claim
   - Delegate field; `needs input` and `in review` handling

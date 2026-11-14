@@ -28,7 +28,8 @@ class SessionController extends Controller
             throw new BadRequestHttpException('Session sign-in is only available to the web app. Use a personal access token.');
         }
 
-        $attempt = ['email' => strtolower($credentials['email']), 'password' => $credentials['password']];
+        // Agents never sign in here; they only act through access tokens.
+        $attempt = ['email' => strtolower($credentials['email']), 'password' => $credentials['password'], 'type' => 'human'];
 
         if (! Auth::guard('web')->attempt($attempt, (bool) ($credentials['remember'] ?? false))) {
             throw ValidationException::withMessages([

@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\WorkspaceRole;
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -41,5 +43,18 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /** An agent in the given workspace, owned by the given person. */
+    public function agent(Workspace $workspace, User $owner): static
+    {
+        return $this->state(fn () => [
+            'type' => 'agent',
+            'workspace_id' => $workspace->id,
+            'owner_id' => $owner->id,
+            'email_notifications' => false,
+        ])->afterCreating(function (User $agent) use ($workspace): void {
+            $workspace->memberships()->create(['user_id' => $agent->id, 'role' => WorkspaceRole::Member]);
+        });
     }
 }

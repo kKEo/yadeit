@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToWorkspace;
+use App\Support\CurrentWorkspace;
 use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,6 +19,18 @@ use Illuminate\Support\Carbon;
 class Project extends Model
 {
     use BelongsToWorkspace;
+
+    protected static function booted(): void
+    {
+        // A project-limited access token sees nothing outside its projects.
+        static::addGlobalScope('token-projects', function (Builder $query): void {
+            $projectIds = app(CurrentWorkspace::class)->projectIds();
+
+            if ($projectIds !== null) {
+                $query->whereIn($query->getModel()->qualifyColumn('id'), $projectIds);
+            }
+        });
+    }
 
     /** @use HasFactory<ProjectFactory> */
     use HasFactory;

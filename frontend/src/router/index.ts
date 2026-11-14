@@ -69,6 +69,7 @@ const router = createRouter({
         { path: 'projects', name: 'projects', component: () => import('@/views/ProjectListView.vue') },
         { path: 'inbox', name: 'inbox', component: () => import('@/views/InboxView.vue') },
         { path: 'members', name: 'workspace-members', component: () => import('@/views/MembersView.vue') },
+        { path: 'agents', name: 'agents', component: () => import('@/views/AgentsView.vue') },
         { path: 'settings', name: 'workspace-settings', component: () => import('@/views/WorkspaceSettingsView.vue') },
         { path: 'items', name: 'items', component: () => import('@/views/ItemsView.vue') },
         { path: 'items/:key', name: 'item-detail', component: () => import('@/views/ItemDetailView.vue') },

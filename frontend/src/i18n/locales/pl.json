@@ -289,7 +289,8 @@
     "members": "Członkowie",
     "settings": "Ustawienia",
     "items": "Zadania",
-    "inbox": "Skrzynka"
+    "inbox": "Skrzynka",
+    "agents": "Agenci"
   },
   "userMenu": {
     "label": "Menu konta"
@@ -585,6 +586,59 @@
       "commented": "{actor} dodał(a) komentarz",
       "state_changed": "{actor} zmienił(a) stan",
       "state_changed_to": "{actor} zmienił(a) stan z „{from}” na „{to}”"
+    }
+  },
+  "agents": {
+    "title": "Agenci",
+    "subtitle": "Agenci to członkowie działający przez tokeny dostępu: asystenci kodowania, skrypty i automatyzacje. Za każdego odpowiada konkretna osoba.",
+    "memberLabel": "Agent",
+    "emptyTitle": "Brak agentów",
+    "emptyDescription": "Utwórz agenta, nadaj mu token, a będzie mógł czytać i aktualizować zadania jak członek zespołu.",
+    "owner": "Właściciel: {name}",
+    "noOwner": "Brak właściciela",
+    "tokenCount": "Brak tokenów | {n} token | {n} tokeny | {n} tokenów",
+    "create": {
+      "open": "Nowy agent",
+      "name": "Nazwa",
+      "namePlaceholder": "np. Asystent kodu",
+      "description": "Czym się zajmuje (opcjonalnie)",
+      "submit": "Utwórz agenta",
+      "submitting": "Tworzenie…"
+    },
+    "remove": "Usuń agenta",
+    "removeTitle": "Usunąć agenta {name}?",
+    "removeDescription": "Wszystkie jego tokeny natychmiast przestaną działać. To, co już zrobił, pozostanie w historii.",
+    "manage": "Tokeny",
+    "hide": "Ukryj tokeny",
+    "notYours": "Tym agentem może zarządzać tylko jego właściciel lub administrator przestrzeni.",
+    "tokens": {
+      "title": "Tokeny dostępu",
+      "empty": "Brak tokenów. Bez tokenu agent nie może nic zrobić.",
+      "name": "Nazwa tokenu",
+      "namePlaceholder": "np. Serwer CI",
+      "access": "Dostęp",
+      "read": "Tylko odczyt",
+      "write": "Odczyt i zapis",
+      "projects": "Projekty",
+      "allProjects": "Wszystkie projekty",
+      "projectsHint": "Zaznacz projekty, aby ograniczyć do nich token. Bez zaznaczenia token ma dostęp do wszystkich projektów.",
+      "expiry": "Wygasa",
+      "never": "Nigdy",
+      "days": "Za {n} dni",
+      "create": "Utwórz token",
+      "creating": "Tworzenie…",
+      "revoke": "Unieważnij",
+      "revokeNamed": "Unieważnij token {name}",
+      "lastUsed": "Ostatnio użyty {date}",
+      "neverUsed": "Nigdy nie użyty",
+      "expires": "Wygasa {date}",
+      "noExpiry": "Nie wygasa",
+      "limitedTo": "Ograniczony do: {projects}",
+      "secretTitle": "Skopiuj ten token teraz",
+      "secretDescription": "Jest pokazywany tylko ten jeden raz. Zapisz go tam, gdzie działa agent; jeśli zginie, unieważnij go i utwórz nowy.",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano",
+      "done": "Token zapisany"
     }
   }
 }

@@ -21,6 +21,9 @@ class CurrentWorkspace
 
     private bool $unscoped = false;
 
+    /** @var list<int>|null */
+    private ?array $projectIds = null;
+
     public function set(Workspace $workspace, ?Membership $membership = null): void
     {
         $this->workspace = $workspace;
@@ -46,6 +49,23 @@ class CurrentWorkspace
     public function role(): ?WorkspaceRole
     {
         return $this->membership?->role;
+    }
+
+    /**
+     * Narrows the request to some projects (a project-limited access token).
+     * Project and WorkItem queries then leave everything else out.
+     *
+     * @param  list<int>  $projectIds
+     */
+    public function limitToProjects(array $projectIds): void
+    {
+        $this->projectIds = $projectIds;
+    }
+
+    /** @return list<int>|null null when every project of the workspace is visible */
+    public function projectIds(): ?array
+    {
+        return $this->unscoped ? null : $this->projectIds;
     }
 
     public function isUnscoped(): bool

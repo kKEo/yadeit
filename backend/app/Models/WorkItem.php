@@ -6,6 +6,7 @@ use App\Enums\ItemKind;
 use App\Enums\Priority;
 use App\Models\Concerns\BelongsToWorkspace;
 use App\Services\ActivityFanout;
+use App\Support\CurrentWorkspace;
 use Database\Factories\WorkItemFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,6 +32,18 @@ use Illuminate\Support\Carbon;
 class WorkItem extends Model
 {
     use BelongsToWorkspace;
+
+    protected static function booted(): void
+    {
+        // A project-limited access token sees nothing outside its projects.
+        static::addGlobalScope('token-projects', function (Builder $query): void {
+            $projectIds = app(CurrentWorkspace::class)->projectIds();
+
+            if ($projectIds !== null) {
+                $query->whereIn($query->getModel()->qualifyColumn('project_id'), $projectIds);
+            }
+        });
+    }
 
     /** @use HasFactory<WorkItemFactory> */
     use HasFactory;

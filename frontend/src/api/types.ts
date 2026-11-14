@@ -211,9 +211,44 @@ export interface Member {
   /** User id */
   id: number
   name: string
-  email: string
+  /** null for agents, which have no mailbox */
+  email: string | null
+  type: 'human' | 'agent'
   role: WorkspaceRole
   joined_at: string
+}
+
+/** A member that acts through access tokens, owned by a person. */
+export interface Agent {
+  id: number
+  name: string
+  description: string | null
+  owner: { id: number; name: string } | null
+  token_count: number
+  created_at: string
+}
+
+export interface AgentToken {
+  id: number
+  name: string
+  access: 'read' | 'write'
+  /** Project keys the token is limited to; null means every project. */
+  projects: string[] | null
+  last_used_at: string | null
+  expires_at: string | null
+  created_at: string
+}
+
+export interface NewAgentToken extends AgentToken {
+  /** The secret; returned once at creation. */
+  token: string
+}
+
+export interface CreateAgentTokenRequest {
+  name: string
+  access: 'read' | 'write'
+  projects?: string[]
+  expires_in_days?: number | null
 }
 
 export interface Invitation {

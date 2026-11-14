@@ -15,7 +15,9 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'email' => $this->email,
+            // Agents have no mailbox; their stored address is a placeholder.
+            'email' => $this->isAgent() ? null : $this->email,
+            'type' => $this->type->value,
             'locale' => $this->locale,
             'email_verified' => $this->hasVerifiedEmail(),
             'email_notifications' => $this->email_notifications,

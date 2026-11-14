@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -49,7 +50,7 @@ Route::prefix('auth')->group(function () {
 Route::get('invitations/{token}', [InvitationController::class, 'preview'])
     ->middleware('throttle:auth')->name('invitations.preview');
 
-Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(function () {
     Route::get('me', [MeController::class, 'show'])->name('me.show');
     Route::patch('me', [MeController::class, 'update'])->name('me.update');
 
@@ -72,6 +73,15 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::post('invitations', [InvitationController::class, 'store'])->name('workspace-invitations.store');
         Route::delete('invitations/{invitation}', [InvitationController::class, 'destroy'])
             ->whereNumber('invitation')->name('workspace-invitations.destroy');
+
+        Route::get('agents', [AgentController::class, 'index'])->name('agents.index');
+        Route::post('agents', [AgentController::class, 'store'])->name('agents.store');
+        Route::patch('agents/{agent}', [AgentController::class, 'update'])->whereNumber('agent')->name('agents.update');
+        Route::delete('agents/{agent}', [AgentController::class, 'destroy'])->whereNumber('agent')->name('agents.destroy');
+        Route::get('agents/{agent}/tokens', [AgentController::class, 'tokens'])->whereNumber('agent')->name('agent-tokens.index');
+        Route::post('agents/{agent}/tokens', [AgentController::class, 'createToken'])->whereNumber('agent')->name('agent-tokens.store');
+        Route::delete('agents/{agent}/tokens/{token}', [AgentController::class, 'revokeToken'])
+            ->whereNumber(['agent', 'token'])->name('agent-tokens.destroy');
 
         Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
         Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
