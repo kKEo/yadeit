@@ -43,6 +43,13 @@ const router = createRouter({
       meta: { public: true },
     },
 
+    {
+      path: '/p/:token',
+      name: 'public-page',
+      component: () => import('@/views/PublicPageView.vue'),
+      meta: { public: true },
+    },
+
     // ── Signed in ────────────────────────────────────────────────────────────
     {
       // Never rendered: the guard below sends the user to a workspace or to onboarding.
@@ -69,6 +76,8 @@ const router = createRouter({
         { path: 'projects', name: 'projects', component: () => import('@/views/ProjectListView.vue') },
         { path: 'inbox', name: 'inbox', component: () => import('@/views/InboxView.vue') },
         { path: 'members', name: 'workspace-members', component: () => import('@/views/MembersView.vue') },
+        { path: 'docs', name: 'docs', component: () => import('@/views/DocsView.vue') },
+        { path: 'docs/:id(\\d+)', name: 'doc', component: () => import('@/views/DocView.vue') },
         { path: 'agents', name: 'agents', component: () => import('@/views/AgentsView.vue') },
         { path: 'settings', name: 'workspace-settings', component: () => import('@/views/WorkspaceSettingsView.vue') },
         { path: 'items', name: 'items', component: () => import('@/views/ItemsView.vue') },

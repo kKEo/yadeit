@@ -178,7 +178,7 @@ Goal: time-boxed planning and written knowledge next to the work.
 
 - [x] Build cycles with automatic schedule and rollover
 - [x] Build the sub-item view and blocked indicators
-- [ ] Build docs
+- [x] Build docs
   - Markdown pages per project and workspace, draft/published, optional public link
 - [ ] Build full-text search
   - Items, comments and docs

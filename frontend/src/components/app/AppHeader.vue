@@ -21,6 +21,7 @@ const links = computed(() => [
   { name: 'items', label: t('nav.items'), badge: 0 },
   { name: 'inbox', label: t('nav.inbox'), badge: unread.data.value ?? 0 },
   { name: 'projects', label: t('nav.projects') },
+  { name: 'docs', label: t('nav.docs') },
   { name: 'workspace-members', label: t('nav.members') },
   { name: 'agents', label: t('nav.agents') },
   { name: 'workspace-settings', label: t('nav.settings') },

@@ -13,6 +13,7 @@ use App\Http\Controllers\ItemPartsController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\MeController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SavedViewController;
 use App\Http\Controllers\StateController;
@@ -47,6 +48,10 @@ Route::prefix('auth')->group(function () {
             ->middleware('throttle:auth')->name('auth.verification.resend');
     });
 });
+
+// A page shared by link: readable without signing in.
+Route::get('public/pages/{token}', [PageController::class, 'publicShow'])
+    ->where('token', '[A-Za-z0-9]{20,64}')->middleware('throttle:auth')->name('pages.public');
 
 Route::get('invitations/{token}', [InvitationController::class, 'preview'])
     ->middleware('throttle:auth')->name('invitations.preview');
@@ -110,6 +115,12 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::patch('labels/{label}', [LabelController::class, 'update'])->whereNumber('label')->name('labels.update');
             Route::delete('labels/{label}', [LabelController::class, 'destroy'])->whereNumber('label')->name('labels.destroy');
         });
+
+        Route::get('pages', [PageController::class, 'index'])->name('pages.index');
+        Route::post('pages', [PageController::class, 'store'])->name('pages.store');
+        Route::get('pages/{page}', [PageController::class, 'show'])->whereNumber('page')->name('pages.show');
+        Route::patch('pages/{page}', [PageController::class, 'update'])->whereNumber('page')->name('pages.update');
+        Route::delete('pages/{page}', [PageController::class, 'destroy'])->whereNumber('page')->name('pages.destroy');
 
         Route::get('views', [SavedViewController::class, 'index'])->name('views.index');
         Route::post('views', [SavedViewController::class, 'store'])->name('views.store');

@@ -322,7 +322,8 @@
     "settings": "Settings",
     "items": "Items",
     "inbox": "Inbox",
-    "agents": "Agents"
+    "agents": "Agents",
+    "docs": "Docs"
   },
   "userMenu": {
     "label": "Account menu"
@@ -752,5 +753,47 @@
       "upcoming": "Next",
       "completed": "Closed"
     }
+  },
+  "docs": {
+    "title": "Docs",
+    "subtitle": "Written knowledge next to the work: decisions, how-tos, specifications.",
+    "new": "New page",
+    "newTitle": "Untitled page",
+    "creating": "Creating…",
+    "emptyTitle": "No pages yet",
+    "emptyDescription": "Write down what the team should not have to ask twice.",
+    "allProjects": "All pages",
+    "workspaceWide": "Workspace-wide",
+    "search": "Search pages",
+    "draft": "Draft",
+    "published": "Published",
+    "shared": "Shared by link",
+    "updated": "Updated {when} by {name}",
+    "updatedNoName": "Updated {when}",
+    "back": "All pages",
+    "titleLabel": "Title",
+    "project": "Belongs to",
+    "edit": "Edit",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "write": "Write",
+    "preview": "Preview",
+    "bodyPlaceholder": "Write in Markdown…",
+    "empty": "This page has no text yet.",
+    "publish": "Publish",
+    "unpublish": "Back to draft",
+    "share": "Share by link",
+    "unshare": "Stop sharing",
+    "shareHint": "Anyone with this link can read the page without signing in.",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "delete": "Delete page",
+    "deleteTitle": "Delete “{title}”?",
+    "deleteDescription": "The page disappears for everyone, and its public link stops working.",
+    "conflict": "Someone else changed this page while you were editing. Copy your text, reload, and apply it again.",
+    "notFound": "This page does not exist or you cannot see it.",
+    "publicNotFound": "This page does not exist or is no longer shared.",
+    "publicFooter": "Shared from Yadeit"
   }
 }

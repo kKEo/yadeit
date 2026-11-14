@@ -322,7 +322,8 @@
     "settings": "Ustawienia",
     "items": "Zadania",
     "inbox": "Skrzynka",
-    "agents": "Agenci"
+    "agents": "Agenci",
+    "docs": "Dokumenty"
   },
   "userMenu": {
     "label": "Menu konta"
@@ -752,5 +753,47 @@
       "upcoming": "Następny",
       "completed": "Zamknięty"
     }
+  },
+  "docs": {
+    "title": "Dokumenty",
+    "subtitle": "Spisana wiedza obok pracy: decyzje, instrukcje, specyfikacje.",
+    "new": "Nowa strona",
+    "newTitle": "Strona bez tytułu",
+    "creating": "Tworzenie…",
+    "emptyTitle": "Brak stron",
+    "emptyDescription": "Zapisz to, o co zespół nie powinien pytać dwa razy.",
+    "allProjects": "Wszystkie strony",
+    "workspaceWide": "Cała przestrzeń",
+    "search": "Szukaj stron",
+    "draft": "Szkic",
+    "published": "Opublikowana",
+    "shared": "Udostępniona linkiem",
+    "updated": "Zaktualizowano {when}, {name}",
+    "updatedNoName": "Zaktualizowano {when}",
+    "back": "Wszystkie strony",
+    "titleLabel": "Tytuł",
+    "project": "Należy do",
+    "edit": "Edytuj",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "cancel": "Anuluj",
+    "write": "Pisz",
+    "preview": "Podgląd",
+    "bodyPlaceholder": "Pisz w Markdownie…",
+    "empty": "Ta strona nie ma jeszcze treści.",
+    "publish": "Opublikuj",
+    "unpublish": "Wróć do szkicu",
+    "share": "Udostępnij linkiem",
+    "unshare": "Zakończ udostępnianie",
+    "shareHint": "Każdy, kto ma ten link, może przeczytać stronę bez logowania.",
+    "copyLink": "Kopiuj link",
+    "copied": "Skopiowano",
+    "delete": "Usuń stronę",
+    "deleteTitle": "Usunąć „{title}”?",
+    "deleteDescription": "Strona zniknie dla wszystkich, a jej publiczny link przestanie działać.",
+    "conflict": "Ktoś inny zmienił tę stronę podczas Twojej edycji. Skopiuj swój tekst, odśwież i wprowadź go ponownie.",
+    "notFound": "Ta strona nie istnieje albo nie masz do niej dostępu.",
+    "publicNotFound": "Ta strona nie istnieje albo nie jest już udostępniana.",
+    "publicFooter": "Udostępniono z Yadeit"
   }
 }

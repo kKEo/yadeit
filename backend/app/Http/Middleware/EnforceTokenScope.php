@@ -29,6 +29,7 @@ class EnforceTokenScope
         'items.destroy' => 'Agents do not delete items. If it should not exist, say so in a comment and a person will decide.',
         'attachments.destroy' => 'Agents do not delete attachments.',
         'labels.destroy' => 'Agents do not delete labels.',
+        'pages.destroy' => 'Agents do not delete pages.',
         'members.destroy' => 'Agents do not remove members, and an agent is removed by its owner.',
         'projects.store' => 'Agents do not create projects. Ask a person.',
         'projects.update' => 'Agents do not change projects. Ask a person.',

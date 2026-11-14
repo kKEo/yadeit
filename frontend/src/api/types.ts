@@ -394,3 +394,28 @@ export interface WebhookDelivery {
   duration_ms: number | null
   created_at: string
 }
+
+/** A Markdown page of the workspace or of one project. */
+export interface DocPageSummary {
+  id: number
+  title: string
+  project: { key: string; name: string } | null
+  status: 'draft' | 'published'
+  /** Token of the link that works without signing in; null when the page is not shared. */
+  public_token: string | null
+  version: number
+  updated_by: UserRef | null
+  created_at: string
+  updated_at: string
+}
+export interface DocPage extends DocPageSummary { body: string | null }
+export interface PublicPage { title: string; body: string | null; updated_at: string }
+export interface SavePageRequest {
+  title?: string
+  body?: string | null
+  /** Project key, or null for a workspace-wide page. */
+  project?: string | null
+  status?: 'draft' | 'published'
+  public?: boolean
+  expected_version?: number
+}
