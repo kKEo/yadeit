@@ -956,6 +956,8 @@
     "nav": {
       "workspaces": "Przestrzenie robocze",
       "users": "Osoby",
+      "mail": "Poczta",
+      "broadcasts": "Ogłoszenia",
       "audit": "Dziennik zdarzeń"
     },
     "status": {
@@ -1003,6 +1005,62 @@
       "title": "Dziennik zdarzeń",
       "workspace": "Adres przestrzeni roboczej",
       "action": "Początek nazwy zdarzenia, np. member."
+    },
+    "mail": {
+      "title": "Poczta wychodząca",
+      "description": "Wszystkie wiadomości wysłane przez instalację w ostatnich trzech miesiącach oraz wiadomości ogłoszeń, które jeszcze czekają. Ogłoszenia wychodzą partiami po 100 na minutę. Treść wiadomości logowania, resetu hasła i powiadomień nie jest przechowywana.",
+      "search": "Odbiorca lub temat",
+      "empty": "Żadna wiadomość nie pasuje.",
+      "showAll": "Pokaż całą pocztę",
+      "to": "Do",
+      "subject": "Temat",
+      "when": "Wysłano lub dodano",
+      "details": "Szczegóły",
+      "sendNow": "Wyślij teraz",
+      "attempts": "bez prób | jedna próba | prób: {n}",
+      "error": "Ostatni błąd",
+      "noBody": "Treść tej wiadomości nie jest przechowywana.",
+      "deleteTitle": "Usunąć tę wiadomość?",
+      "deleteWaiting": "Nie zostanie nigdy wysłana.",
+      "deleteSent": "Została już wysłana; zniknie tylko z dziennika.",
+      "status": {
+        "all": "Wszystkie",
+        "waiting": "Oczekuje",
+        "sending": "Wysyłanie",
+        "sent": "Wysłano",
+        "failed": "Błąd"
+      }
+    },
+    "broadcasts": {
+      "title": "Ogłoszenia",
+      "new": "Nowe ogłoszenie",
+      "description": "Wiadomość e-mail do osób korzystających z tej instalacji. Agenci, zawieszone konta i niepotwierdzone adresy nigdy jej nie otrzymują.",
+      "subject": "Temat",
+      "body": "Treść",
+      "bodyHint": "Działa Markdown: **pogrubienie**, listy, linki.",
+      "preview": "Podgląd",
+      "noSubject": "(brak tematu)",
+      "to": "Wyślij do",
+      "anyPlan": "Dowolny plan",
+      "important": "Komunikat serwisowy: wyślij także do osób, które wyłączyły powiadomienia e-mail.",
+      "audience": {
+        "everyone": "Wszyscy",
+        "admins": "Administratorzy i właściciele przestrzeni",
+        "owners": "Właściciele przestrzeni"
+      },
+      "check": "Sprawdź odbiorców",
+      "reaches": "Nie trafi do nikogo. | Trafi do jednej osoby. | Liczba odbiorców: {n}.",
+      "sample": "Na przykład: {list}",
+      "send": "Wyślij",
+      "confirmTitle": "Wysłać do nikogo? | Wysłać do jednej osoby? | Wysłać do {n} odbiorców?",
+      "confirmDescription": "Ogłoszenie „{subject}” trafi do kolejki i zostanie wysłane w ciągu kilku minut. Oczekujące wiadomości można usunąć w zakładce Poczta.",
+      "queued": "Dodano do kolejki, odbiorców: {n}. Wysyłka potrwa kilka minut.",
+      "history": "Wysłane ogłoszenia",
+      "none": "Nie wysłano jeszcze żadnego ogłoszenia.",
+      "progress": "wysłano {sent} z {total}",
+      "waiting": "oczekuje: {n}",
+      "failed": "błędy: {n}",
+      "messages": "Wiadomości"
     }
   },
   "audit": {

@@ -17,6 +17,7 @@ use App\Http\Controllers\LabelController;
 use App\Http\Controllers\MeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\OutboxController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PublicFeedbackController;
@@ -77,6 +78,14 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
         Route::get('users', [OperatorController::class, 'users'])->name('admin.users.index');
         Route::patch('users/{id}', [OperatorController::class, 'updateUser'])->whereNumber('id')->name('admin.users.update');
         Route::get('audit', [OperatorController::class, 'audit'])->name('admin.audit');
+
+        Route::get('mail', [OutboxController::class, 'index'])->name('admin.mail.index');
+        Route::get('mail/{id}', [OutboxController::class, 'show'])->whereNumber('id')->name('admin.mail.show');
+        Route::post('mail/{id}/send', [OutboxController::class, 'send'])->whereNumber('id')->name('admin.mail.send');
+        Route::delete('mail/{id}', [OutboxController::class, 'destroy'])->whereNumber('id')->name('admin.mail.destroy');
+        Route::get('broadcasts', [OutboxController::class, 'broadcasts'])->name('admin.broadcasts.index');
+        Route::post('broadcasts/preview', [OutboxController::class, 'preview'])->name('admin.broadcasts.preview');
+        Route::post('broadcasts', [OutboxController::class, 'store'])->name('admin.broadcasts.store');
     });
 
     Route::get('me', [MeController::class, 'show'])->name('me.show');

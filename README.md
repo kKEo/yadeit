@@ -89,6 +89,14 @@ Optional help from a Claude model: drafting an item from one sentence, proposing
 - Operators get an "Operator area" entry in the account menu (`/admin`): every workspace and person in outline (names, counts, dates, never content), with suspension and the plan. A suspended workspace is closed to its members and agents; a suspended person is signed out, loses their tokens and their agents stop. Nothing is deleted.
 - The audit log records who changed access, sharing and settings and who deleted what, plus sign-ins and failed sign-ins. Workspace admins see their workspace's log under Settings (`GET /api/v1/workspaces/{slug}/audit`); operators see all of it, with addresses (`GET /api/v1/admin/audit`). Secrets and long texts never enter the log. Which requests are recorded is one list in `backend/app/Http/Middleware/AuditTrail.php`.
 
+## Outgoing email and announcements
+
+- Every email the installation sends is recorded (recipient, kind, subject, time) and shown to operators under Operator area → Email. The text of sign-in, reset and notification emails is not kept, because those carry links that open an account. Sent rows are pruned after 90 days.
+- Operators write announcements under Operator area → Announcements: Markdown text, an audience (everyone, workspace admins and owners, owners only; optionally one plan), and a "service notice" switch that also reaches people who turned email notifications off. Agents, suspended accounts and unverified addresses never receive one.
+- Sending takes a check first: the preview says how many people it reaches, and the send repeats that number (`confirm_recipients`); if the audience changed in between, the API answers `409 recipients_changed` and sends nothing.
+- An announcement becomes one waiting message per person. `php artisan mail:send-waiting` (scheduled every minute, 100 messages a run) sends them; a message that fails three times stays failed until an operator sends it by hand. Waiting messages can be sent now or deleted on the Email screen.
+- The scheduler has to run for this: `php artisan schedule:work` in development, cron in production.
+
 ## Realtime
 
 Open browsers refresh themselves when something changes. The API sends small signals (identifiers only, never content) through Laravel Reverb; the web app then re-reads through the API. Copy the `REVERB_*` values from `backend/.env` into `frontend/.env.local` as `VITE_REVERB_APP_KEY`, `VITE_REVERB_HOST`, `VITE_REVERB_PORT` and `VITE_REVERB_SCHEME`. Without them the app works, just without live updates.

@@ -12,6 +12,8 @@ const { t } = useI18n()
 const links = [
   { name: 'admin', label: 'admin.nav.workspaces' },
   { name: 'admin-users', label: 'admin.nav.users' },
+  { name: 'admin-mail', label: 'admin.nav.mail' },
+  { name: 'admin-broadcasts', label: 'admin.nav.broadcasts' },
   { name: 'admin-audit', label: 'admin.nav.audit' },
 ]
 </script>

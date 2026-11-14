@@ -1,5 +1,8 @@
 import { request, workspacePath } from './client'
-import type { AdminOverview, AdminUser, AdminWorkspace, AuditEntry, CursorPage, ItemResponse } from './types'
+import type {
+  AdminOverview, AdminUser, AdminWorkspace, AuditEntry, Broadcast, BroadcastFilter, BroadcastPreview, CursorPage, ItemResponse,
+  MailPage, MailStatus, OutgoingEmail, OutgoingEmailDetail,
+} from './types'
 
 type Query = Record<string, string | number | boolean | null | undefined>
 
@@ -44,4 +47,39 @@ export async function listAudit(query: AuditQuery = {}): Promise<CursorPage<Audi
 /** The audit log of one workspace, for its admins. */
 export async function listWorkspaceAudit(slug: string, query: Omit<AuditQuery, 'workspace'> = {}): Promise<CursorPage<AuditEntry>> {
   return request<CursorPage<AuditEntry>>('GET', withQuery(`${workspacePath(slug)}/audit`, { ...query }))
+}
+
+// ── Outgoing mail and announcements ──────────────────────────────────────────
+
+export interface MailQuery { status?: MailStatus | null; q?: string; broadcast?: number | null; cursor?: string | null }
+
+export async function listMail(query: MailQuery = {}): Promise<MailPage> {
+  return request<MailPage>('GET', withQuery('/admin/mail', { ...query }))
+}
+
+export async function getMail(id: number): Promise<OutgoingEmailDetail> {
+  return (await request<ItemResponse<OutgoingEmailDetail>>('GET', `/admin/mail/${id}`)).data
+}
+
+/** Sends a waiting or failed announcement message right away. */
+export async function sendMailNow(id: number): Promise<OutgoingEmail> {
+  return (await request<ItemResponse<OutgoingEmail>>('POST', `/admin/mail/${id}/send`)).data
+}
+
+export async function deleteMail(id: number): Promise<void> {
+  await request<void>('DELETE', `/admin/mail/${id}`)
+}
+
+export async function listBroadcasts(): Promise<Broadcast[]> {
+  return (await request<ItemResponse<Broadcast[]>>('GET', '/admin/broadcasts')).data
+}
+
+/** Who an announcement would reach; nothing is sent. */
+export async function previewBroadcast(filter: BroadcastFilter): Promise<BroadcastPreview> {
+  return (await request<ItemResponse<BroadcastPreview>>('POST', '/admin/broadcasts/preview', { body: filter })).data
+}
+
+/** `confirm_recipients` repeats the number from the preview; the API refuses if it no longer holds. */
+export async function sendBroadcast(req: BroadcastFilter & { subject: string; body: string; confirm_recipients: number }): Promise<Broadcast> {
+  return (await request<ItemResponse<Broadcast>>('POST', '/admin/broadcasts', { body: req })).data
 }

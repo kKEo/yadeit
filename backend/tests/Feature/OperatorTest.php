@@ -22,6 +22,8 @@ it('shows an operator the outline of the installation', function () {
     [$workspace] = workspaceWith();
     addMember($workspace);
     workspaceWith();
+    $this->actingAs($workspace->memberships()->first()->user)->postJson("/api/v1/workspaces/{$workspace->slug}/projects", ['name' => 'Website', 'key' => 'WEB'])->assertCreated();
+    $this->postJson("/api/v1/workspaces/{$workspace->slug}/items", ['project' => 'WEB', 'title' => 'x'])->assertCreated();
 
     $this->actingAs(operator())->getJson('/api/v1/admin/overview')
         ->assertOk()->assertJsonPath('data.workspaces', 2)->assertJsonPath('data.people', 4);
@@ -30,6 +32,7 @@ it('shows an operator the outline of the installation', function () {
         ->assertOk()->assertJsonCount(1, 'data')
         ->assertJsonPath('data.0.slug', $workspace->slug)
         ->assertJsonPath('data.0.members', 2)
+        ->assertJsonPath('data.0.items', 1)
         ->assertJsonPath('data.0.plan', 'free');
 
     $this->getJson('/api/v1/admin/users?limit=2')->assertOk()->assertJsonCount(2, 'data')

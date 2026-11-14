@@ -55,7 +55,7 @@ class OperatorController extends Controller
         $page = $query->cursorPaginate($input['limit'] ?? 50)->withQueryString();
         $items = DB::table('work_items')->whereNull('deleted_at')
             ->whereIn('workspace_id', collect($page->items())->pluck('id'))
-            ->groupBy('workspace_id')->pluck(DB::raw('COUNT(*)'), 'workspace_id');
+            ->groupBy('workspace_id')->selectRaw('workspace_id, COUNT(*) as total')->pluck('total', 'workspace_id');
 
         return response()->json([
             'data' => collect($page->items())->map(fn (Workspace $w) => $this->presentWorkspace($w, (int) ($items[$w->id] ?? 0))),

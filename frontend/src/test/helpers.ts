@@ -52,6 +52,8 @@ export function makeTestRouter(): Router {
       { path: '/admin', name: 'admin', component: blank },
       { path: '/admin/users', name: 'admin-users', component: blank },
       { path: '/admin/audit', name: 'admin-audit', component: blank },
+      { path: '/admin/mail', name: 'admin-mail', component: blank },
+      { path: '/admin/announcements', name: 'admin-broadcasts', component: blank },
     ],
   })
 }

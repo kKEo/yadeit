@@ -220,9 +220,9 @@ Goal: run it as a public service.
   - Workspaces, users, suspension
 - [x] Build the audit event log
   - Views for workspace admins and for the operator
-- [ ] Build the outgoing mail log and queue screen
+- [x] Build the outgoing mail log and queue screen
   - Waiting/sent, details, send now, delete
-- [ ] Build announcement broadcasts
+- [x] Build announcement broadcasts
   - Recipient filter, preview, confirmation
 - [ ] Add plans, limits and Stripe billing
   - Laravel Cashier; agent seats free

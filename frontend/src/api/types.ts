@@ -531,3 +531,54 @@ export interface AuditEntry {
   workspace?: string | null
   ip?: string | null
 }
+
+export type MailStatus = 'waiting' | 'sending' | 'sent' | 'failed'
+
+export interface OutgoingEmail {
+  id: number
+  /** What sent it: `Announcement`, `ResetPassword`, `ItemActivity`… */
+  kind: string
+  to: { email: string; name: string | null }
+  subject: string
+  status: MailStatus
+  attempts: number
+  error: string | null
+  broadcast_id: number | null
+  sent_at: string | null
+  created_at: string
+}
+
+/** The text is kept for announcements only. */
+export interface OutgoingEmailDetail extends OutgoingEmail {
+  body: string | null
+}
+
+export interface MailPage extends CursorPage<OutgoingEmail> {
+  counts: Record<MailStatus, number>
+}
+
+export type BroadcastAudience = 'everyone' | 'admins' | 'owners'
+
+export interface BroadcastFilter {
+  audience: BroadcastAudience
+  plan: string | null
+  /** A service notice: also reaches people who turned email notifications off. */
+  important: boolean
+}
+
+export interface Broadcast extends BroadcastFilter {
+  id: number
+  subject: string
+  body: string
+  recipients: number
+  waiting: number
+  sent: number
+  failed: number
+  created_by: string | null
+  created_at: string
+}
+
+export interface BroadcastPreview {
+  recipients: number
+  sample: string[]
+}

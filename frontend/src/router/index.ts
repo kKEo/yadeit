@@ -100,6 +100,8 @@ const router = createRouter({
       children: [
         { path: '', name: 'admin', component: () => import('@/views/admin/AdminWorkspacesView.vue') },
         { path: 'users', name: 'admin-users', component: () => import('@/views/admin/AdminUsersView.vue') },
+        { path: 'mail', name: 'admin-mail', component: () => import('@/views/admin/AdminMailView.vue') },
+        { path: 'announcements', name: 'admin-broadcasts', component: () => import('@/views/admin/AdminBroadcastsView.vue') },
         { path: 'audit', name: 'admin-audit', component: () => import('@/views/admin/AdminAuditView.vue') },
       ],
     },

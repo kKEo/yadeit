@@ -956,6 +956,8 @@
     "nav": {
       "workspaces": "Workspaces",
       "users": "People",
+      "mail": "Email",
+      "broadcasts": "Announcements",
       "audit": "Audit log"
     },
     "status": {
@@ -1003,6 +1005,62 @@
       "title": "Audit log",
       "workspace": "Workspace web address",
       "action": "Action starts with, e.g. member."
+    },
+    "mail": {
+      "title": "Outgoing email",
+      "description": "Every email the installation sent in the last three months, and the announcement messages that still wait. Announcements leave in batches of 100 a minute. The text of sign-in, reset and notification emails is not kept.",
+      "search": "Recipient or subject",
+      "empty": "No email matches.",
+      "showAll": "Show all email",
+      "to": "To",
+      "subject": "Subject",
+      "when": "Sent or queued",
+      "details": "Details",
+      "sendNow": "Send now",
+      "attempts": "no attempts | one attempt | {n} attempts",
+      "error": "Last error",
+      "noBody": "The text of this email is not kept.",
+      "deleteTitle": "Delete this email?",
+      "deleteWaiting": "It will never be sent.",
+      "deleteSent": "It was already sent; this only removes it from the log.",
+      "status": {
+        "all": "All",
+        "waiting": "Waiting",
+        "sending": "Sending",
+        "sent": "Sent",
+        "failed": "Failed"
+      }
+    },
+    "broadcasts": {
+      "title": "Announcements",
+      "new": "New announcement",
+      "description": "An email to the people who use this installation. Agents, suspended accounts and unverified addresses never receive it.",
+      "subject": "Subject",
+      "body": "Text",
+      "bodyHint": "Markdown works: **bold**, lists, links.",
+      "preview": "Preview",
+      "noSubject": "(no subject yet)",
+      "to": "Send to",
+      "anyPlan": "Any plan",
+      "important": "Service notice: also send to people who turned email notifications off.",
+      "audience": {
+        "everyone": "Everyone",
+        "admins": "Workspace admins and owners",
+        "owners": "Workspace owners"
+      },
+      "check": "Check who receives it",
+      "reaches": "Reaches nobody. | Reaches one person. | Reaches {n} people.",
+      "sample": "For example: {list}",
+      "send": "Send",
+      "confirmTitle": "Send to nobody? | Send to one person? | Send to {n} people?",
+      "confirmDescription": "“{subject}” will be queued and sent over the next minutes. Messages that still wait can be deleted under Email.",
+      "queued": "Queued for {n} people. It leaves over the next minutes.",
+      "history": "Sent announcements",
+      "none": "No announcement has been sent yet.",
+      "progress": "{sent} of {total} sent",
+      "waiting": "{n} waiting",
+      "failed": "{n} failed",
+      "messages": "Messages"
     }
   },
   "audit": {
