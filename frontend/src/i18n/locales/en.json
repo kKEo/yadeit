@@ -70,7 +70,8 @@
       "updatedAt": "Updated",
       "completedAt": "Completed",
       "delegate": "Agent",
-      "status": "Status"
+      "status": "Status",
+      "cycle": "Cycle"
     },
     "create": {
       "title": "New item",
@@ -222,7 +223,8 @@
         "response": "Result",
         "error": "Error"
       }
-    }
+    },
+    "noCycle": "No cycle"
   },
   "register": {
     "title": "Create your account",
@@ -440,8 +442,12 @@
       "kind": "Kind",
       "assignee": "Assignee",
       "label": "Label",
-      "open": "Open only"
-    }
+      "open": "Open only",
+      "cycle": "Cycle",
+      "needs_input": "Needs input"
+    },
+    "currentCycle": "Current cycle",
+    "noCycle": "No cycle"
   },
   "activity": {
     "nothing": "nothing",
@@ -458,7 +464,8 @@
       "due_date": "the due date",
       "parent": "the parent",
       "description": "the description",
-      "delegate": "the agent"
+      "delegate": "the agent",
+      "cycle": "the cycle"
     },
     "event": {
       "created": "{actor} created the item",
@@ -478,7 +485,8 @@
       "input_requested": "{actor} asked a question and is waiting for an answer",
       "input_provided": "{actor} answered the question",
       "submitted_for_review": "{actor} submitted the work for review",
-      "run_failed": "{actor} could not finish the work"
+      "run_failed": "{actor} could not finish the work",
+      "rolled_over": "Not finished in {from}: moved to {to}"
     },
     "needsInputOn": "{actor} marked the item as needing input",
     "needsInputOff": "{actor} marked the question as answered",
@@ -717,5 +725,28 @@
     "copy": "Copy",
     "copied": "Copied",
     "done": "I have stored it"
+  },
+  "planning": {
+    "open": "Planning",
+    "title": "Planning for {project}",
+    "description": "Cycles and tidying run by themselves once switched on.",
+    "cycles": "Cycles",
+    "cyclesHint": "Fixed stretches of time. When one ends, the next starts and unfinished items move along.",
+    "off": "Off",
+    "weeks": "{n} week | {n} weeks",
+    "stale": "Return untouched items to the backlog",
+    "staleHint": "Open items nobody changed for this long go back to the backlog, so the board shows what is really in progress.",
+    "days": "After {n} days",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved.",
+    "history": "Cycles so far",
+    "noCycles": "No cycles yet.",
+    "progress": "{done} of {total} done",
+    "status": {
+      "active": "Now",
+      "upcoming": "Next",
+      "completed": "Closed"
+    }
   }
 }

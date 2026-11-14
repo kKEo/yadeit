@@ -99,6 +99,7 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'token.scope'])->group(functi
             Route::patch('/', [ProjectController::class, 'update'])->name('projects.update');
             Route::delete('/', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
+            Route::get('cycles', [ProjectController::class, 'cycles'])->name('projects.cycles');
             Route::get('states', [StateController::class, 'index'])->name('states.index');
             Route::post('states', [StateController::class, 'store'])->name('states.store');
             Route::patch('states/{state}', [StateController::class, 'update'])->whereNumber('state')->name('states.update');

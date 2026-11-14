@@ -7,6 +7,7 @@ use App\Enums\RunEntryType;
 use App\Enums\StateGroup;
 use App\Enums\UserType;
 use App\Exceptions\ApiException;
+use App\Models\Cycle;
 use App\Models\Label;
 use App\Models\Project;
 use App\Models\State;
@@ -25,7 +26,7 @@ use Illuminate\Validation\ValidationException;
  */
 class WorkItemWriter
 {
-    public function __construct(private AgentRuns $runs) {}
+    public function __construct(private AgentRuns $runs, private CycleScheduler $cycles) {}
 
     /** @param  array<string, mixed>  $data */
     public function create(Project $project, array $data, User $actor): WorkItem
@@ -53,6 +54,7 @@ class WorkItemWriter
                 'kind' => $data['kind'] ?? 'task',
                 'assignee_id' => $this->resolveAssignee($project, $data['assignee'] ?? null, $actor),
                 'delegate_id' => $this->resolveDelegate($project, $data['delegate'] ?? null, $actor)?->id,
+                'cycle_id' => $this->resolveCycle($project, $data['cycle'] ?? ($state->group === StateGroup::Started ? 'current' : null))?->id,
                 'parent_id' => $this->resolveParent($data['parent'] ?? null, null)?->id,
                 'due_date' => $data['due_date'] ?? null,
                 'created_by' => $actor->id,
@@ -119,6 +121,11 @@ class WorkItemWriter
                     $changes['state'] = ['from' => $item->state->name, 'to' => $state->name];
                     $item->state_id = $state->id;
                     $item->completed_at = $state->group->isClosed() ? ($item->completed_at ?? now()) : null;
+
+                    // Work that starts belongs to the cycle it starts in, unless the request says otherwise.
+                    if ($state->group === StateGroup::Started && $item->cycle_id === null && ! array_key_exists('cycle', $data)) {
+                        $data['cycle'] = 'current';
+                    }
                 }
             }
 
@@ -144,6 +151,15 @@ class WorkItemWriter
 
                     $changes['delegate'] = ['from' => $item->delegate?->name, 'to' => $delegate?->name];
                     $item->delegate_id = $delegate?->id;
+                }
+            }
+
+            if (array_key_exists('cycle', $data)) {
+                $cycle = $this->resolveCycle($project, $data['cycle']);
+
+                if ($cycle?->id !== $item->cycle_id) {
+                    $changes['cycle'] = ['from' => $item->cycle?->label(), 'to' => $cycle?->label()];
+                    $item->cycle_id = $cycle?->id;
                 }
             }
 
@@ -238,6 +254,11 @@ class WorkItemWriter
                 if ($started) {
                     $changes['state'] = ['from' => $item->state->name, 'to' => $started->name];
                     $item->state_id = $started->id;
+                }
+
+                if ($item->cycle_id === null && ($cycle = $this->cycles->current($item->project)) !== null) {
+                    $changes['cycle'] = ['from' => null, 'to' => $cycle->label()];
+                    $item->cycle_id = $cycle->id;
                 }
             }
 
@@ -441,6 +462,29 @@ class WorkItemWriter
         }
 
         return $agent;
+    }
+
+    /** A cycle of the project: "current", a cycle number, or nothing. */
+    private function resolveCycle(Project $project, mixed $reference): ?Cycle
+    {
+        if ($reference === null || $reference === '' || $reference === 'none') {
+            return null;
+        }
+
+        if ($reference === 'current') {
+            // Asking for the current cycle in a project without cycles is not an error: there is simply none.
+            return $this->cycles->current($project);
+        }
+
+        $cycle = is_numeric($reference) ? $project->cycles()->where('number', (int) $reference)->first() : null;
+
+        if (! $cycle) {
+            $this->fail('cycle', $project->cycle_weeks === null
+                ? "Project {$project->key} does not use cycles."
+                : 'Unknown cycle. Pass "current", a cycle number, or null for none.');
+        }
+
+        return $cycle;
     }
 
     private function resolveState(Project $project, mixed $reference): State

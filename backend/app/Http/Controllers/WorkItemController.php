@@ -34,7 +34,8 @@ class WorkItemController extends Controller
     /**
      * Filters: project (key), state (name or id), state_group, priority, kind,
      * assignee (id, "me" or "none"), delegate (agent id, "me" or "none"),
-     * needs_input (true = waiting for a person's answer), label (name), parent (key or "none"),
+     * needs_input (true = waiting for a person's answer),
+     * cycle ("current", "none" or a cycle number; use with project), label (name), parent (key or "none"),
      * q (text in the title, or an exact key), open (true hides closed items).
      * Paging: limit (default 25, max 100) and cursor. Shaping: expand, fields.
      */
@@ -49,6 +50,7 @@ class WorkItemController extends Controller
             'assignee' => ['sometimes', 'string'],
             'delegate' => ['sometimes', 'string'],
             'needs_input' => ['sometimes', 'boolean'],
+            'cycle' => ['sometimes', 'string'],
             'label' => ['sometimes', 'string'],
             'parent' => ['sometimes', 'string'],
             'q' => ['sometimes', 'string', 'max:200'],
@@ -312,6 +314,7 @@ class WorkItemController extends Controller
             'assignee' => ['sometimes', 'nullable'],
             'delegate' => ['sometimes', 'nullable'],
             'needs_input' => ['sometimes', 'boolean'],
+            'cycle' => ['sometimes', 'nullable'],
             'parent' => ['sometimes', 'nullable', 'string'],
             'due_date' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
             'labels' => ['sometimes', 'array', 'max:20'],
@@ -363,6 +366,16 @@ class WorkItemController extends Controller
                 $input['delegate'] === 'none' => $query->whereNull('delegate_id'),
                 $input['delegate'] === 'me' => $query->where('delegate_id', $viewerId),
                 default => $query->where('delegate_id', (int) $input['delegate']),
+            };
+        }
+
+        if (isset($input['cycle'])) {
+            match (true) {
+                $input['cycle'] === 'none' => $query->whereNull('cycle_id'),
+                // The cycle in progress in each project that has one.
+                $input['cycle'] === 'current' => $query->whereHas('cycle', fn (Builder $q) => $q
+                    ->whereNull('closed_at')->where('starts_on', '<=', now()->toDateString())),
+                default => $query->whereHas('cycle', fn (Builder $q) => $q->where('number', (int) $input['cycle'])),
             };
         }
 

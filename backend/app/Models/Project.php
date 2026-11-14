@@ -15,8 +15,10 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property Carbon|null $archived_at
+ * @property int|null $cycle_weeks
+ * @property int|null $stale_after_days
  */
-#[Fillable(['workspace_id', 'key', 'name', 'description', 'created_by', 'next_sequence', 'archived_at'])]
+#[Fillable(['workspace_id', 'key', 'name', 'description', 'created_by', 'next_sequence', 'archived_at', 'cycle_weeks', 'stale_after_days'])]
 class Project extends Model
 {
     use BelongsToWorkspace;
@@ -69,6 +71,12 @@ class Project extends Model
     {
         return $this->states()->where('is_default', true)->first()
             ?? $this->states()->firstOrFail();
+    }
+
+    /** @return HasMany<Cycle, $this> */
+    public function cycles(): HasMany
+    {
+        return $this->hasMany(Cycle::class);
     }
 
     /**

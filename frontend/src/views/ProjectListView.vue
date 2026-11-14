@@ -7,7 +7,9 @@ import { useCanEdit } from '@/composables/useCanEdit'
 import { useProjects } from '@/queries/workspace'
 import { useWorkspaceStore } from '@/stores/workspace'
 import EmptyState from '@/components/app/EmptyState.vue'
+import type { Project } from '@/api/types'
 import ProjectCreateDialog from '@/components/app/ProjectCreateDialog.vue'
+import ProjectPlanningDialog from '@/components/app/ProjectPlanningDialog.vue'
 import Alert from '@/components/ui/Alert.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
@@ -21,6 +23,7 @@ const { t } = useI18n()
 const canEdit = useCanEdit()
 const projects = useProjects()
 const createOpen = ref(false)
+const planning = ref<Project | null>(null)
 
 const list = computed(() => projects.data.value ?? [])
 </script>
@@ -48,7 +51,7 @@ const list = computed(() => projects.data.value ?? [])
     />
 
     <ul v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <li v-for="project in list" :key="project.id">
+      <li v-for="project in list" :key="project.id" class="flex flex-col">
         <RouterLink
           :to="{ name: 'items', params: { slug: store.currentSlug ?? '' }, query: { project: project.key } }"
           class="block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -61,9 +64,17 @@ const list = computed(() => projects.data.value ?? [])
             </CardHeader>
           </Card>
         </RouterLink>
+        <button
+          v-if="canEdit" type="button"
+          class="mt-1 rounded px-1 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          @click="planning = project"
+        >
+          {{ t('planning.open') }}<span v-if="project.cycle_weeks"> · {{ t('planning.weeks', project.cycle_weeks) }}</span>
+        </button>
       </li>
     </ul>
 
     <ProjectCreateDialog v-model:open="createOpen" />
+    <ProjectPlanningDialog v-if="planning" :project="planning" @close="planning = null" />
   </div>
 </template>

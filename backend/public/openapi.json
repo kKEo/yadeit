@@ -3725,6 +3725,18 @@
                                                     "archived": {
                                                         "type": "boolean"
                                                     },
+                                                    "cycle_weeks": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "stale_after_days": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
                                                     "created_at": {
                                                         "type": [
                                                             "string",
@@ -3791,6 +3803,12 @@
                                                                 "color"
                                                             ]
                                                         }
+                                                    },
+                                                    "current_cycle": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
                                                     }
                                                 },
                                                 "required": [
@@ -3799,9 +3817,12 @@
                                                     "name",
                                                     "description",
                                                     "archived",
+                                                    "cycle_weeks",
+                                                    "stale_after_days",
                                                     "created_at",
                                                     "states",
-                                                    "labels"
+                                                    "labels",
+                                                    "current_cycle"
                                                 ]
                                             }
                                         }
@@ -3894,6 +3915,18 @@
                                                 "archived": {
                                                     "type": "boolean"
                                                 },
+                                                "cycle_weeks": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "stale_after_days": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
                                                 "created_at": {
                                                     "type": [
                                                         "string",
@@ -3960,6 +3993,12 @@
                                                             "color"
                                                         ]
                                                     }
+                                                },
+                                                "current_cycle": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -3968,9 +4007,12 @@
                                                 "name",
                                                 "description",
                                                 "archived",
+                                                "cycle_weeks",
+                                                "stale_after_days",
                                                 "created_at",
                                                 "states",
-                                                "labels"
+                                                "labels",
+                                                "current_cycle"
                                             ]
                                         }
                                     },
@@ -4045,6 +4087,12 @@
                                                 "archived": {
                                                     "type": "boolean"
                                                 },
+                                                "cycle_weeks": {
+                                                    "type": "string"
+                                                },
+                                                "stale_after_days": {
+                                                    "type": "string"
+                                                },
                                                 "created_at": {
                                                     "type": "string"
                                                 },
@@ -4107,6 +4155,12 @@
                                                             "color"
                                                         ]
                                                     }
+                                                },
+                                                "current_cycle": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -4115,9 +4169,12 @@
                                                 "name",
                                                 "description",
                                                 "archived",
+                                                "cycle_weeks",
+                                                "stale_after_days",
                                                 "created_at",
                                                 "states",
-                                                "labels"
+                                                "labels",
+                                                "current_cycle"
                                             ]
                                         }
                                     },
@@ -4181,6 +4238,24 @@
                                     },
                                     "archived": {
                                         "type": "boolean"
+                                    },
+                                    "cycle_weeks": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "description": "Weeks per cycle, 1 to 8; null switches cycles off.",
+                                        "minimum": 1,
+                                        "maximum": 8
+                                    },
+                                    "stale_after_days": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "description": "Days after which untouched open items return to the backlog; null switches it off.",
+                                        "minimum": 7,
+                                        "maximum": 365
                                     }
                                 }
                             }
@@ -4215,6 +4290,18 @@
                                                 },
                                                 "archived": {
                                                     "type": "boolean"
+                                                },
+                                                "cycle_weeks": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "stale_after_days": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
                                                 },
                                                 "created_at": {
                                                     "type": [
@@ -4282,6 +4369,12 @@
                                                             "color"
                                                         ]
                                                     }
+                                                },
+                                                "current_cycle": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -4290,9 +4383,12 @@
                                                 "name",
                                                 "description",
                                                 "archived",
+                                                "cycle_weeks",
+                                                "stale_after_days",
                                                 "created_at",
                                                 "states",
-                                                "labels"
+                                                "labels",
+                                                "current_cycle"
                                             ]
                                         }
                                     },
@@ -4342,6 +4438,120 @@
                 "responses": {
                     "204": {
                         "description": "No content"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workspaces/{workspace}/projects/{project}/cycles": {
+            "get": {
+                "operationId": "projects.cycles",
+                "summary": "The project's cycles, newest first, each with how many of its items are done",
+                "tags": [
+                    "Project"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "project",
+                        "in": "path",
+                        "required": true,
+                        "description": "The project key",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "number": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "completed",
+                                                            "upcoming",
+                                                            "active"
+                                                        ]
+                                                    },
+                                                    "starts_on": {
+                                                        "type": "string"
+                                                    },
+                                                    "ends_on": {
+                                                        "type": "string"
+                                                    },
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "total": {
+                                                                "type": "integer",
+                                                                "minimum": 0
+                                                            },
+                                                            "completed": {
+                                                                "type": "integer",
+                                                                "minimum": 0
+                                                            },
+                                                            "started": {
+                                                                "type": "integer",
+                                                                "minimum": 0
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "total",
+                                                            "completed",
+                                                            "started"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "number",
+                                                    "name",
+                                                    "status",
+                                                    "starts_on",
+                                                    "ends_on",
+                                                    "items"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
@@ -5677,7 +5887,7 @@
         "/workspaces/{workspace}/items": {
             "get": {
                 "operationId": "items.index",
-                "summary": "Filters: project (key), state (name or id), state_group, priority, kind,\nassignee (id, \"me\" or \"none\"), delegate (agent id, \"me\" or \"none\"),\nneeds_input (true = waiting for a person's answer), label (name), parent (key or \"none\"),\nq (text in the title, or an exact key), open (true hides closed items).\nPaging: limit (default 25, max 100) and cursor. Shaping: expand, fields",
+                "summary": "Filters: project (key), state (name or id), state_group, priority, kind,\nassignee (id, \"me\" or \"none\"), delegate (agent id, \"me\" or \"none\"),\nneeds_input (true = waiting for a person's answer),\ncycle (\"current\", \"none\" or a cycle number; use with project), label (name), parent (key or \"none\"),\nq (text in the title, or an exact key), open (true hides closed items).\nPaging: limit (default 25, max 100) and cursor. Shaping: expand, fields",
                 "tags": [
                     "WorkItem"
                 ],
@@ -5751,6 +5961,13 @@
                         "in": "query",
                         "schema": {
                             "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "cycle",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     {
@@ -5925,6 +6142,28 @@
                                                             "needs_input": {
                                                                 "type": "boolean"
                                                             },
+                                                            "cycle": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "number": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "number",
+                                                                    "name"
+                                                                ]
+                                                            },
                                                             "labels": {
                                                                 "type": "array",
                                                                 "items": {
@@ -6071,6 +6310,7 @@
                                                             "assignee",
                                                             "delegate",
                                                             "needs_input",
+                                                            "cycle",
                                                             "labels",
                                                             "project",
                                                             "parent",
@@ -6179,6 +6419,12 @@
                                     },
                                     "needs_input": {
                                         "type": "boolean"
+                                    },
+                                    "cycle": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
                                     },
                                     "parent": {
                                         "type": [
@@ -6630,6 +6876,28 @@
                                                             "needs_input": {
                                                                 "type": "boolean"
                                                             },
+                                                            "cycle": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "number": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "number",
+                                                                    "name"
+                                                                ]
+                                                            },
                                                             "labels": {
                                                                 "type": "array",
                                                                 "items": {
@@ -6776,6 +7044,7 @@
                                                             "assignee",
                                                             "delegate",
                                                             "needs_input",
+                                                            "cycle",
                                                             "labels",
                                                             "project",
                                                             "parent",
@@ -7196,6 +7465,12 @@
                                     },
                                     "needs_input": {
                                         "type": "boolean"
+                                    },
+                                    "cycle": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
                                     },
                                     "parent": {
                                         "type": [

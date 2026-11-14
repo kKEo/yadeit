@@ -36,6 +36,7 @@ export function describeActivity(entry: ActivityEntry, t: Translate): string[] {
 
   const named: Record<string, unknown> = { actor, ...changes }
   if (entry.event === 'relation_added' && typeof changes.type === 'string') named.type = t(`relation.${changes.type}`)
+  if (entry.event === 'rolled_over' && isChange(changes.cycle)) Object.assign(named, changes.cycle)
   const key = `activity.event.${entry.event}`
   const line = t(key, named)
   return [line === key ? t('activity.event.other', { actor, event: entry.event }) : line]

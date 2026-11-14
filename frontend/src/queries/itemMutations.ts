@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { ApiError } from '@/api/client'
 import * as api from '@/api/items'
 import type {
-  CreateItemRequest, ItemDetail, ItemKind, LabelRef, Priority, StateRef, UpdateItemRequest, UserRef,
+  CreateItemRequest, CycleRef, ItemDetail, ItemKind, LabelRef, Priority, StateRef, UpdateItemRequest, UserRef,
 } from '@/api/types'
 import { useAuthStore } from '@/stores/auth'
 import { useToastStore } from '@/stores/toast'
@@ -20,6 +20,7 @@ export interface ItemPatch {
   assignee?: UserRef | null
   delegate?: UserRef | null
   needs_input?: boolean
+  cycle?: CycleRef | null
   labels?: LabelRef[]
   due_date?: string | null
   parent?: string | null
@@ -27,11 +28,12 @@ export interface ItemPatch {
 
 /** The request body for a patch: references by id or name, the way the API takes them. */
 export function patchRequest(patch: ItemPatch): UpdateItemRequest {
-  const { state, assignee, delegate, labels, ...plain } = patch
+  const { state, assignee, delegate, labels, cycle, ...plain } = patch
   const req: UpdateItemRequest = { ...plain }
   if (state !== undefined) req.state = state.id
   if (assignee !== undefined) req.assignee = assignee?.id ?? null
   if (delegate !== undefined) req.delegate = delegate?.id ?? null
+  if (cycle !== undefined) req.cycle = cycle?.number ?? null
   if (labels !== undefined) req.labels = labels.map((label) => label.name)
   return req
 }

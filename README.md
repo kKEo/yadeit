@@ -27,6 +27,7 @@ cd backend
 composer setup                  # install, create .env, generate key, migrate
 php artisan serve               # http://localhost:8000
 php artisan queue:work          # emails and realtime signals are sent from the queue
+php artisan schedule:work       # daily housekeeping: closes cycles, rolls unfinished items over
 php artisan reverb:start        # realtime updates over WebSocket, port 8080 (optional)
 
 cd ../frontend

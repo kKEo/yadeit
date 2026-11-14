@@ -15,7 +15,7 @@ class SavedView extends Model
     use BelongsToWorkspace;
 
     /** Filter names a view may store; the same names the item list accepts. */
-    public const FILTERS = ['project', 'state', 'state_group', 'priority', 'kind', 'assignee', 'delegate', 'needs_input', 'label', 'q', 'open'];
+    public const FILTERS = ['project', 'state', 'state_group', 'priority', 'kind', 'assignee', 'delegate', 'needs_input', 'cycle', 'label', 'q', 'open'];
 
     public const LAYOUTS = ['list', 'board'];
 

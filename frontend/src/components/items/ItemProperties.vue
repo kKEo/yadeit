@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ItemDetail } from '@/api/types'
 import { useItemProperties } from '@/composables/useItemProperties'
+import { useProject } from '@/queries/workspace'
 import { formatDateTime } from '@/lib/format'
 import { useUiStore, type ItemProperty } from '@/stores/ui'
 import PropertyPicker from '@/components/app/PropertyPicker.vue'
@@ -16,6 +17,25 @@ const { t, locale } = useI18n()
 const ui = useUiStore()
 const { options, values, apply, update, agents, delegateOptions, delegateTo } = useItemProperties(() => props.item)
 const delegateOpen = ref(false)
+const cycleOpen = ref(false)
+const project = useProject(() => props.item.project.key)
+// A project that uses cycles offers its current one; an item keeps showing an older cycle it is still in.
+const cycleOptions = computed(() => {
+  const current = project.data.value?.current_cycle ?? null
+  const mine = props.item.cycle
+  return [
+    { value: '', label: t('items.noCycle') },
+    ...(current ? [{ value: String(current.number), label: current.name }] : []),
+    ...(mine && mine.number !== current?.number ? [{ value: String(mine.number), label: mine.name }] : []),
+  ]
+})
+
+function setCycle(value: string | string[]) {
+  const picked = Array.isArray(value) ? value[0] ?? '' : value
+  const current = project.data.value?.current_cycle ?? null
+  if (picked === '') void update(props.item.key, { cycle: null })
+  else if (current && picked === String(current.number)) void update(props.item.key, { cycle: current })
+}
 
 const PICKERS: ItemProperty[] = ['state', 'priority', 'assignee', 'labels', 'kind']
 const openPicker = ref<ItemProperty | null>(null)
@@ -76,6 +96,17 @@ const dates = computed(() => [
           v-model:open="delegateOpen" :label="t('items.fields.delegate')" :options="delegateOptions"
           :model-value="item.delegate ? String(item.delegate.id) : ''" :disabled="!canEdit"
           @update:model-value="delegateTo($event)"
+        />
+      </dd>
+    </template>
+
+    <template v-if="project.data.value?.current_cycle || item.cycle">
+      <dt class="text-muted-foreground">{{ t('items.fields.cycle') }}</dt>
+      <dd>
+        <PropertyPicker
+          v-model:open="cycleOpen" :label="t('items.fields.cycle')" :options="cycleOptions"
+          :model-value="item.cycle ? String(item.cycle.number) : ''" :disabled="!canEdit"
+          @update:model-value="setCycle($event)"
         />
       </dd>
     </template>

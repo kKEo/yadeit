@@ -35,6 +35,7 @@ export interface Item {
   delegate: UserRef | null
   /** Paused on a question to a person. */
   needs_input: boolean
+  cycle: CycleRef | null
   labels: LabelRef[]
   project: { key: string; name: string }
   parent: string | null
@@ -43,6 +44,14 @@ export interface Item {
   created_at: string
   updated_at: string
   completed_at: string | null
+}
+
+export interface CycleRef { id: number; number: number; name: string }
+export interface Cycle extends CycleRef {
+  status: 'upcoming' | 'active' | 'completed'
+  starts_on: string
+  ends_on: string
+  items: { total: number; completed: number; started: number }
 }
 
 export interface ItemReference { key: string; title: string; state: StateRef }
@@ -82,6 +91,8 @@ export interface UpdateItemRequest extends Partial<Omit<CreateItemRequest, 'proj
   expected_version?: number
   /** An agent's id, or null to take the work back. */
   delegate?: number | null
+  /** "current", a cycle number, or null for none. */
+  cycle?: number | 'current' | null
   needs_input?: boolean
 }
 
@@ -95,11 +106,15 @@ export interface ItemFilters {
   /** Member id, "me" or "none" */
   assignee?: string
   label?: string
+  /** "current" or "none" */
+  cycle?: string
+  /** "1": waiting for a person's answer */
+  needs_input?: string
   q?: string
   /** "1" hides closed items */
   open?: string
 }
-export const FILTER_NAMES = ['project', 'state', 'state_group', 'priority', 'kind', 'assignee', 'label', 'q', 'open'] as const
+export const FILTER_NAMES = ['project', 'state', 'state_group', 'priority', 'kind', 'assignee', 'label', 'cycle', 'needs_input', 'q', 'open'] as const
 export type FilterName = (typeof FILTER_NAMES)[number]
 
 export interface ListItemsParams extends ItemFilters {
@@ -308,11 +323,15 @@ export interface Project {
   name: string
   description: string | null
   archived: boolean
+  /** Weeks per cycle; null when the project does not use cycles. */
+  cycle_weeks: number | null
+  /** Days after which untouched open items return to the backlog; null when off. */
+  stale_after_days: number | null
   created_at: string
 }
 
 /** A project with its workflow, as `GET projects/{KEY}` returns it. */
-export interface ProjectDetail extends Project { states: ProjectState[]; labels: LabelRef[] }
+export interface ProjectDetail extends Project { states: ProjectState[]; labels: LabelRef[]; current_cycle: CycleRef | null }
 
 export interface CreateProjectRequest { name: string; key: string; description?: string | null }
 

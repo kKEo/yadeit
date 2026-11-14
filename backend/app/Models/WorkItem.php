@@ -29,7 +29,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  */
 #[Fillable([
     'workspace_id', 'project_id', 'sequence', 'title', 'description', 'state_id', 'priority', 'kind',
-    'assignee_id', 'delegate_id', 'needs_input', 'created_by', 'parent_id', 'due_date', 'version', 'completed_at',
+    'assignee_id', 'delegate_id', 'needs_input', 'cycle_id', 'created_by', 'parent_id', 'due_date', 'version', 'completed_at',
 ])]
 class WorkItem extends Model
 {
@@ -105,6 +105,12 @@ class WorkItem extends Model
     public function state(): BelongsTo
     {
         return $this->belongsTo(State::class);
+    }
+
+    /** @return BelongsTo<Cycle, $this> */
+    public function cycle(): BelongsTo
+    {
+        return $this->belongsTo(Cycle::class);
     }
 
     /**

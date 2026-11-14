@@ -16,6 +16,8 @@ const ALLOWED: Partial<Record<FilterName, readonly string[]>> = {
   priority: PRIORITIES,
   kind: ITEM_KINDS,
   open: ['1'],
+  needs_input: ['1'],
+  cycle: ['current', 'none'],
 }
 
 type Source = Record<string, unknown>

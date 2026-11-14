@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateProject;
 use App\Enums\WorkspaceRole;
+use App\Models\Cycle;
 use App\Models\Label;
 use App\Models\Project;
 use App\Models\State;
 use App\Models\Workspace;
+use App\Services\CycleScheduler;
 use App\Support\CurrentWorkspace;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -53,7 +55,7 @@ class ProjectController extends Controller
     }
 
     /** The key is fixed once set, so that item keys such as WEB-12 never change. */
-    public function update(Request $request, Workspace $workspace, Project $project, CurrentWorkspace $current): JsonResponse
+    public function update(Request $request, Workspace $workspace, Project $project, CurrentWorkspace $current, CycleScheduler $cycles): JsonResponse
     {
         $current->requireRole(WorkspaceRole::Member);
 
@@ -61,15 +63,30 @@ class ProjectController extends Controller
             'name' => ['sometimes', 'string', 'max:80'],
             'description' => ['sometimes', 'nullable', 'string', 'max:2000'],
             'archived' => ['sometimes', 'boolean'],
+            // Weeks per cycle, 1 to 8; null switches cycles off.
+            'cycle_weeks' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:8'],
+            // Days after which untouched open items return to the backlog; null switches it off.
+            'stale_after_days' => ['sometimes', 'nullable', 'integer', 'min:7', 'max:365'],
         ]);
 
         if (array_key_exists('archived', $data)) {
             $project->archived_at = $data['archived'] ? ($project->archived_at ?? now()) : null;
         }
 
-        $project->fill(collect($data)->only(['name', 'description'])->all())->save();
+        $project->fill(collect($data)->only(['name', 'description', 'cycle_weeks', 'stale_after_days'])->all())->save();
+
+        // Switching cycles on starts the first one right away.
+        $cycles->current($project);
 
         return response()->json(['data' => $this->present($project, withWorkflow: true)]);
+    }
+
+    /** The project's cycles, newest first, each with how many of its items are done. */
+    public function cycles(Workspace $workspace, Project $project, CycleScheduler $cycles): JsonResponse
+    {
+        $cycles->current($project);
+
+        return response()->json(['data' => $project->cycles()->orderByDesc('number')->limit(30)->get()->map(fn (Cycle $c) => $c->summary())]);
     }
 
     public function destroy(Workspace $workspace, Project $project, CurrentWorkspace $current): Response
@@ -90,12 +107,16 @@ class ProjectController extends Controller
             'name' => $project->name,
             'description' => $project->description,
             'archived' => $project->archived_at !== null,
+            'cycle_weeks' => $project->cycle_weeks,
+            'stale_after_days' => $project->stale_after_days,
             'created_at' => $project->created_at,
         ];
 
         if ($withWorkflow) {
             $data['states'] = $project->states->map(fn (State $s) => [...$s->summary(), 'is_default' => $s->is_default])->all();
             $data['labels'] = $project->labels->map(fn (Label $l) => $l->summary())->all();
+            // The cycle in progress, when the project uses cycles.
+            $data['current_cycle'] = $project->cycle_weeks === null ? null : app(CycleScheduler::class)->current($project)?->reference();
         }
 
         return $data;

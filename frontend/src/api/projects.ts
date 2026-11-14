@@ -1,5 +1,5 @@
 import { request, workspacePath } from './client'
-import type { CreateProjectRequest, ItemResponse, LabelRef, Project, ProjectDetail, ProjectState, StateGroup } from './types'
+import type { CreateProjectRequest, ItemResponse, LabelRef, Project, ProjectDetail, ProjectState, StateGroup, Cycle } from './types'
 
 const projectsPath = (slug: string) => `${workspacePath(slug)}/projects`
 const projectPath = (slug: string, key: string) => `${projectsPath(slug)}/${encodeURIComponent(key)}`
@@ -17,9 +17,14 @@ export async function createProject(slug: string, req: CreateProjectRequest): Pr
 }
 
 export async function updateProject(
-  slug: string, key: string, req: { name?: string; description?: string | null; archived?: boolean },
+  slug: string, key: string,
+  req: { name?: string; description?: string | null; archived?: boolean; cycle_weeks?: number | null; stale_after_days?: number | null },
 ): Promise<ProjectDetail> {
   return (await request<ItemResponse<ProjectDetail>>('PATCH', projectPath(slug, key), { body: req })).data
+}
+
+export async function listCycles(slug: string, key: string): Promise<Cycle[]> {
+  return (await request<ItemResponse<Cycle[]>>('GET', `${projectPath(slug, key)}/cycles`)).data
 }
 
 export async function deleteProject(slug: string, key: string): Promise<void> {

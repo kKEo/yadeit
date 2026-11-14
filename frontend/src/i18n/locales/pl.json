@@ -70,7 +70,8 @@
       "updatedAt": "Zaktualizowano",
       "completedAt": "Ukończono",
       "delegate": "Agent",
-      "status": "Status"
+      "status": "Status",
+      "cycle": "Cykl"
     },
     "create": {
       "title": "Nowe zadanie",
@@ -222,7 +223,8 @@
         "response": "Wynik",
         "error": "Błąd"
       }
-    }
+    },
+    "noCycle": "Bez cyklu"
   },
   "register": {
     "title": "Załóż konto",
@@ -440,8 +442,12 @@
       "kind": "Rodzaj",
       "assignee": "Osoba przypisana",
       "label": "Etykieta",
-      "open": "Tylko otwarte"
-    }
+      "open": "Tylko otwarte",
+      "cycle": "Cykl",
+      "needs_input": "Czeka na odpowiedź"
+    },
+    "currentCycle": "Bieżący cykl",
+    "noCycle": "Bez cyklu"
   },
   "activity": {
     "nothing": "brak",
@@ -458,7 +464,8 @@
       "due_date": "termin",
       "parent": "zadanie nadrzędne",
       "description": "opis",
-      "delegate": "agenta"
+      "delegate": "agenta",
+      "cycle": "cykl"
     },
     "event": {
       "created": "{actor} – utworzenie zadania",
@@ -478,7 +485,8 @@
       "input_requested": "{actor} zadał(a) pytanie i czeka na odpowiedź",
       "input_provided": "{actor} odpowiedział(a) na pytanie",
       "submitted_for_review": "{actor} przekazał(a) pracę do przeglądu",
-      "run_failed": "{actor} nie zdołał(a) dokończyć pracy"
+      "run_failed": "{actor} nie zdołał(a) dokończyć pracy",
+      "rolled_over": "Nieukończone w {from}: przeniesiono do {to}"
     },
     "needsInputOn": "{actor} oznaczył(a) zadanie jako czekające na odpowiedź",
     "needsInputOff": "{actor} oznaczył(a) pytanie jako wyjaśnione",
@@ -717,5 +725,28 @@
     "copy": "Kopiuj",
     "copied": "Skopiowano",
     "done": "Sekret zapisany"
+  },
+  "planning": {
+    "open": "Planowanie",
+    "title": "Planowanie: {project}",
+    "description": "Po włączeniu cykle i porządkowanie działają same.",
+    "cycles": "Cykle",
+    "cyclesHint": "Stałe odcinki czasu. Gdy jeden się kończy, zaczyna się następny, a nieukończone zadania przechodzą dalej.",
+    "off": "Wyłączone",
+    "weeks": "{n} tydzień | {n} tygodnie | {n} tygodni",
+    "stale": "Odsyłaj nieruszane zadania do backlogu",
+    "staleHint": "Otwarte zadania, których nikt nie zmienił przez ten czas, wracają do backlogu, dzięki czemu tablica pokazuje to, nad czym naprawdę trwa praca.",
+    "days": "Po {n} dniach",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "saved": "Zapisano.",
+    "history": "Dotychczasowe cykle",
+    "noCycles": "Brak cykli.",
+    "progress": "Ukończono {done} z {total}",
+    "status": {
+      "active": "Teraz",
+      "upcoming": "Następny",
+      "completed": "Zamknięty"
+    }
   }
 }

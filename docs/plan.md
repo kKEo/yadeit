@@ -176,7 +176,7 @@ Goal: agents become real team members.
 
 Goal: time-boxed planning and written knowledge next to the work.
 
-- [ ] Build cycles with automatic schedule and rollover
+- [x] Build cycles with automatic schedule and rollover
 - [ ] Build the sub-item view and blocked indicators
 - [ ] Build docs
   - Markdown pages per project and workspace, draft/published, optional public link
