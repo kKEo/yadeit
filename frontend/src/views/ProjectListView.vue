@@ -66,7 +66,7 @@ const list = computed(() => projects.data.value ?? [])
         </RouterLink>
         <button
           v-if="canEdit" type="button"
-          class="mt-1 rounded px-1 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          class="mt-1 self-start rounded px-1 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           @click="planning = project"
         >
           {{ t('planning.open') }}<span v-if="project.cycle_weeks"> · {{ t('planning.weeks', project.cycle_weeks) }}</span>

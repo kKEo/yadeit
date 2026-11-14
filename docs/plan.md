@@ -183,7 +183,7 @@ Goal: time-boxed planning and written knowledge next to the work.
 - [x] Build full-text search
   - Items, comments and docs
 - [x] Add the stale-item decay setting
-- [ ] Verify planning: a cycle rolls unfinished items over, a published doc opens signed out, search finds all three content types
+- [x] Verify planning: a cycle rolls unfinished items over, a published doc opens signed out, search finds all three content types
 
 ## Phase 7: Feedback and UX work
 
