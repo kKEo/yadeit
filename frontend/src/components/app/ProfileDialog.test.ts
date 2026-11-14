@@ -7,6 +7,9 @@ import { useUiStore } from '@/stores/ui'
 import { errorResponse, makeMe, makeTestRouter } from '@/test/helpers'
 import ProfileDialog from './ProfileDialog.vue'
 
+const saved = vi.hoisted(() => [] as string[])
+vi.mock('@/lib/navigate', () => ({ saveFile: (_blob: Blob, name: string) => { saved.push(name) }, leaveTo: () => undefined }))
+
 describe('ProfileDialog: your data', () => {
   const fetchMock = vi.fn<typeof fetch>()
 
@@ -32,6 +35,7 @@ describe('ProfileDialog: your data', () => {
   }
 
   beforeEach(() => {
+    saved.length = 0
     fetchMock.mockReset()
     vi.stubGlobal('fetch', fetchMock)
   })
@@ -41,12 +45,20 @@ describe('ProfileDialog: your data', () => {
     document.body.innerHTML = ''
   })
 
-  it('links to the download of the personal data', async () => {
+  it('downloads the personal data under the name the API gives, and shows a refusal', async () => {
+    fetchMock.mockResolvedValueOnce(new Response('{"profile":{}}', { status: 200, headers: { 'Content-Disposition': 'attachment; filename="yadeit-my-data-2026-01-01.json"' } }))
+    fetchMock.mockResolvedValueOnce(errorResponse(429, 'too_many_requests', 'Too many exports. Try again later.'))
     await open()
-    const link = [...document.body.querySelectorAll('a')].find((a) => a.textContent?.trim() === 'Download my data')
 
-    expect(link?.getAttribute('href')).toBe('/api/v1/me/export')
-    expect(link?.hasAttribute('download')).toBe(true)
+    button('Download my data')!.click()
+    await flushPromises()
+    expect(String(fetchMock.mock.calls[0][0])).toBe('/api/v1/me/export')
+    expect(saved).toEqual(['yadeit-my-data-2026-01-01.json'])
+
+    button('Download my data')!.click()
+    await flushPromises()
+    expect(document.body.textContent).toContain('Too many exports. Try again later.')
+    expect(saved).toHaveLength(1)
   })
 
   it('deletes the account only with the password, and shows why it was refused', async () => {

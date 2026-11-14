@@ -29,6 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // The workspace must be known before tenant models are bound from the route.
         $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class, 'token.scope' => EnforceTokenScope::class, 'active' => EnsureAccountActive::class, 'operator' => EnsureOperator::class]);
+        // There is no sign-in page on this side: a signed-out request gets a 401, also when a browser asks (a download link).
+        $middleware->redirectGuestsTo(fn () => null);
         // Stripe posts its webhooks without a session.
         $middleware->preventRequestForgery(except: ['stripe/*']);
         // Every API request passes the audit trail, which records the ones on its list.

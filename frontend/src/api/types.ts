@@ -462,7 +462,10 @@ export interface AiStatus {
   configured: boolean
   has_own_key: boolean
   used_tokens: number
+  /** The limit in force: the workspace's own, the default, or the plan's when that is lower. */
   monthly_token_limit: number
+  /** What the workspace set itself; null when it follows the default. */
+  own_token_limit: number | null
   model: string
 }
 export interface AiItemDraft { title: string; description: string; kind: ItemKind; priority: Priority; labels: string[]; acceptance: string[] }

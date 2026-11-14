@@ -1,3 +1,4 @@
+import { saveFile } from '@/lib/navigate'
 import type {
   AcceptedInvitation,
   ApiErrorBody,
@@ -133,10 +134,25 @@ export async function getMe(): Promise<Me> {
   return (await request<ItemResponse<Me>>('GET', '/me', { expectUnauthorized: true })).data
 }
 
-/** The address of the personal data export; the browser downloads it with the session cookie. */
-export const MY_DATA_EXPORT_PATH = `${API_BASE_PATH}/me/export`
+/**
+ * Fetches a file and hands it to the browser to save, under the name the API gives it.
+ * Going through fetch (and not a plain link) means a refusal shows up as an error in the app.
+ */
+async function download(path: string): Promise<void> {
+  const res = await fetch(`${API_BASE_PATH}${path}`, { headers: { Accept: 'application/json' }, credentials: 'include' })
+  if (!res.ok) {
+    if (res.status === 401) unauthorizedHandler?.()
+    throw await toApiError(res)
+  }
+  const name = /filename="?([^";]+)"?/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ?? 'export.json'
+  saveFile(await res.blob(), name)
+}
 
-export const workspaceExportPath = (slug: string) => `${API_BASE_PATH}/workspaces/${encodeURIComponent(slug)}/export`
+/** Everything the signed-in person wrote and belongs to, as one JSON file. */
+export const downloadMyData = () => download('/me/export')
+
+/** The whole workspace as one JSON file; owners only. */
+export const downloadWorkspace = (slug: string) => download(`${workspacePath(slug)}/export`)
 
 /** Deletes the signed-in account for good. The password is asked again on purpose. */
 export async function deleteAccount(password: string): Promise<void> {

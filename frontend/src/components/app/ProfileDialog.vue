@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { MY_DATA_EXPORT_PATH, deleteAccount } from '@/api/client'
+import { deleteAccount, downloadMyData } from '@/api/client'
 import { SUPPORTED_LOCALES, isSupportedLocale, type AppLocale } from '@/i18n'
 import { useApiForm } from '@/composables/useApiForm'
 import { useAuthStore } from '@/stores/auth'
@@ -24,6 +24,7 @@ const toast = useToastStore()
 const { pending, error, fieldErrors, submit, clear } = useApiForm(['name'])
 const router = useRouter()
 const removal = useApiForm(['password'])
+const exporting = useApiForm()
 const deleting = ref(false)
 const password = ref('')
 
@@ -35,6 +36,7 @@ watch(() => ui.profileOpen, (open) => {
   if (!open || !auth.user) return
   clear()
   removal.clear()
+  exporting.clear()
   deleting.value = false
   password.value = ''
   name.value = auth.user.name
@@ -86,10 +88,11 @@ async function removeAccount() {
     <section class="space-y-3 border-t pt-4" :aria-label="t('profile.data.title')">
       <h3 class="text-sm font-medium">{{ t('profile.data.title') }}</h3>
       <p class="text-xs text-muted-foreground">{{ t('profile.data.exportHint') }}</p>
+      <Alert v-if="exporting.error.value" variant="destructive" :title="exporting.error.value" />
       <div class="flex flex-wrap gap-2">
-        <a :href="MY_DATA_EXPORT_PATH" download class="inline-flex h-9 items-center rounded-md border border-input px-3 text-sm font-medium hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <Button type="button" variant="outline" size="sm" class="h-9" :disabled="exporting.pending.value" @click="exporting.submit(downloadMyData)">
           {{ t('profile.data.export') }}
-        </a>
+        </Button>
         <Button v-if="!deleting" type="button" variant="outline" size="sm" class="h-9 text-destructive" @click="deleting = true">{{ t('profile.data.delete') }}</Button>
       </div>
       <form v-if="deleting" class="space-y-3 rounded-md border border-destructive/50 p-3" @submit.prevent="removeAccount">

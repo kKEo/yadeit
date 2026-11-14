@@ -22,7 +22,7 @@ vi.mock('@/queries/keys', async (original) => ({
 
 const base = '/api/v1/workspaces/acme'
 const aiStatus = (overrides: Partial<AiStatus> = {}): AiStatus => ({
-  enabled: true, configured: true, has_own_key: false, used_tokens: 0, monthly_token_limit: 1000, model: 'claude-opus-5-5', ...overrides,
+  enabled: true, configured: true, has_own_key: false, used_tokens: 0, monthly_token_limit: 1000, own_token_limit: null, model: 'claude-opus-5-5', ...overrides,
 })
 
 describe('AI help on items', () => {

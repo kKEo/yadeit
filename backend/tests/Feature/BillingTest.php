@@ -69,7 +69,8 @@ describe('limits', function () {
         [$workspace, $owner] = workspaceWith();
         $ai = "/api/v1/workspaces/{$workspace->slug}/ai";
 
-        $this->actingAs($owner)->getJson($ai)->assertJsonPath('data.monthly_token_limit', 200_000);
+        // The plan's cap is the limit in force, but it is not the workspace's own setting.
+        $this->actingAs($owner)->getJson($ai)->assertJsonPath('data.monthly_token_limit', 200_000)->assertJsonPath('data.own_token_limit', null);
 
         $workspace->forceFill(['ai_monthly_token_limit' => 50_000])->save();
         $this->getJson($ai)->assertJsonPath('data.monthly_token_limit', 50_000);

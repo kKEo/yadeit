@@ -227,7 +227,7 @@ Goal: run it as a public service.
 - [x] Add plans, limits and Stripe billing
   - Laravel Cashier; agent seats free
 - [x] Add the landing page, legal pages, data export and account deletion
-- [ ] Verify operations: a broadcast reaches the mail log, a plan limit blocks correctly, an export downloads
+- [x] Verify operations: a broadcast reaches the mail log, a plan limit blocks correctly, an export downloads
 
 ## Phase 10: Hardening and launch
 

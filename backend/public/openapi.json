@@ -1088,6 +1088,10 @@
                                                 "monthly_token_limit": {
                                                     "description": "The plan caps the allowance when the installation pays for the tokens."
                                                 },
+                                                "own_token_limit": {
+                                                    "type": "string",
+                                                    "description": "What the workspace chose itself; null when it follows the default."
+                                                },
                                                 "model": {
                                                     "type": "string"
                                                 }
@@ -1098,6 +1102,7 @@
                                                 "has_own_key",
                                                 "used_tokens",
                                                 "monthly_token_limit",
+                                                "own_token_limit",
                                                 "model"
                                             ]
                                         }
@@ -1190,6 +1195,13 @@
                                                 "monthly_token_limit": {
                                                     "description": "The plan caps the allowance when the installation pays for the tokens."
                                                 },
+                                                "own_token_limit": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "What the workspace chose itself; null when it follows the default."
+                                                },
                                                 "model": {
                                                     "type": "string"
                                                 }
@@ -1200,6 +1212,7 @@
                                                 "has_own_key",
                                                 "used_tokens",
                                                 "monthly_token_limit",
+                                                "own_token_limit",
                                                 "model"
                                             ]
                                         }

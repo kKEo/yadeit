@@ -53,7 +53,7 @@ class AiService
         return $completion->data;
     }
 
-    /** @return array{enabled: bool, configured: bool, has_own_key: bool, used_tokens: int, monthly_token_limit: int, model: string} */
+    /** @return array{enabled: bool, configured: bool, has_own_key: bool, used_tokens: int, monthly_token_limit: int, own_token_limit: int|null, model: string} */
     public function status(Workspace $workspace): array
     {
         $used = AiUsage::query()
@@ -72,6 +72,8 @@ class AiService
             'used_tokens' => (int) $used,
             // The plan caps the allowance when the installation pays for the tokens.
             'monthly_token_limit' => $planLimit === null ? $limit : min($limit, $planLimit),
+            // What the workspace chose itself; null when it follows the default.
+            'own_token_limit' => $workspace->ai_monthly_token_limit,
             'model' => (string) config('ai.model'),
         ];
     }

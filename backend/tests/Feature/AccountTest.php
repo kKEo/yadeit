@@ -40,6 +40,8 @@ describe('personal export', function () {
         $this->flushSession();
         app('auth')->forgetGuards();
         $this->getJson('/api/v1/me/export')->assertUnauthorized();
+        // A browser following the download link signed out gets the same answer, not an error page.
+        $this->get('/api/v1/me/export', ['Accept' => 'text/html'])->assertUnauthorized()->assertJsonPath('error.code', 'unauthenticated');
     });
 });
 

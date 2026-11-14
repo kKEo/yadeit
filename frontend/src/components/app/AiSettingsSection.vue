@@ -28,7 +28,8 @@ const form = useApiForm(['api_key', 'monthly_token_limit'])
 const apiKey = ref('')
 const limit = ref('')
 const saved = ref(false)
-watch(() => status.data.value?.monthly_token_limit, (value) => { if (value !== undefined) limit.value = String(value) }, { immediate: true })
+// The field holds the workspace's own choice; left empty it follows the default (and the plan), shown as the placeholder.
+watch(() => status.data.value?.own_token_limit, (value) => { if (value !== undefined) limit.value = value === null ? '' : String(value) }, { immediate: true })
 
 const number = (value: number) => new Intl.NumberFormat(locale.value).format(value)
 const percent = computed(() => {
@@ -89,7 +90,7 @@ async function save() {
           <Input id="ai-key" v-model="apiKey" type="password" autocomplete="off" placeholder="sk-ant-…" />
         </FormField>
         <FormField id="ai-limit" :label="t('ai.settings.limit')" :errors="form.fieldErrors.value.monthly_token_limit">
-          <Input id="ai-limit" v-model="limit" type="number" min="0" inputmode="numeric" />
+          <Input id="ai-limit" v-model="limit" type="number" min="0" inputmode="numeric" :placeholder="status.data.value ? String(status.data.value.monthly_token_limit) : undefined" />
         </FormField>
         <div class="flex flex-wrap gap-2 sm:col-span-2">
           <Button type="submit" :disabled="form.pending.value">{{ form.pending.value ? t('ai.settings.saving') : t('ai.settings.save') }}</Button>

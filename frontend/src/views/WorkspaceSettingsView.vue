@@ -23,13 +23,14 @@ import CardContent from '@/components/ui/CardContent.vue'
 import CardFooter from '@/components/ui/CardFooter.vue'
 import Input from '@/components/ui/Input.vue'
 import { Download, Trash2 } from '@lucide/vue'
-import { workspaceExportPath } from '@/api/client'
+import { downloadWorkspace } from '@/api/client'
 
 const store = useWorkspaceStore()
 const router = useRouter()
 const { t } = useI18n()
 const form = useApiForm(['name', 'slug'])
 const removal = useApiForm()
+const exporting = useApiForm()
 
 // The layout remounts this view per workspace, so seeding once is enough.
 const name = ref(store.current?.name ?? '')
@@ -121,11 +122,11 @@ async function confirmDelete() {
         <CardTitle class="text-lg">{{ t('settings.export.title') }}</CardTitle>
         <CardDescription>{{ t('settings.export.description') }}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <a
-          :href="workspaceExportPath(store.current?.slug ?? '')" download data-testid="workspace-export"
-          class="inline-flex h-10 items-center rounded-md border border-input px-4 text-sm font-medium hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        ><Download class="mr-2 h-4 w-4" />{{ t('settings.export.action') }}</a>
+      <CardContent class="space-y-4">
+        <Alert v-if="exporting.error.value" variant="destructive" :title="exporting.error.value" />
+        <Button variant="outline" :disabled="exporting.pending.value" data-testid="workspace-export" @click="exporting.submit(() => downloadWorkspace(store.current?.slug ?? ''))">
+          <Download class="mr-2 h-4 w-4" />{{ t('settings.export.action') }}
+        </Button>
       </CardContent>
     </Card>
 
