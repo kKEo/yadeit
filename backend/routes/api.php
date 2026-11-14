@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AiController;
 use App\Http\Controllers\AttachmentController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\StateController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\WorkspaceExportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -91,6 +93,8 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
 
     Route::get('me', [MeController::class, 'show'])->name('me.show');
     Route::patch('me', [MeController::class, 'update'])->name('me.update');
+    Route::get('me/export', [AccountController::class, 'export'])->middleware('throttle:10,60')->name('me.export');
+    Route::delete('me', [AccountController::class, 'destroy'])->name('me.destroy');
 
     Route::post('invitations/{token}/accept', [InvitationController::class, 'accept'])->name('invitations.accept');
 
@@ -102,6 +106,7 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
         Route::get('/', [WorkspaceController::class, 'show'])->name('workspaces.show');
         Route::patch('/', [WorkspaceController::class, 'update'])->name('workspaces.update');
         Route::delete('/', [WorkspaceController::class, 'destroy'])->name('workspaces.destroy');
+        Route::get('export', WorkspaceExportController::class)->middleware('throttle:10,60')->name('workspaces.export');
 
         Route::get('members', [MemberController::class, 'index'])->name('members.index');
         Route::patch('members/{user}', [MemberController::class, 'update'])->whereNumber('user')->name('members.update');

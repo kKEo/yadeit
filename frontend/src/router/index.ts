@@ -57,13 +57,17 @@ const router = createRouter({
       meta: { public: true },
     },
 
-    // ── Signed in ────────────────────────────────────────────────────────────
+    { path: '/terms', name: 'terms', component: () => import('@/views/LegalView.vue'), props: { document: 'terms' }, meta: { public: true } },
+    { path: '/privacy', name: 'privacy', component: () => import('@/views/LegalView.vue'), props: { document: 'privacy' }, meta: { public: true } },
     {
-      // Never rendered: the guard below sends the user to a workspace or to onboarding.
+      // Signed out this is the landing page; signed in, the guard below sends the user to a workspace or to onboarding.
       path: '/',
       name: 'home',
-      component: { render: () => null },
+      component: () => import('@/views/LandingView.vue'),
+      meta: { public: true },
     },
+
+    // ── Signed in ────────────────────────────────────────────────────────────
     {
       path: '/welcome',
       name: 'welcome',

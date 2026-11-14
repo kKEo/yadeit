@@ -43,12 +43,12 @@ describe('router guard', () => {
     expect(route.query.redirect).toBe('/w/acme/members')
   })
 
-  it('does not add a redirect when the signed-out visitor asked for the home page', async () => {
+  it('shows the landing page to a signed-out visitor of the home page', async () => {
     sessionIs(null)
 
     const route = await visit('/')
 
-    expect(route.name).toBe('login')
+    expect(route.name).toBe('home')
     expect(route.query).toEqual({})
   })
 

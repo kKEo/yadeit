@@ -247,7 +247,8 @@
     "passwordConfirmation": "Repeat password",
     "submit": "Create account",
     "submitting": "Creating account…",
-    "haveAccount": "Already have an account?"
+    "haveAccount": "Already have an account?",
+    "agree": "By creating an account you agree to the"
   },
   "forgot": {
     "title": "Reset your password",
@@ -407,7 +408,12 @@
     "delete": "Delete workspace",
     "deleting": "Deleting…",
     "deleteTitle": "Delete {workspace}?",
-    "deleteConfirm": "Everything in this workspace is permanently removed for all members. This action cannot be undone."
+    "deleteConfirm": "Everything in this workspace is permanently removed for all members. This action cannot be undone.",
+    "export": {
+      "title": "Export",
+      "description": "One JSON file with the members, projects, items with their comments, pages and feedback of this workspace. Attachments are listed by name; the files are not included.",
+      "action": "Download the workspace"
+    }
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -621,7 +627,17 @@
     "title": "Profile and preferences",
     "saved": "Profile saved.",
     "emailNotifications": "Email notifications",
-    "emailNotificationsHint": "Also send an email for each new inbox entry."
+    "emailNotificationsHint": "Also send an email for each new inbox entry.",
+    "data": {
+      "title": "Your data",
+      "exportHint": "A file with your profile and everything you wrote, in every workspace.",
+      "export": "Download my data",
+      "delete": "Delete my account…",
+      "deleteWarning": "This deletes your account for good. What you wrote in shared workspaces stays there without your name, a workspace only you are in is deleted too, and your agents are removed.",
+      "password": "Your password",
+      "confirmDelete": "Delete my account",
+      "deleting": "Deleting…"
+    }
   },
   "inbox": {
     "title": "Inbox",
@@ -1181,5 +1197,146 @@
     "ownersOnly": "Only an owner can change the plan.",
     "returnedSuccess": "Thank you. The plan changes as soon as the payment is confirmed, usually within a minute.",
     "returnedCancelled": "The payment was not completed. Nothing has changed."
+  },
+  "landing": {
+    "headline": "Project work that stays simple",
+    "lead": "Plan, track and ship with your team, and let AI agents take real tasks as teammates. One small set of ideas, a fast keyboard-first interface, nothing essential held back.",
+    "start": "Create a free account",
+    "free": "Free to start. No card needed.",
+    "footer": "About",
+    "forAgents": "For AI agents",
+    "features": {
+      "fast": {
+        "title": "Fast and calm",
+        "text": "List and board, saved views, a command palette and single-key shortcuts. Title is the only required field."
+      },
+      "agents": {
+        "title": "Agents as teammates",
+        "text": "Give an agent its own scoped access, delegate an item, and watch its plan, questions and results. A person always approves \"done\"."
+      },
+      "feedback": {
+        "title": "Feedback and UX work",
+        "text": "Collect feedback from a public form, triage it, and see how many people asked for each thing."
+      },
+      "docs": {
+        "title": "Docs next to the work",
+        "text": "Write pages in Markdown per project or workspace and share one by link when you want to."
+      }
+    }
+  },
+  "legal": {
+    "template": "This text is a template that describes how the software works. It is not legal advice, and whoever runs this installation has to review and complete it.",
+    "terms": {
+      "title": "Terms of service",
+      "intro": "These terms apply to this installation of Yadeit, run by {operator}. By creating an account you agree to them.",
+      "sections": [
+        {
+          "title": "The service",
+          "body": [
+            "Yadeit is a tool for planning and tracking project work. {operator} provides it as it is and may change, limit or end parts of it. Significant changes are announced by email or in the application."
+          ]
+        },
+        {
+          "title": "Your account",
+          "body": [
+            "You need a working email address and you keep your password to yourself. You are responsible for what happens under your account, including what agents you create do with the access you give them.",
+            "An account may be suspended when it is used against these terms or puts the service or other people at risk."
+          ]
+        },
+        {
+          "title": "Your content",
+          "body": [
+            "What you and your team put into a workspace stays yours. You give {operator} permission to store and process it only as far as needed to run the service for you.",
+            "Owners can download their whole workspace at any time, and every person can download their own data."
+          ]
+        },
+        {
+          "title": "Acceptable use",
+          "body": [
+            "Do not use the service to break the law, to send spam, to store malware, to attack or overload the service, or to get at data that is not yours. Public pages and public feedback forms must not be used to mislead people."
+          ]
+        },
+        {
+          "title": "Agents and built-in AI",
+          "body": [
+            "Agents act with the access their owner gives them and the owner answers for them. When a workspace switches built-in AI on, the text needed for a suggestion is sent to the AI provider. Suggestions can be wrong; a person decides what is kept."
+          ]
+        },
+        {
+          "title": "Plans and payment",
+          "body": [
+            "Some plans are paid. Prices and limits are shown before you buy, payments are handled by Stripe, and a paid plan renews until it is cancelled. You can cancel at any time in the billing portal; the plan then runs until the end of the paid period."
+          ]
+        },
+        {
+          "title": "Ending",
+          "body": [
+            "You can delete your account and owners can delete their workspace at any time. Deleted content is removed from the live service; copies in backups disappear as backups expire."
+          ]
+        },
+        {
+          "title": "Liability",
+          "body": [
+            "The service is provided without a guarantee that it is always available or free of errors. As far as the law allows, {operator} is not liable for indirect damage or lost profit, and liability is limited to what you paid in the last twelve months."
+          ]
+        },
+        {
+          "title": "Changes and contact",
+          "body": [
+            "These terms can change; the new version is announced before it applies. Questions go to {email}."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "This page explains which personal data this installation of Yadeit processes and why. The controller is {operator}; you can reach us at {email}.",
+      "sections": [
+        {
+          "title": "What we store",
+          "body": [
+            "Your account: name, email address, a hash of your password, your language and notification preference.",
+            "Your work: the items, comments, pages, attachments and feedback you and your team create, and the history of changes to them.",
+            "Technical records: sign-ins and changes to access and settings in an audit log (with IP address), and a log of emails sent to you (recipient, subject and time, not the text)."
+          ]
+        },
+        {
+          "title": "Why",
+          "body": [
+            "To provide the service you signed up for, to keep it secure, to send you the notifications you chose and announcements about the service, and to bill paid plans."
+          ]
+        },
+        {
+          "title": "Who else processes it",
+          "body": [
+            "The hosting and email providers of {operator}. Stripe, when a workspace buys a paid plan. The AI provider (Anthropic), only when a workspace has switched built-in AI on and only the text needed for a suggestion. Nothing is sold and nothing is used for advertising."
+          ]
+        },
+        {
+          "title": "Public content",
+          "body": [
+            "A page shared by link and a public feedback form are visible to anyone who has the link. Feedback sent through a public form, with the name and email address you choose to give, goes to the team that owns the form."
+          ]
+        },
+        {
+          "title": "Cookies",
+          "body": [
+            "Only the cookies needed to keep you signed in and to protect forms. No tracking and no advertising cookies."
+          ]
+        },
+        {
+          "title": "How long",
+          "body": [
+            "Account and work data stay until you delete them. The email log is kept for 90 days. Backups expire on their own schedule."
+          ]
+        },
+        {
+          "title": "Your rights",
+          "body": [
+            "You can see and correct your profile, download your data (Profile and preferences, \"Download my data\") and delete your account there as well. You can also ask us at {email} and complain to your data protection authority."
+          ]
+        }
+      ]
+    }
   }
 }

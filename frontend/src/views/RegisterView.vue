@@ -83,6 +83,11 @@ async function handleRegister() {
           </FormField>
         </CardContent>
         <CardFooter class="flex-col gap-3">
+          <p class="text-center text-xs text-muted-foreground">
+            {{ t('register.agree') }}
+            <TextLink :to="{ name: 'terms' }" class="!text-xs">{{ t('legal.terms.title') }}</TextLink> ·
+            <TextLink :to="{ name: 'privacy' }" class="!text-xs">{{ t('legal.privacy.title') }}</TextLink>
+          </p>
           <Button type="submit" class="w-full" :disabled="!canSubmit">
             {{ auth.loading ? t('register.submitting') : t('register.submit') }}
           </Button>

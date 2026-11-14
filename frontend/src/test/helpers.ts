@@ -33,6 +33,8 @@ export function makeTestRouter(): Router {
     routes: [
       { path: '/', name: 'home', component: blank },
       { path: '/login', name: 'login', component: blank },
+      { path: '/terms', name: 'terms', component: blank },
+      { path: '/privacy', name: 'privacy', component: blank },
       { path: '/register', name: 'register', component: blank },
       { path: '/forgot-password', name: 'forgot-password', component: blank },
       { path: '/invitations/:token', name: 'invitation', component: blank },

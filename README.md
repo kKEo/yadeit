@@ -106,6 +106,13 @@ Optional help from a Claude model: drafting an item from one sentence, proposing
 - A workspace with a running paid plan cannot be deleted until the plan is cancelled, so that nothing keeps charging.
 - Not verified here: the live calls to Stripe (checkout, portal, signed webhooks) need real test keys. The limits, the plan following a subscription and the refusal paths are covered by tests.
 
+## Landing page, legal pages, export and deletion
+
+- Signed-out visitors see a landing page at `/`, with the terms (`/terms`) and the privacy policy (`/privacy`) linked from it and from the sign-up form.
+- The legal texts are a template that describes what the software does. They are not legal advice: have them reviewed and completed before opening an installation to the public. Set `VITE_OPERATOR_NAME` and `VITE_OPERATOR_EMAIL` in the front end's environment; until both are set the pages say they are a template.
+- Every person can download their own data (Profile and preferences → Download my data, `GET /api/v1/me/export`) and delete their account there (`DELETE /api/v1/me` with the password). Deletion is refused while the person is the only owner of a workspace other people use, the only operator, or alone in a workspace with a running paid plan. What they wrote in shared workspaces stays without their name; a workspace only they are in is deleted; their agents are removed.
+- Owners can download their whole workspace as one JSON file (Settings → Export, `GET /api/v1/workspaces/{slug}/export`): members, projects with workflow, items with comments, checklists, links and relations, pages and feedback. Attachments are listed by name; the files are not included.
+
 ## Realtime
 
 Open browsers refresh themselves when something changes. The API sends small signals (identifiers only, never content) through Laravel Reverb; the web app then re-reads through the API. Copy the `REVERB_*` values from `backend/.env` into `frontend/.env.local` as `VITE_REVERB_APP_KEY`, `VITE_REVERB_HOST`, `VITE_REVERB_PORT` and `VITE_REVERB_SCHEME`. Without them the app works, just without live updates.

@@ -22,7 +22,8 @@ import CardDescription from '@/components/ui/CardDescription.vue'
 import CardContent from '@/components/ui/CardContent.vue'
 import CardFooter from '@/components/ui/CardFooter.vue'
 import Input from '@/components/ui/Input.vue'
-import { Trash2 } from '@lucide/vue'
+import { Download, Trash2 } from '@lucide/vue'
+import { workspaceExportPath } from '@/api/client'
 
 const store = useWorkspaceStore()
 const router = useRouter()
@@ -114,6 +115,19 @@ async function confirmDelete() {
     <WebhooksSection v-if="canEdit" />
 
     <AuditSection v-if="canEdit" />
+
+    <Card v-if="canDelete">
+      <CardHeader>
+        <CardTitle class="text-lg">{{ t('settings.export.title') }}</CardTitle>
+        <CardDescription>{{ t('settings.export.description') }}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <a
+          :href="workspaceExportPath(store.current?.slug ?? '')" download data-testid="workspace-export"
+          class="inline-flex h-10 items-center rounded-md border border-input px-4 text-sm font-medium hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        ><Download class="mr-2 h-4 w-4" />{{ t('settings.export.action') }}</a>
+      </CardContent>
+    </Card>
 
     <Card v-if="canDelete" class="border-destructive/50">
       <CardHeader>

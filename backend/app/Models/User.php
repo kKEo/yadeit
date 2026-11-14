@@ -17,6 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property UserType $type
+ * @property Carbon|null $email_verified_at
  * @property bool $is_operator
  * @property Carbon|null $suspended_at
  * @property-read User|null $owner

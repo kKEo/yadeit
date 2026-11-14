@@ -34,6 +34,7 @@ class EnforceTokenScope
         'projects.store' => 'Agents do not create projects. Ask a person.',
         'projects.update' => 'Agents do not change projects. Ask a person.',
         'projects.destroy' => 'Agents do not delete projects.',
+        'workspaces.export' => 'Exporting a workspace is for its owners.',
         'billing.show' => 'Billing is for people.',
         'billing.checkout' => 'Billing is for people.',
         'billing.portal' => 'Billing is for people.',

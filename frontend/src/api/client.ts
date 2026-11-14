@@ -133,6 +133,16 @@ export async function getMe(): Promise<Me> {
   return (await request<ItemResponse<Me>>('GET', '/me', { expectUnauthorized: true })).data
 }
 
+/** The address of the personal data export; the browser downloads it with the session cookie. */
+export const MY_DATA_EXPORT_PATH = `${API_BASE_PATH}/me/export`
+
+export const workspaceExportPath = (slug: string) => `${API_BASE_PATH}/workspaces/${encodeURIComponent(slug)}/export`
+
+/** Deletes the signed-in account for good. The password is asked again on purpose. */
+export async function deleteAccount(password: string): Promise<void> {
+  await request<void>('DELETE', '/me', { body: { password } })
+}
+
 export async function updateMe(req: UpdateMeRequest): Promise<Me> {
   return (await request<ItemResponse<Me>>('PATCH', '/me', { body: req })).data
 }

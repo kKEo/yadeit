@@ -247,7 +247,8 @@
     "passwordConfirmation": "Powtórz hasło",
     "submit": "Załóż konto",
     "submitting": "Zakładanie konta…",
-    "haveAccount": "Masz już konto?"
+    "haveAccount": "Masz już konto?",
+    "agree": "Zakładając konto, akceptujesz:"
   },
   "forgot": {
     "title": "Zresetuj hasło",
@@ -407,7 +408,12 @@
     "delete": "Usuń przestrzeń roboczą",
     "deleting": "Usuwanie…",
     "deleteTitle": "Usunąć przestrzeń {workspace}?",
-    "deleteConfirm": "Cała zawartość tej przestrzeni roboczej zostanie trwale usunięta dla wszystkich członków. Tej operacji nie można cofnąć."
+    "deleteConfirm": "Cała zawartość tej przestrzeni roboczej zostanie trwale usunięta dla wszystkich członków. Tej operacji nie można cofnąć.",
+    "export": {
+      "title": "Eksport",
+      "description": "Jeden plik JSON z członkami, projektami, zadaniami wraz z komentarzami, stronami i opiniami tej przestrzeni roboczej. Załączniki są wymienione z nazwy; same pliki nie są dołączane.",
+      "action": "Pobierz przestrzeń roboczą"
+    }
   },
   "errors": {
     "generic": "Coś poszło nie tak. Spróbuj ponownie.",
@@ -621,7 +627,17 @@
     "title": "Profil i preferencje",
     "saved": "Zapisano profil.",
     "emailNotifications": "Powiadomienia e-mail",
-    "emailNotificationsHint": "Wysyłaj też e-mail o każdym nowym wpisie w skrzynce."
+    "emailNotificationsHint": "Wysyłaj też e-mail o każdym nowym wpisie w skrzynce.",
+    "data": {
+      "title": "Twoje dane",
+      "exportHint": "Plik z Twoim profilem i wszystkim, co napisałeś(-aś), ze wszystkich przestrzeni roboczych.",
+      "export": "Pobierz moje dane",
+      "delete": "Usuń moje konto…",
+      "deleteWarning": "Konto zostanie trwale usunięte. To, co napisałeś(-aś) we wspólnych przestrzeniach, pozostanie tam bez Twojego imienia, przestrzeń, w której jesteś tylko Ty, również zostanie usunięta, a Twoi agenci zostaną usunięci.",
+      "password": "Twoje hasło",
+      "confirmDelete": "Usuń moje konto",
+      "deleting": "Usuwanie…"
+    }
   },
   "inbox": {
     "title": "Skrzynka",
@@ -1181,5 +1197,146 @@
     "ownersOnly": "Plan może zmienić tylko właściciel.",
     "returnedSuccess": "Dziękujemy. Plan zmieni się, gdy tylko płatność zostanie potwierdzona, zwykle w ciągu minuty.",
     "returnedCancelled": "Płatność nie została dokończona. Nic się nie zmieniło."
+  },
+  "landing": {
+    "headline": "Praca nad projektem, która pozostaje prosta",
+    "lead": "Planuj, śledź i dowoź pracę z zespołem, a agentom AI powierzaj prawdziwe zadania jak członkom zespołu. Niewiele pojęć, szybki interfejs obsługiwany z klawiatury i nic istotnego za dopłatą.",
+    "start": "Załóż bezpłatne konto",
+    "free": "Na start bezpłatnie. Bez karty.",
+    "footer": "Informacje",
+    "forAgents": "Dla agentów AI",
+    "features": {
+      "fast": {
+        "title": "Szybko i spokojnie",
+        "text": "Lista i tablica, zapisane widoki, paleta poleceń i skróty jednoklawiszowe. Wymagany jest tylko tytuł."
+      },
+      "agents": {
+        "title": "Agenci jak członkowie zespołu",
+        "text": "Daj agentowi własny, ograniczony dostęp, przekaż mu zadanie i śledź jego plan, pytania i wyniki. Zakończenie zawsze zatwierdza człowiek."
+      },
+      "feedback": {
+        "title": "Opinie i praca nad UX",
+        "text": "Zbieraj opinie przez publiczny formularz, porządkuj je i sprawdzaj, ile osób prosiło o daną rzecz."
+      },
+      "docs": {
+        "title": "Dokumenty obok pracy",
+        "text": "Pisz strony w Markdownie dla projektu lub całej przestrzeni i udostępniaj wybrane linkiem."
+      }
+    }
+  },
+  "legal": {
+    "template": "Ten tekst jest szablonem opisującym działanie oprogramowania. Nie stanowi porady prawnej; podmiot prowadzący tę instalację musi go sprawdzić i uzupełnić.",
+    "terms": {
+      "title": "Regulamin",
+      "intro": "Regulamin dotyczy tej instalacji Yadeit, prowadzonej przez: {operator}. Zakładając konto, akceptujesz go.",
+      "sections": [
+        {
+          "title": "Usługa",
+          "body": [
+            "Yadeit to narzędzie do planowania i śledzenia pracy nad projektami. {operator} udostępnia je w obecnym kształcie i może zmieniać, ograniczać lub wycofywać jego części. O istotnych zmianach informujemy e-mailem lub w aplikacji."
+          ]
+        },
+        {
+          "title": "Twoje konto",
+          "body": [
+            "Potrzebujesz działającego adresu e-mail, a hasło zachowujesz dla siebie. Odpowiadasz za to, co dzieje się na Twoim koncie, także za działania agentów, którym nadajesz dostęp.",
+            "Konto może zostać zawieszone, jeśli jest używane niezgodnie z regulaminem albo zagraża usłudze lub innym osobom."
+          ]
+        },
+        {
+          "title": "Twoje treści",
+          "body": [
+            "To, co Ty i Twój zespół umieszczacie w przestrzeni roboczej, pozostaje Wasze. {operator} przechowuje i przetwarza te treści tylko w zakresie potrzebnym do świadczenia usługi.",
+            "Właściciele mogą w każdej chwili pobrać całą przestrzeń roboczą, a każda osoba może pobrać własne dane."
+          ]
+        },
+        {
+          "title": "Dozwolone użycie",
+          "body": [
+            "Nie używaj usługi do łamania prawa, rozsyłania spamu, przechowywania złośliwego oprogramowania, atakowania lub przeciążania usługi ani do uzyskiwania cudzych danych. Publiczne strony i formularze opinii nie mogą służyć do wprowadzania ludzi w błąd."
+          ]
+        },
+        {
+          "title": "Agenci i wbudowane AI",
+          "body": [
+            "Agenci działają w ramach dostępu nadanego przez właściciela, który za nich odpowiada. Gdy przestrzeń robocza włączy wbudowane AI, tekst potrzebny do przygotowania sugestii jest przesyłany do dostawcy AI. Sugestie mogą być błędne; o tym, co zostaje, decyduje człowiek."
+          ]
+        },
+        {
+          "title": "Plany i płatności",
+          "body": [
+            "Niektóre plany są płatne. Ceny i limity są widoczne przed zakupem, płatności obsługuje Stripe, a płatny plan odnawia się do czasu anulowania. Anulować można w każdej chwili w portalu płatności; plan działa wtedy do końca opłaconego okresu."
+          ]
+        },
+        {
+          "title": "Zakończenie",
+          "body": [
+            "Możesz w każdej chwili usunąć konto, a właściciele mogą usunąć swoją przestrzeń roboczą. Usunięte treści znikają z działającej usługi; kopie w kopiach zapasowych wygasają wraz z nimi."
+          ]
+        },
+        {
+          "title": "Odpowiedzialność",
+          "body": [
+            "Usługa jest świadczona bez gwarancji ciągłej dostępności i bezbłędnego działania. W zakresie dopuszczonym przez prawo {operator} nie odpowiada za szkody pośrednie ani utracone korzyści, a odpowiedzialność jest ograniczona do kwoty zapłaconej w ostatnich dwunastu miesiącach."
+          ]
+        },
+        {
+          "title": "Zmiany i kontakt",
+          "body": [
+            "Regulamin może się zmieniać; nową wersję ogłaszamy, zanim zacznie obowiązywać. Pytania prosimy kierować na adres {email}."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Polityka prywatności",
+      "intro": "Ta strona wyjaśnia, jakie dane osobowe przetwarza ta instalacja Yadeit i w jakim celu. Administratorem danych jest: {operator}; kontakt: {email}.",
+      "sections": [
+        {
+          "title": "Co przechowujemy",
+          "body": [
+            "Twoje konto: imię i nazwisko lub nazwę, adres e-mail, skrót hasła, język i ustawienie powiadomień.",
+            "Twoją pracę: zadania, komentarze, strony, załączniki i opinie tworzone przez Ciebie i Twój zespół oraz historię ich zmian.",
+            "Zapisy techniczne: logowania oraz zmiany dostępu i ustawień w dzienniku zdarzeń (z adresem IP), a także dziennik wysłanych do Ciebie wiadomości (odbiorca, temat i czas, bez treści)."
+          ]
+        },
+        {
+          "title": "W jakim celu",
+          "body": [
+            "Aby świadczyć usługę, z której korzystasz, dbać o jej bezpieczeństwo, wysyłać wybrane przez Ciebie powiadomienia i komunikaty o usłudze oraz rozliczać płatne plany."
+          ]
+        },
+        {
+          "title": "Kto jeszcze przetwarza dane",
+          "body": [
+            "Dostawcy hostingu i poczty, z których korzysta {operator}. Stripe, gdy przestrzeń robocza kupuje płatny plan. Dostawca AI (Anthropic), tylko gdy przestrzeń robocza włączyła wbudowane AI i tylko w zakresie tekstu potrzebnego do sugestii. Niczego nie sprzedajemy i niczego nie używamy do reklam."
+          ]
+        },
+        {
+          "title": "Treści publiczne",
+          "body": [
+            "Strona udostępniona linkiem i publiczny formularz opinii są widoczne dla każdego, kto ma link. Opinia wysłana przez publiczny formularz, wraz z podanym dobrowolnie imieniem i adresem e-mail, trafia do zespołu, do którego należy formularz."
+          ]
+        },
+        {
+          "title": "Pliki cookie",
+          "body": [
+            "Tylko pliki cookie potrzebne do utrzymania logowania i ochrony formularzy. Bez śledzenia i bez reklam."
+          ]
+        },
+        {
+          "title": "Jak długo",
+          "body": [
+            "Dane konta i pracy pozostają do czasu ich usunięcia przez Ciebie. Dziennik poczty jest przechowywany 90 dni. Kopie zapasowe wygasają według własnego harmonogramu."
+          ]
+        },
+        {
+          "title": "Twoje prawa",
+          "body": [
+            "Możesz przeglądać i poprawiać swój profil, pobrać swoje dane (Profil i preferencje, „Pobierz moje dane”) i tam również usunąć konto. Możesz też napisać do nas na adres {email} oraz złożyć skargę do organu ochrony danych."
+          ]
+        }
+      ]
+    }
   }
 }
