@@ -7,7 +7,8 @@ help: ## Show this list of commands
 	@awk 'BEGIN { FS = ":.*## "; printf "\nUsage: make \033[36m<target>\033[0m [VAR=value]\n" } \
 	  /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5); next } \
 	  /^[a-zA-Z0-9_-]+:.*## / { printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
-	@printf '\nVariables: HTTP_PORT (default 8080), DB (db or mariadb), EMAIL (for app-operator), PORT (for docs-site).\n\n'
+	@printf '\nVariables: HTTP_PORT (default 8080), DB (db or mariadb), EMAIL (for app-operator), PORT (for docs-site),\n'
+	@printf '           TEAMS, SIZE, SPEED, MINUTES, SEED (for sim-run).\n\n'
 
 HTTP_PORT ?= 8080
 DB        ?= db
@@ -18,7 +19,7 @@ APP_COMPOSE = ENV_FILE=$(ENV_DOCKER) HTTP_PORT=$(HTTP_PORT) docker compose -p ya
 DOCS_PORT ?= $(or $(PORT),8000)
 SITE      := site
 
-.PHONY: app-up app-down app-reset app-logs app-ps app-shell app-operator db-up db-down docs-build docs-site
+.PHONY: app-up app-down app-reset app-logs app-ps app-shell app-operator db-up db-down docs-build docs-site sim-up sim-run sim-smoke sim-report sim-stop sim-down sim-logs
 
 # Settings for a local trial, generated once with fresh secrets. Mail is only logged, not sent.
 $(ENV_DOCKER):
@@ -75,6 +76,51 @@ app-shell: ## Open a shell in the app container
 app-operator: ## Make an account an operator: make app-operator EMAIL=you@example.com
 	@test -n "$(EMAIL)" || { echo "Usage: make app-operator EMAIL=you@example.com"; exit 1; }
 	$(APP_COMPOSE) exec app php artisan operator:grant $(EMAIL)
+
+##@ Traffic lab: simulated teams that load the local app (docs/traffic-lab.md)
+# The same stack with the lab switched on. Both switches are needed because the image runs as production.
+# compose.sim.yaml adds realtime (the reverb service), so that runs cover websockets too.
+SIM_COMPOSE = SIMULATOR_ENABLED=true SIMULATOR_ALLOW_PRODUCTION=true $(APP_COMPOSE) -f compose.sim.yaml --profile sim --profile realtime
+TEAMS   ?= 3
+SIZE    ?= 2-6
+SPEED   ?= 10
+MINUTES ?= 10
+SEED    ?= 1
+SIM_START = $(SIM_COMPOSE) exec -T app php artisan sim:start --token-only
+# One runner in the foreground; its container is discarded when it ends.
+SIM_PLAY = $(SIM_COMPOSE) run --rm simulator
+
+sim-up: $(ENV_DOCKER) ## Start the app with the Traffic lab on and a runner standing by; then use Operator area > Traffic lab
+	@grep -q '^SIMULATOR_RUNNER_TOKEN=' $(ENV_DOCKER) || echo "SIMULATOR_RUNNER_TOKEN=$$(openssl rand -hex 24)" >> $(ENV_DOCKER)
+	$(SIM_COMPOSE) build app simulator
+	$(SIM_COMPOSE) up -d app worker scheduler db backup
+	$(SIM_COMPOSE) up -d --wait app
+	$(SIM_COMPOSE) up -d reverb runner
+
+sim-run: ## Start a run and play it here: make sim-run TEAMS=5 SIZE=3-8 SPEED=50 MINUTES=15
+	@$(SIM_COMPOSE) stop runner >/dev/null 2>&1; TOKEN=$$($(SIM_START) --teams=$(TEAMS) --size=$(SIZE) --speed=$(SPEED) --minutes=$(MINUTES) --seed=$(SEED)) \
+	  && SIM_TOKEN="$$TOKEN" $(SIM_PLAY)
+
+sim-smoke: sim-up ## Short check: 3 teams for 2 minutes at 10x; fails when actions or flows fail, then cleans up
+	@$(SIM_COMPOSE) stop runner >/dev/null 2>&1; TOKEN=$$($(SIM_START) --teams=3 --size=2-5 --speed=10 --minutes=2 --ramp=10 --seed=$(SEED)) \
+	  && { SIM_TOKEN="$$TOKEN" SIM_SELF_TEST=$(SELF_TEST) $(SIM_PLAY) --smoke; played=$$?; \
+	       $(SIM_COMPOSE) exec -T app php artisan sim:report; verdict=$$?; \
+	       $(SIM_COMPOSE) exec -T app php artisan sim:stop --purge; \
+	       test $$played -eq 0 -a $$verdict -eq 0; }
+
+sim-report: ## Show what the latest run measured, with its verdict
+	$(SIM_COMPOSE) exec -T app php artisan sim:report
+
+sim-stop: ## Stop the current run and remove everything it created
+	$(SIM_COMPOSE) exec -T app php artisan sim:stop --purge
+
+sim-down: ## Switch the Traffic lab off again (the app keeps running)
+	-$(SIM_COMPOSE) exec -T app php artisan sim:stop --purge
+	-$(SIM_COMPOSE) stop runner reverb
+	$(APP_COMPOSE) up -d app worker scheduler
+
+sim-logs: ## Follow the logs of the app and its worker during a run
+	$(SIM_COMPOSE) logs -f --tail=100 app worker
 
 ##@ Development database only, with the backend and frontend on the host (see README)
 db-up: ## Start only the development database (DB=mariadb for MariaDB)

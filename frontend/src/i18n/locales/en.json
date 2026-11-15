@@ -980,7 +980,8 @@
       "users": "People",
       "mail": "Email",
       "broadcasts": "Announcements",
-      "audit": "Audit log"
+      "audit": "Audit log",
+      "sim": "Traffic lab"
     },
     "status": {
       "label": "Status",
@@ -1362,6 +1363,269 @@
           ]
         }
       ]
+    }
+  },
+  "sim": {
+    "title": "Traffic lab",
+    "intro": "Simulated teams that sign in and work like real ones, to see how the installation behaves under load and whether whole journeys still work. Everything a run creates is marked, never emailed or billed, and can be removed.",
+    "off": {
+      "title": "The Traffic lab is switched off",
+      "text": "Set SIMULATOR_ENABLED=true (and, in production, SIMULATOR_ALLOW_PRODUCTION=true) to use it. See docs/traffic-lab.md."
+    },
+    "production": {
+      "title": "This is a production installation",
+      "text": "A run slows the service down for real users while it lasts. Prefer a copy of the installation for anything but a short check."
+    },
+    "start": {
+      "title": "Start a run",
+      "scenario": "Scenario",
+      "defaults": "Default settings",
+      "name": "Name",
+      "namePlaceholder": "Optional",
+      "button": "Start run",
+      "running": "\"{name}\" is running.",
+      "open": "Open it",
+      "standing": "A runner is standing by: the run starts playing by itself.",
+      "noStanding": "No runner is standing by: after starting, you get a command to start one."
+    },
+    "scenarios": {
+      "title": "Scenarios",
+      "empty": "No scenarios yet. A scenario is a saved set of settings for a run.",
+      "size": "Team size",
+      "edit": "Edit",
+      "deleteTitle": "Delete the scenario \"{name}\"?",
+      "deleteDescription": "Runs that used it keep their settings and reports."
+    },
+    "scenario": {
+      "new": "New scenario",
+      "edit": "Edit scenario",
+      "description": "What a run is made of. Numbers are held to the limits of this installation when the run starts.",
+      "name": "Name",
+      "teams": "Teams",
+      "teamCount": "Teams",
+      "sizeMin": "Smallest team",
+      "sizeMax": "Largest team",
+      "upTo": "Up to {n}",
+      "realSignup": "Sign up for real (%)",
+      "realSignupHint": "Share of teams whose members register, confirm their email and invite each other.",
+      "volume": "Starting backlog",
+      "volumeHint": "Items in each workspace before the run.",
+      "pack": "Content pack",
+      "pace": "Pace",
+      "speed": "Speed",
+      "speedHint": "Times organic speed.",
+      "minutes": "Minutes",
+      "dayMode": "Days",
+      "ramp": "Ramp-up (seconds)",
+      "rampHint": "Teams join one after another over this time.",
+      "intensity": "Intensity",
+      "intensityHint": "Multiplies how often everyone acts.",
+      "seed": "Seed",
+      "seedHint": "Same seed, same teams and behaviour.",
+      "thresholds": "Pass or fail",
+      "p95": "95% of requests within (ms)",
+      "errorRate": "Failed requests at most (%)",
+      "flowSuccess": "Flows completing at least (%)",
+      "flows": "Journeys checked during the run",
+      "personas": "Persona overrides (JSON, optional)",
+      "personasHint": "Own pause in seconds and action weights per persona: lead, developer, designer, client.",
+      "personasInvalid": "This is not valid JSON.",
+      "ai": "AI",
+      "aiUnavailable": "The installation has no AI provider key (ANTHROPIC_API_KEY), so the AI layers cannot be used.",
+      "director": "Director: the model writes each team's day",
+      "directorHint": "A few calls per team and simulated day. The members play the story before anything drawn at random; it is kept, so a run can be replayed.",
+      "explorers": "Explorers per team",
+      "explorersHint": "Members whose every step the model chooses. At most three per run; they act less often above 5x.",
+      "budget": "Token budget",
+      "budgetHint": "The run stops when this many tokens are spent."
+    },
+    "volume": {
+      "empty": "Empty",
+      "small": "Small (30 items)",
+      "medium": "Medium (200 items)",
+      "large": "Large (1000 items)"
+    },
+    "dayMode": {
+      "realistic": "Realistic (quiet nights)",
+      "workday": "Office hours only",
+      "continuous": "Around the clock"
+    },
+    "flow": {
+      "flowLifecycle": "Item from creation to done",
+      "flowNotify": "Assignment reaches the inbox",
+      "flowSearch": "New item is found by search",
+      "flowFeedback": "Feedback becomes an item",
+      "flowDoc": "Public link of a doc",
+      "flowIsolation": "Teams cannot see each other",
+      "flowRealtime": "Change reaches an open browser"
+    },
+    "flowName": {
+      "onboarding": "Sign-up to invited teammate",
+      "itemLifecycle": "Item from creation to done",
+      "assignToInbox": "Assignment reaches the inbox",
+      "createToSearch": "New item is found by search",
+      "feedbackToItem": "Feedback becomes an item",
+      "docPublicLink": "Public link of a doc",
+      "isolation": "Teams cannot see each other",
+      "teamSetup": "Lead prepares the workspace",
+      "agentRun": "Agent takes an item to review",
+      "changeToSocket": "Change reaches an open browser",
+      "webhookDelivery": "Webhook arrives and verifies",
+      "publicFeedback": "Public feedback form",
+      "midnight": "Night: cycles and stale items",
+      "explorer": "Explorer's observation"
+    },
+    "runs": {
+      "title": "Runs",
+      "empty": "No runs yet.",
+      "run": "Run",
+      "verdict": "Verdict",
+      "started": "Started"
+    },
+    "status": {
+      "draft": "Draft",
+      "provisioning": "Preparing",
+      "running": "Running",
+      "paused": "Paused",
+      "stopping": "Stopping",
+      "finished": "Finished",
+      "failed": "Failed",
+      "aborted": "Aborted"
+    },
+    "verdict": {
+      "pass": "Passed",
+      "fail": "Failed",
+      "sofar_pass": "Passing so far",
+      "sofar_fail": "Failing"
+    },
+    "totals": {
+      "requests": "Requests",
+      "requests_per_second": "Per second",
+      "p50_ms": "Median",
+      "p95_ms": "95%",
+      "p99_ms": "99%",
+      "error_rate": "Failed requests",
+      "flows": "Flows",
+      "failed_flows": "Failed flows",
+      "findings": "Findings",
+      "oldest_job_seconds": "Oldest waiting job",
+      "ai_tokens": "AI tokens used"
+    },
+    "packs": {
+      "title": "Content packs",
+      "intro": "The names and text a simulation is made of: people, teams, projects with items, comments, docs and feedback.",
+      "preview": "Preview",
+      "source": {
+        "builtin": "Built in",
+        "ai": "Written by AI"
+      },
+      "counts": "{people} people, {teams} team names, {items} items, {comments} comments, {pages} docs, {feedback} pieces of feedback.",
+      "write": {
+        "title": "Have AI write a pack",
+        "name": "Name",
+        "theme": "Who the team is and what they build, in a sentence",
+        "button": "Write pack",
+        "busy": "Writing…"
+      }
+    },
+    "token": {
+      "title": "Start a runner",
+      "description": "The run is ready, but nothing plays it yet. Start a runner with this command; the token is shown only now.",
+      "hint": "Run it from the repository, on this machine or, for numbers that matter, on another one.",
+      "open": "Open the run"
+    },
+    "run": {
+      "missing": "This run does not exist.",
+      "shape": "{teams} teams, {members} members, {speed}x",
+      "controls": "Controls",
+      "teams": "Teams",
+      "addTeam": "Add a team",
+      "removeTeam": "Remove a team",
+      "pause": "Pause",
+      "resume": "Resume",
+      "stop": "Stop",
+      "download": "Download report",
+      "purge": "Remove what it created",
+      "forget": "Delete run",
+      "purged": "Its workspaces and accounts have been removed.",
+      "reasons": "Why it fails",
+      "noRunner": {
+        "title": "No runner is playing this run",
+        "text": "Nothing happens until a runner joins. Start one with the token of the run, or keep a standing runner (make sim-up)."
+      },
+      "saturated": {
+        "title": "The runner could not keep up",
+        "text": "Actions started late, so the installation saw less traffic than the scenario asked for. Good numbers here may flatter it: add runners or run them on another machine."
+      },
+      "flows": "Flows",
+      "flow": "Flow",
+      "findings": "Findings",
+      "endpoints": "Endpoints",
+      "endpoint": "Endpoint",
+      "endpointsNote": "Times in milliseconds, as the runner saw them. Server and database are the server's own account of the same requests; queries is the number per request.",
+      "runners": "Runners",
+      "runnerAlive": "playing",
+      "runnerGone": "gone",
+      "lag": "{ms} ms late"
+    },
+    "teamStatus": {
+      "planned": "Planned",
+      "ready": "Playing",
+      "awaiting_signup": "Signing up",
+      "removed": "Removed"
+    },
+    "persona": {
+      "lead": "lead",
+      "developer": "developer",
+      "designer": "designer",
+      "client": "client",
+      "agent": "agent"
+    },
+    "kind": {
+      "ai": "AI",
+      "agent": "Agent",
+      "scripted": "Scripted"
+    },
+    "table": {
+      "count": "Count",
+      "failed": "Failed",
+      "server": "Server",
+      "db": "Database",
+      "queries": "Queries"
+    },
+    "chart": {
+      "requests": "Requests per second",
+      "latency": "Response time",
+      "failures": "Failures",
+      "failedRequests": "Requests",
+      "failedFlows": "Flows",
+      "backlog": "Waiting work",
+      "jobs": "Jobs waiting",
+      "jobAge": "Oldest job (s)",
+      "runnerLag": "Runner late (s)"
+    },
+    "compare": {
+      "title": "Compare with an earlier run",
+      "choose": "Choose a run",
+      "before": "Before",
+      "change": "Change"
+    },
+    "confirm": {
+      "stop": {
+        "title": "Stop this run?",
+        "text": "The simulated teams stop at once. The report is kept.",
+        "button": "Stop"
+      },
+      "purge": {
+        "title": "Remove what this run created?",
+        "text": "Its workspaces, accounts and files are deleted. The report is kept.",
+        "button": "Remove"
+      },
+      "forget": {
+        "title": "Delete this run?",
+        "text": "Everything it created and its report are deleted. This cannot be undone.",
+        "button": "Delete"
+      }
     }
   }
 }

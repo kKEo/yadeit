@@ -1,0 +1,257 @@
+{
+ "name": "Default",
+ "theme": "A small product team building a web application",
+ "people": [
+  "Anna Kowalska",
+  "Ben Carter",
+  "Chloe Martin",
+  "Dawid Nowak",
+  "Elena Rossi",
+  "Farid Haddad",
+  "Grace Lee",
+  "Hugo Lindqvist",
+  "Iga Wójcik",
+  "Jonas Weber",
+  "Kasia Zielińska",
+  "Liam O'Brien",
+  "Marta Lis",
+  "Noah Fischer",
+  "Olga Petrova",
+  "Piotr Mazur",
+  "Quinn Taylor",
+  "Rosa Delgado",
+  "Sven Olsen",
+  "Tomasz Król"
+ ],
+ "teams": [
+  "Northwind Studio",
+  "Blue Heron Labs",
+  "Kiln and Co",
+  "Papercrane",
+  "Saltmarsh Software",
+  "Third Shift",
+  "Orchard Lane",
+  "Lantern Works",
+  "Mossy Rock",
+  "Tidewater Apps",
+  "Copper Kettle",
+  "Fieldnotes"
+ ],
+ "projects": [
+  {
+   "key": "WEB",
+   "name": "Web app",
+   "description": "The product people sign in to.",
+   "items": [
+    {
+     "title": "Add password strength meter to sign-up",
+     "description": "Show how strong the chosen password is while the person types.\n\n- Use the same rules as the server\n- No third-party script",
+     "kind": "feature",
+     "priority": "medium"
+    },
+    {
+     "title": "Fix avatar upload failing for large PNG files",
+     "description": "Uploading a PNG above 5 MB ends with a blank error.\n\n**Steps**\n1. Open profile\n2. Choose a 6 MB PNG\n3. Save",
+     "kind": "bug",
+     "priority": "high"
+    },
+    {
+     "title": "Research how teams use saved filters",
+     "description": "Talk to five teams. What do they filter by every day, and what do they never use?",
+     "kind": "research",
+     "priority": "low"
+    },
+    {
+     "title": "Design the empty state for the reports page",
+     "description": "The page is blank for new teams. It should explain what will appear and how to get there.",
+     "kind": "design",
+     "priority": "medium"
+    },
+    {
+     "title": "Export invoices as CSV",
+     "description": "Finance asks for a monthly CSV with invoice number, customer, net, tax and total.",
+     "kind": "feature",
+     "priority": "medium"
+    },
+    {
+     "title": "Search does not find words with diacritics",
+     "description": "Searching for `zolty` should find `żółty`.",
+     "kind": "bug",
+     "priority": "medium"
+    },
+    {
+     "title": "Speed up the dashboard for accounts with many projects",
+     "description": "Loading takes over four seconds with 80 projects. Find the slow queries first.",
+     "kind": "task",
+     "priority": "high"
+    },
+    {
+     "title": "Write onboarding email sequence",
+     "description": "Three emails over the first week: welcome, first project, invite the team.",
+     "kind": "task",
+     "priority": "low"
+    },
+    {
+     "title": "Add keyboard shortcut for assigning to me",
+     "description": "Press `M` on a selected item to assign it to yourself.",
+     "kind": "feature",
+     "priority": "low"
+    },
+    {
+     "title": "Session expires while typing a long comment",
+     "description": "The text is lost when the session ends. Keep a local draft.",
+     "kind": "bug",
+     "priority": "urgent"
+    },
+    {
+     "title": "Redesign the pricing page",
+     "description": "Two plans, a comparison table, and the questions people ask most.",
+     "kind": "design",
+     "priority": "medium"
+    },
+    {
+     "title": "Migrate file storage to the new bucket",
+     "description": "Copy, verify checksums, switch reads, then switch writes.",
+     "kind": "task",
+     "priority": "high"
+    },
+    {
+     "title": "Show who is viewing an item",
+     "description": "Small avatars of the people who have the item open right now.",
+     "kind": "feature",
+     "priority": "none"
+    },
+    {
+     "title": "Calendar view starts the week on the wrong day",
+     "description": "It should follow the locale: Monday in Poland.",
+     "kind": "bug",
+     "priority": "low"
+    }
+   ]
+  },
+  {
+   "key": "OPS",
+   "name": "Platform",
+   "description": "Infrastructure, performance and the public API.",
+   "items": [
+    {
+     "title": "Interview three churned customers",
+     "description": "Why did they leave, and what did they move to?",
+     "kind": "research",
+     "priority": "medium"
+    },
+    {
+     "title": "Add rate limiting to the public API",
+     "description": "Per token, with clear headers and a helpful error body.",
+     "kind": "task",
+     "priority": "high"
+    },
+    {
+     "title": "Dark mode contrast is too low in tables",
+     "description": "Row text fails AA on the dark background.",
+     "kind": "bug",
+     "priority": "medium"
+    },
+    {
+     "title": "Allow reordering columns on the board",
+     "description": "Drag a column header to move it; remember the order per person.",
+     "kind": "feature",
+     "priority": "low"
+    },
+    {
+     "title": "Document the webhook payloads",
+     "description": "One page with every event, a sample body and how to verify the signature.",
+     "kind": "task",
+     "priority": "medium"
+    },
+    {
+     "title": "Design mobile navigation",
+     "description": "Bottom bar with the four places people go most.",
+     "kind": "design",
+     "priority": "high"
+    },
+    {
+     "title": "Clean up unused feature flags",
+     "description": "Fourteen flags are fully rolled out. Remove them and the dead branches.",
+     "kind": "task",
+     "priority": "none"
+    },
+    {
+     "title": "Notification emails arrive twice",
+     "description": "Happens when an item is assigned and commented on in the same minute.",
+     "kind": "bug",
+     "priority": "high"
+    },
+    {
+     "title": "Add two-factor sign-in",
+     "description": "TOTP first, recovery codes, a way for an admin to reset it.",
+     "kind": "feature",
+     "priority": "high"
+    },
+    {
+     "title": "Benchmark list rendering with 5,000 rows",
+     "description": "Measure before deciding between pagination and virtual scrolling.",
+     "kind": "research",
+     "priority": "medium"
+    }
+   ]
+  }
+ ],
+ "comments": [
+  "I can take this one.",
+  "Do we have a design for it yet?",
+  "Reproduced on staging, it happens every time.",
+  "Blocked until the API change is merged.",
+  "Pushed a first version, please have a look.",
+  "Looks good to me. One small thing: the label wraps on narrow screens.",
+  "Can we split this? The second half is a separate piece of work.",
+  "Talked to support: three customers asked for this last week.",
+  "Moving to review.",
+  "Done on my side, waiting for a second pair of eyes.",
+  "What should happen when the list is empty?",
+  "Agreed, let's keep the first version simple.",
+  "I measured it: 1.8 s before, 0.4 s after.",
+  "Not sure this is worth doing now. What do we drop instead?",
+  "Updated the description with what we decided on the call."
+ ],
+ "pages": [
+  {
+   "title": "How we work",
+   "body": "## Cycles\n\nWe plan every second Monday. Anything not started by then goes back to the backlog.\n\n## Reviews\n\nEvery change is read by one other person before it is done."
+  },
+  {
+   "title": "Release checklist",
+   "body": "1. Changelog written\n2. Migrations tried on a copy of production\n3. Support told what changes\n4. Rollback plan in the item"
+  },
+  {
+   "title": "Decision: one price per workspace",
+   "body": "We charge per workspace, not per seat.\n\n**Why:** small teams should not have to count people.\n\n**Consequence:** large workspaces cost us more than they pay; we revisit at 50 members."
+  }
+ ],
+ "feedback": [
+  {
+   "title": "Cannot find where to change my email",
+   "body": "I looked in settings and profile. Where is it?"
+  },
+  {
+   "title": "Please add a dark theme",
+   "body": "Working at night with the white background is hard on the eyes."
+  },
+  {
+   "title": "Export to CSV would save me hours",
+   "body": "Every month I copy numbers by hand into a spreadsheet."
+  },
+  {
+   "title": "The board is slow with many cards",
+   "body": "With about 300 cards dragging one takes a second to react."
+  },
+  {
+   "title": "Love the keyboard shortcuts",
+   "body": "More of those please, especially for assigning."
+  },
+  {
+   "title": "Search misses Polish letters",
+   "body": "Typing without diacritics finds nothing."
+  }
+ ]
+}

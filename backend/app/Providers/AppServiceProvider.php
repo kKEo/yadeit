@@ -9,6 +9,7 @@ use App\Models\PlanSubscription;
 use App\Models\PlanSubscriptionItem;
 use App\Models\WorkItem;
 use App\Models\Workspace;
+use App\Simulator\Simulator;
 use App\Support\CurrentWorkspace;
 use App\Support\UnknownFields;
 use Carbon\CarbonInterval;
@@ -58,10 +59,12 @@ class AppServiceProvider extends ServiceProvider
         Cashier::useSubscriptionModel(PlanSubscription::class);
         Cashier::useSubscriptionItemModel(PlanSubscriptionItem::class);
 
+        // Simulated people all come from the runner's address; Simulator::callerKey counts each of them on their own,
+        // and Simulator::allowance gives them as many minutes' worth as their run packs into one.
         // Per caller, and per account whoever calls: guessing one password from many addresses is slowed down too.
         RateLimiter::for('auth', fn (Request $request) => array_filter([
-            Limit::perMinute(10)->by($request->ip()),
-            is_string($request->input('email')) ? Limit::perMinute(20)->by('email:'.sha1(mb_strtolower($request->input('email')))) : null,
+            Limit::perMinute(Simulator::allowance($request, 10))->by(Simulator::callerKey($request)),
+            is_string($request->input('email')) ? Limit::perMinute(Simulator::allowance($request, 20))->by('email:'.sha1(mb_strtolower($request->input('email')))) : null,
         ]));
         // The consent screen of an app connecting over OAuth: the person picks which of their agents it works as.
         Passport::authorizationView(function (array $parameters) {
@@ -93,13 +96,13 @@ class AppServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(CarbonInterval::day());
         Passport::refreshTokensExpireIn(CarbonInterval::days(30));
 
-        RateLimiter::for('public-feedback', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
-        RateLimiter::for('mcp', fn (Request $request) => Limit::perMinute(120)->by($request->user()?->currentAccessToken()?->id ?: $request->ip()));
+        RateLimiter::for('public-feedback', fn (Request $request) => Limit::perMinute(Simulator::allowance($request, 5))->by(Simulator::callerKey($request)));
+        RateLimiter::for('mcp', fn (Request $request) => Limit::perMinute(Simulator::allowance($request, 120))->by($request->user()?->currentAccessToken()?->id ?: Simulator::callerKey($request)));
         // Each access token has its own allowance, so one busy agent cannot starve another.
-        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(300)->by(
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(Simulator::allowance($request, 300))->by(
             $request->bearerToken() !== null && $request->user()?->currentAccessToken()?->id
                 ? 'token:'.$request->user()->currentAccessToken()->id
-                : ($request->user()?->id ?: $request->ip())
+                : ($request->user()?->id ?: Simulator::callerKey($request))
         ));
 
         // Validation also refuses fields the endpoint does not know (see UnknownFields).
@@ -119,7 +122,9 @@ class AppServiceProvider extends ServiceProvider
         // Shown in the generated OpenAPI file: scripts and agents send a bearer token.
         // The realtime channel sign-in is framework plumbing, not part of the documented API.
         Scramble::configure()->routes(fn (RoutingRoute $route) => str_starts_with($route->uri(), 'api/v1')
-            && ! str_contains($route->uri(), 'broadcasting/auth'));
+            && ! str_contains($route->uri(), 'broadcasting/auth')
+            // The Traffic lab is an operator's tool, not part of the API clients build on.
+            && ! str_starts_with($route->uri(), 'api/v1/admin/sim') && ! str_starts_with($route->uri(), 'api/v1/sim'));
 
         Scramble::configure()->withDocumentTransformers(function (OpenApi $openApi): void {
             $openApi->secure(SecurityScheme::http('bearer'));

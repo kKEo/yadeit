@@ -10,6 +10,7 @@ use App\Services\AgentRuns;
 use App\Support\CurrentWorkspace;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -33,7 +34,7 @@ class DecayStaleItems extends Command
                 ->whereNotNull('stale_after_days')
                 ->whereNull('archived_at')
                 ->get()
-                ->sum(fn (Project $project) => $this->decay($project, $runs)));
+                ->sum(fn (Project $project) => self::decay($project, $runs)));
         }
 
         $this->info("Moved {$moved} stale item(s) to the backlog.");
@@ -41,7 +42,8 @@ class DecayStaleItems extends Command
         return self::SUCCESS;
     }
 
-    private function decay(Project $project, AgentRuns $runs): int
+    /** $now is today unless a simulation plays its own calendar. */
+    public static function decay(Project $project, AgentRuns $runs, ?Carbon $now = null): int
     {
         $backlog = $project->states()->where('group', StateGroup::Backlog)->orderBy('position')->first();
 
@@ -54,7 +56,7 @@ class DecayStaleItems extends Command
             ->where('project_id', $project->id)
             ->whereNull('completed_at')
             ->where('needs_input', false)
-            ->where('updated_at', '<', now()->subDays((int) $project->stale_after_days))
+            ->where('updated_at', '<', ($now ?? now())->copy()->subDays((int) $project->stale_after_days))
             ->whereHas('state', fn (Builder $q) => $q->whereIn('group', [StateGroup::Unstarted, StateGroup::Started]))
             ->with('state')
             ->get();

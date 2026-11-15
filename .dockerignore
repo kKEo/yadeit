@@ -27,3 +27,4 @@ backend/.phpunit.cache
 .env.production.*
 !.env.production.example
 .env.docker
+simulator

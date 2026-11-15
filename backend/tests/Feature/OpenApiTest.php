@@ -39,6 +39,8 @@ it('generates an OpenAPI 3.1 document that describes every API route', function 
         ->filter(fn ($route) => str_starts_with($route->uri(), 'api/v1'))
         // The realtime channel sign-in belongs to the framework, not to our API surface.
         ->reject(fn ($route) => str_contains($route->uri(), 'broadcasting/auth'))
+        // The Traffic lab is an operator's tool and stays out of the public document.
+        ->reject(fn ($route) => str_starts_with($route->uri(), 'api/v1/admin/sim') || str_starts_with($route->uri(), 'api/v1/sim'))
         ->flatMap(fn ($route) => collect($route->methods())->reject(fn ($m) => $m === 'HEAD')
             ->map(fn ($m) => $m.' '.(substr($route->uri(), strlen('api/v1')) ?: '/')));
 

@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ShieldCheck } from '@lucide/vue'
+import { getStatus } from '@/api/simulator'
 import LocaleSwitcher from '@/components/app/LocaleSwitcher.vue'
 import ProfileDialog from '@/components/app/ProfileDialog.vue'
 import UserMenu from '@/components/app/UserMenu.vue'
@@ -9,13 +11,20 @@ import UserMenu from '@/components/app/UserMenu.vue'
 /** Shell of the operator area: the people who run the installation. */
 const { t } = useI18n()
 
-const links = [
+const base = [
   { name: 'admin', label: 'admin.nav.workspaces' },
   { name: 'admin-users', label: 'admin.nav.users' },
   { name: 'admin-mail', label: 'admin.nav.mail' },
   { name: 'admin-broadcasts', label: 'admin.nav.broadcasts' },
   { name: 'admin-audit', label: 'admin.nav.audit' },
 ]
+// The Traffic lab has a tab only where it is switched on.
+const simulator = ref(false)
+// A run's page belongs to the Traffic lab tab as well.
+const route = useRoute()
+const insideSim = computed(() => String(route.name ?? '').startsWith('admin-sim'))
+const links = computed(() => (simulator.value ? [...base, { name: 'admin-sim', label: 'admin.nav.sim' }] : base))
+onMounted(async () => { simulator.value = (await getStatus()) !== null })
 </script>
 
 <template>
@@ -38,7 +47,8 @@ const links = [
         <RouterLink
           v-for="link in links" :key="link.name" :to="{ name: link.name }"
           class="-mb-px inline-flex items-center whitespace-nowrap border-b-2 border-transparent px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
-          exact-active-class="!border-primary !text-foreground"
+exact-active-class="!border-primary !text-foreground"
+          :class="link.name === 'admin-sim' && insideSim ? '!border-primary !text-foreground' : ''"
         >{{ t(link.label) }}</RouterLink>
       </nav>
     </header>

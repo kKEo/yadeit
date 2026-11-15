@@ -17,6 +17,7 @@ use Laravel\Cashier\Billable;
 /**
  * @property bool $ai_enabled
  * @property string $plan
+ * @property int|null $sim_run_id
  * @property Carbon|null $suspended_at
  * @property string|null $ai_api_key
  * @property int|null $ai_monthly_token_limit

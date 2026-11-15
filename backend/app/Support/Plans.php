@@ -63,7 +63,8 @@ class Plans
     /** Refuses with 402 when one more person or project would exceed the plan. */
     public static function ensureRoom(Workspace $workspace, string $what): void
     {
-        $limit = self::enforced() ? (self::of($workspace)[$what] ?? null) : null;
+        // A simulated team is as large as its scenario says, whatever plan the workspace shows.
+        $limit = self::enforced() && $workspace->sim_run_id === null ? (self::of($workspace)[$what] ?? null) : null;
 
         if ($limit === null) {
             return;

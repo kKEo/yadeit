@@ -1,0 +1,18 @@
+{
+  "name": "yadeit-simulator",
+  "private": true,
+  "version": "0.1.0",
+  "description": "The runner of the Traffic lab: plays simulated teams against a Yadeit installation.",
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.0",
+    "vitest": "^5.1.0"
+  }
+}

@@ -22,26 +22,30 @@ class OperatorController extends Controller
     public function overview(): JsonResponse
     {
         return response()->json(['data' => [
-            'workspaces' => Workspace::query()->count(),
-            'suspended_workspaces' => Workspace::query()->whereNotNull('suspended_at')->count(),
-            'people' => User::query()->where('type', 'human')->count(),
-            'agents' => User::query()->where('type', 'agent')->count(),
-            'items' => DB::table('work_items')->whereNull('deleted_at')->count(),
-            'signups_last_7_days' => User::query()->where('type', 'human')->where('created_at', '>=', now()->subDays(7))->count(),
+            // What the Traffic lab created is not part of the installation's numbers.
+            'workspaces' => Workspace::query()->whereNull('sim_run_id')->count(),
+            'suspended_workspaces' => Workspace::query()->whereNull('sim_run_id')->whereNotNull('suspended_at')->count(),
+            'people' => User::query()->whereNull('sim_run_id')->where('type', 'human')->count(),
+            'agents' => User::query()->whereNull('sim_run_id')->where('type', 'agent')->count(),
+            'items' => DB::table('work_items')->whereNull('deleted_at')
+                ->whereNotIn('workspace_id', DB::table('workspaces')->whereNotNull('sim_run_id')->select('id'))->count(),
+            'signups_last_7_days' => User::query()->whereNull('sim_run_id')->where('type', 'human')->where('created_at', '>=', now()->subDays(7))->count(),
         ]]);
     }
 
-    /** Filters: q (name or web address), suspended (true/false). */
+    /** Filters: q (name or web address), suspended (true/false), simulated (true shows what the Traffic lab created instead). */
     public function workspaces(Request $request): JsonResponse
     {
         $input = $request->validate([
             'q' => ['sometimes', 'string', 'max:100'],
             'suspended' => ['sometimes', Rule::in(['true', 'false', '1', '0'])],
+            'simulated' => ['sometimes', Rule::in(['true', 'false', '1', '0'])],
             'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'cursor' => ['sometimes', 'string'],
         ]);
 
         $query = Workspace::query()->withCount('memberships')->orderByDesc('id');
+        filter_var($input['simulated'] ?? false, FILTER_VALIDATE_BOOLEAN) ? $query->whereNotNull('sim_run_id') : $query->whereNull('sim_run_id');
 
         if (isset($input['q'])) {
             $like = $this->like($input['q']);
@@ -86,17 +90,19 @@ class OperatorController extends Controller
         return response()->json(['data' => $this->presentWorkspace($model, DB::table('work_items')->where('workspace_id', $model->id)->whereNull('deleted_at')->count())]);
     }
 
-    /** Filters: q (name or email), suspended (true/false). People only; agents belong to their workspace. */
+    /** Filters: q (name or email), suspended (true/false), simulated (true/false). People only; agents belong to their workspace. */
     public function users(Request $request): JsonResponse
     {
         $input = $request->validate([
             'q' => ['sometimes', 'string', 'max:100'],
             'suspended' => ['sometimes', Rule::in(['true', 'false', '1', '0'])],
+            'simulated' => ['sometimes', Rule::in(['true', 'false', '1', '0'])],
             'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'cursor' => ['sometimes', 'string'],
         ]);
 
         $query = User::query()->where('type', 'human')->withCount('memberships')->orderByDesc('id');
+        filter_var($input['simulated'] ?? false, FILTER_VALIDATE_BOOLEAN) ? $query->whereNotNull('sim_run_id') : $query->whereNull('sim_run_id');
 
         if (isset($input['q'])) {
             $like = $this->like($input['q']);
@@ -170,6 +176,7 @@ class OperatorController extends Controller
             'plan' => $workspace->plan,
             'members' => (int) $workspace->memberships_count,
             'items' => $items,
+            'simulated' => $workspace->sim_run_id !== null,
             'suspended_at' => $workspace->suspended_at,
             'created_at' => $workspace->created_at,
         ];
@@ -185,6 +192,7 @@ class OperatorController extends Controller
             'email_verified' => $user->hasVerifiedEmail(),
             'is_operator' => (bool) $user->is_operator,
             'workspaces' => (int) $user->memberships_count,
+            'simulated' => $user->sim_run_id !== null,
             'suspended_at' => $user->suspended_at,
             'created_at' => $user->created_at,
         ];

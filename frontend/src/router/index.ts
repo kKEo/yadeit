@@ -109,6 +109,9 @@ const router = createRouter({
         { path: 'mail', name: 'admin-mail', component: () => import('@/views/admin/AdminMailView.vue') },
         { path: 'announcements', name: 'admin-broadcasts', component: () => import('@/views/admin/AdminBroadcastsView.vue') },
         { path: 'audit', name: 'admin-audit', component: () => import('@/views/admin/AdminAuditView.vue') },
+        // The Traffic lab; its screens say so when it is switched off on this installation.
+        { path: 'traffic', name: 'admin-sim', component: () => import('@/views/admin/sim/SimHomeView.vue') },
+        { path: 'traffic/runs/:id(\\d+)', name: 'admin-sim-run', component: () => import('@/views/admin/sim/SimRunView.vue') },
       ],
     },
     {

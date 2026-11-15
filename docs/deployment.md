@@ -162,6 +162,7 @@ them again.
 | Built-in AI | `ANTHROPIC_API_KEY`. Workspaces switch AI on themselves and can bring their own key. |
 | Paid plans | `PLAN_LIMITS=true` and the four `STRIPE_` settings. Point a Stripe webhook at `/stripe/webhook` for the `customer.subscription.*` events. Without `STRIPE_WEBHOOK_SECRET` that address refuses everything. |
 | Realtime updates | The `REVERB_` and `VITE_REVERB_` settings, `BROADCAST_CONNECTION=reverb`, and start with `--profile realtime`. Rebuild the image: the `VITE_` values are built into the web app. |
+| Traffic lab | A load and flow test built into the operator area. Off by default; on a production installation it needs `SIMULATOR_ENABLED=true` and `SIMULATOR_ALLOW_PRODUCTION=true`, and a run slows the service down for real users. Prefer a copy of the installation. See [traffic-lab.md](traffic-lab.md). |
 | Apps connecting over OAuth | Nothing. Signing keys are created on first start and kept in the `storage` volume. |
 
 ## Before opening it to the public

@@ -25,7 +25,7 @@ class AnthropicProvider implements AiProvider
 
         try {
             $message = $client->beta->messages->create(
-                model: (string) config('ai.model'),
+                model: $prompt->model ?? (string) config('ai.model'),
                 maxTokens: (int) config('ai.max_output_tokens'),
                 system: $prompt->system,
                 messages: [['role' => 'user', 'content' => $prompt->content]],

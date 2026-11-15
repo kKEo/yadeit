@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use App\Simulator\Simulator;
+
 /**
  * Decides whether a webhook address may be called. Private, loopback,
  * link-local and other non-public addresses are refused, so that a webhook
@@ -45,6 +47,11 @@ class WebhookTarget
 
         if (isset($parts['user']) || isset($parts['pass'])) {
             return ['Do not put a user name or password in the address.', []];
+        }
+
+        // The Traffic lab's own receiving address, the one place simulated workspaces send to.
+        if (Simulator::isSink($url)) {
+            return [null, []];
         }
 
         if (config('webhooks.allow_private_targets')) {

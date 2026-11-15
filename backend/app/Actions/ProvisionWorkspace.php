@@ -31,11 +31,14 @@ class ProvisionWorkspace
     public function handle(User $owner, string $name, ?string $slug = null): Workspace
     {
         return DB::transaction(function () use ($owner, $name, $slug): Workspace {
-            $workspace = Workspace::create([
+            $workspace = new Workspace([
                 'name' => $name,
                 'slug' => $slug ?? Workspace::uniqueSlugFor($name),
                 'created_by' => $owner->id,
             ]);
+            // A workspace made by a simulated person is part of the same simulation.
+            $workspace->sim_run_id = $owner->sim_run_id;
+            $workspace->save();
 
             $workspace->memberships()->create([
                 'user_id' => $owner->id,
