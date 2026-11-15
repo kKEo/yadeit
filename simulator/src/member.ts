@@ -1,8 +1,8 @@
 import type { DocPageSummary, Feedback, Item, Me, Member as WorkspaceMember, Project } from '../../frontend/src/api/types.ts'
 import { ACTIONS, type ActionName } from './catalogue.ts'
-import type { MemberPlan, Pack } from './control.ts'
+import type { MemberPlan, Pack, RunConfig } from './control.ts'
 import type { Recorder } from './metrics.ts'
-import { PERSONAS, weightsFor } from './personas.ts'
+import { personaFor, weightsFor } from './personas.ts'
 import { Rng, seedFor } from './rng.ts'
 import { ApiFailure, Session } from './session.ts'
 
@@ -50,6 +50,10 @@ export class Member {
   readonly dataRng: Rng
   private readonly planRng: Rng
   private readonly intensity: number
+  private readonly weights: Partial<Record<ActionName, number>>
+  private readonly pause: number
+  /** What this person is doing right now, for the live screen. */
+  current = 'idle'
 
   signedIn = false
   busy = false
@@ -62,7 +66,7 @@ export class Member {
   pages: DocPageSummary[] = []
   feedback: Feedback[] = []
 
-  constructor(plan: MemberPlan, team: TeamContext, session: Session, recorder: Recorder, runSeed: number, intensity: number) {
+  constructor(plan: MemberPlan, team: TeamContext, session: Session, recorder: Recorder, runSeed: number, config: Pick<RunConfig, 'intensity' | 'disabled_actions' | 'personas'>) {
     this.plan = plan
     this.team = team
     this.session = session
@@ -70,7 +74,10 @@ export class Member {
     const place = placeOf(plan)
     this.planRng = new Rng(seedFor(runSeed, place, 1))
     this.dataRng = new Rng(seedFor(runSeed, place, 2))
-    this.intensity = intensity
+    this.intensity = config.intensity
+    const persona = personaFor(plan.persona, config.personas)
+    this.weights = weightsFor(persona, plan.role, config.disabled_actions)
+    this.pause = persona.pause
   }
 
   /** The workspace part of every address. */
@@ -88,10 +95,9 @@ export class Member {
 
   /** The next thing this person does and the pause before the one after, in simulated seconds. */
   next(): Step {
-    const persona = PERSONAS[this.plan.persona] ?? PERSONAS.developer!
     return {
-      action: this.planRng.weighted(weightsFor(persona, this.plan.role)),
-      pause: Math.max(2, this.planRng.pause(persona.pause / this.intensity)),
+      action: this.planRng.weighted(this.weights),
+      pause: Math.max(2, this.planRng.pause(this.pause / this.intensity)),
     }
   }
 
@@ -104,6 +110,7 @@ export class Member {
 
     const started = performance.now()
     const name = this.signedIn ? action : 'signIn'
+    this.current = name
 
     try {
       if (!this.signedIn) await ACTIONS.signIn(this)
@@ -117,6 +124,8 @@ export class Member {
         this.signedIn = false
         this.session.forget()
       }
+    } finally {
+      this.current = 'idle'
     }
   }
 }

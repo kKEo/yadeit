@@ -26,6 +26,7 @@ x-app: &app
     # The Traffic lab (docs/traffic-lab.md). Off unless both are set to true.
     SIMULATOR_ENABLED: ${SIMULATOR_ENABLED:-false}
     SIMULATOR_ALLOW_PRODUCTION: ${SIMULATOR_ALLOW_PRODUCTION:-false}
+    SIMULATOR_RUNNER_TOKEN: ${SIMULATOR_RUNNER_TOKEN:-}
   volumes:
     - storage:/app/storage
     - backups:/backups:ro
@@ -91,6 +92,22 @@ services:
       SIM_MAX_ERROR_RATE: ${SIM_MAX_ERROR_RATE:-0.01}
       # 1 makes one flow check fail on purpose, to see the alarm work.
       SIM_SELF_TEST: ${SIM_SELF_TEST:-}
+    depends_on:
+      app:
+        condition: service_healthy
+
+  # A runner that is always there: it waits for a run to be started from the admin panel and plays it.
+  # Needs SIMULATOR_RUNNER_TOKEN, the same value the app has.
+  runner:
+    profiles: ["sim"]
+    image: yadeit-simulator:latest
+    build: ./simulator
+    command: ["--standby"]
+    environment:
+      SIM_TARGET: http://app:8080
+      SIM_TOKEN: standby|${SIMULATOR_RUNNER_TOKEN:-}
+      SIM_NAME: standing
+    restart: unless-stopped
     depends_on:
       app:
         condition: service_healthy

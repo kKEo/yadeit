@@ -31,6 +31,7 @@ use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceExportController;
 use App\Simulator\Http\RunnerController;
+use App\Simulator\Http\SimAdminController;
 use App\Simulator\Http\SimStatusController;
 use App\Support\Health;
 use Illuminate\Support\Facades\Route;
@@ -106,6 +107,19 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
         // The Traffic lab (docs/traffic-lab.md). Does not exist unless it is switched on.
         Route::prefix('sim')->middleware('sim.enabled')->group(function () {
             Route::get('/', SimStatusController::class)->name('admin.sim.status');
+            Route::get('scenarios', [SimAdminController::class, 'scenarios'])->name('admin.sim.scenarios.index');
+            Route::post('scenarios', [SimAdminController::class, 'storeScenario'])->name('admin.sim.scenarios.store');
+            Route::patch('scenarios/{id}', [SimAdminController::class, 'updateScenario'])->whereNumber('id')->name('admin.sim.scenarios.update');
+            Route::delete('scenarios/{id}', [SimAdminController::class, 'destroyScenario'])->whereNumber('id')->name('admin.sim.scenarios.destroy');
+            Route::get('packs', [SimAdminController::class, 'packs'])->name('admin.sim.packs.index');
+            Route::get('packs/{id}', [SimAdminController::class, 'pack'])->whereNumber('id')->name('admin.sim.packs.show');
+            Route::get('runs', [SimAdminController::class, 'runs'])->name('admin.sim.runs.index');
+            Route::post('runs', [SimAdminController::class, 'start'])->name('admin.sim.runs.store');
+            Route::get('runs/{id}', [SimAdminController::class, 'run'])->whereNumber('id')->name('admin.sim.runs.show');
+            Route::patch('runs/{id}', [SimAdminController::class, 'control'])->whereNumber('id')->name('admin.sim.runs.update');
+            Route::post('runs/{id}/stop', [SimAdminController::class, 'stop'])->whereNumber('id')->name('admin.sim.runs.stop');
+            Route::delete('runs/{id}', [SimAdminController::class, 'purge'])->whereNumber('id')->name('admin.sim.runs.destroy');
+            Route::get('runs/{id}/compare/{baseline}', [SimAdminController::class, 'compare'])->whereNumber(['id', 'baseline'])->name('admin.sim.runs.compare');
         });
     });
 

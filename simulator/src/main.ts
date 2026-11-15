@@ -1,10 +1,14 @@
 import type { Tally } from './metrics.ts'
+import { ControlError } from './control.ts'
 import { type Outcome, run } from './runner.ts'
 
 /**
  * The runner of the Traffic lab.
  *
  *   SIM_TOKEN=<token from sim:start> SIM_TARGET=http://localhost:8080 node src/main.ts [--smoke]
+ *
+ * With --standby the runner never ends: it waits for a run to be started (from the admin panel), plays it, and waits again.
+ * SIM_TOKEN is then "standby|<SIMULATOR_RUNNER_TOKEN>".
  *
  * With --smoke the process ends with status 1 when the run did not go well
  * enough: too many failed actions or requests, a failed flow, or nothing done.
@@ -23,7 +27,23 @@ const stop = new AbortController()
 process.on('SIGINT', () => stop.abort())
 process.on('SIGTERM', () => stop.abort())
 
-const outcome = await run({ target, token, name: process.env.SIM_NAME ?? 'runner', log: (line) => console.log(line) }, stop.signal)
+const options = { target, token, name: process.env.SIM_NAME ?? 'runner', log: (line: string) => console.log(line) }
+
+if (process.argv.includes('--standby')) {
+  console.log(`Standing by for runs at ${target}.`)
+  while (!stop.signal.aborted) {
+    try {
+      report(await run(options, stop.signal))
+    } catch (error) {
+      // 409: no run is going on. Anything else is worth a line, then the wait goes on.
+      if (!(error instanceof ControlError && error.status === 409)) console.error(error instanceof Error ? error.message : String(error))
+    }
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+  }
+  process.exit(0)
+}
+
+const outcome = await run(options, stop.signal)
 const failures = report(outcome)
 
 if (smoke && failures.length > 0) {

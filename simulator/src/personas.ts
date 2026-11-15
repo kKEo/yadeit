@@ -1,5 +1,5 @@
 import type { ActionName } from './catalogue.ts'
-import type { MemberPlan } from './control.ts'
+import type { MemberPlan, RunConfig } from './control.ts'
 
 export interface Persona {
   /** Mean pause between two actions, in simulated seconds, at intensity 1. */
@@ -47,9 +47,16 @@ export const PERSONAS: Record<string, Persona> = {
 const NOT_FOR_GUESTS: ActionName[] = ['createItem', 'moveItem', 'editItem', 'attach', 'editDoc', 'createDoc', 'triage', 'feedbackList', 'settings', 'flowLifecycle', 'flowNotify', 'flowSearch', 'flowDoc']
 const ADMIN_ONLY: ActionName[] = ['settings']
 
-export function weightsFor(persona: Persona, role: MemberPlan['role']): Partial<Record<ActionName, number>> {
+/** The persona as a scenario wants it: its own pause and weights laid over the defaults. */
+export function personaFor(name: string, overrides: RunConfig['personas'] = {}): Persona {
+  const base = PERSONAS[name] ?? PERSONAS.developer!
+  const own = overrides[name]
+  return own ? { pause: own.pause ?? base.pause, weights: { ...base.weights, ...own.weights } } : base
+}
+
+export function weightsFor(persona: Persona, role: MemberPlan['role'], disabled: readonly string[] = []): Partial<Record<ActionName, number>> {
   const admin = role === 'owner' || role === 'admin'
   return Object.fromEntries(Object.entries(persona.weights).filter(([name]) =>
-    !(role === 'guest' && NOT_FOR_GUESTS.includes(name as ActionName)) && !(!admin && ADMIN_ONLY.includes(name as ActionName)),
+    !disabled.includes(name) && !(role === 'guest' && NOT_FOR_GUESTS.includes(name as ActionName)) && !(!admin && ADMIN_ONLY.includes(name as ActionName)),
   ))
 }

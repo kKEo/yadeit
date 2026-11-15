@@ -89,17 +89,19 @@ SIM_START = $(SIM_COMPOSE) exec -T app php artisan sim:start --token-only
 # One runner in the foreground; its container is discarded when it ends.
 SIM_PLAY = $(SIM_COMPOSE) run --rm simulator
 
-sim-up: $(ENV_DOCKER) ## Start the app with the Traffic lab switched on, and build the runner
+sim-up: $(ENV_DOCKER) ## Start the app with the Traffic lab on and a runner standing by; then use Operator area > Traffic lab
+	@grep -q '^SIMULATOR_RUNNER_TOKEN=' $(ENV_DOCKER) || echo "SIMULATOR_RUNNER_TOKEN=$$(openssl rand -hex 24)" >> $(ENV_DOCKER)
 	$(SIM_COMPOSE) build app simulator
 	$(SIM_COMPOSE) up -d app worker scheduler db backup
 	$(SIM_COMPOSE) up -d --wait app
+	$(SIM_COMPOSE) up -d runner
 
-sim-run: ## Start a run and play it: make sim-run TEAMS=5 SIZE=3-8 SPEED=50 MINUTES=15
-	@TOKEN=$$($(SIM_START) --teams=$(TEAMS) --size=$(SIZE) --speed=$(SPEED) --minutes=$(MINUTES) --seed=$(SEED)) \
+sim-run: ## Start a run and play it here: make sim-run TEAMS=5 SIZE=3-8 SPEED=50 MINUTES=15
+	@$(SIM_COMPOSE) stop runner >/dev/null 2>&1; TOKEN=$$($(SIM_START) --teams=$(TEAMS) --size=$(SIZE) --speed=$(SPEED) --minutes=$(MINUTES) --seed=$(SEED)) \
 	  && SIM_TOKEN="$$TOKEN" $(SIM_PLAY)
 
 sim-smoke: sim-up ## Short check: 3 teams for 2 minutes at 10x; fails when actions or flows fail, then cleans up
-	@TOKEN=$$($(SIM_START) --teams=3 --size=2-5 --speed=10 --minutes=2 --ramp=10 --seed=$(SEED)) \
+	@$(SIM_COMPOSE) stop runner >/dev/null 2>&1; TOKEN=$$($(SIM_START) --teams=3 --size=2-5 --speed=10 --minutes=2 --ramp=10 --seed=$(SEED)) \
 	  && { SIM_TOKEN="$$TOKEN" SIM_SELF_TEST=$(SELF_TEST) $(SIM_PLAY) --smoke; played=$$?; \
 	       $(SIM_COMPOSE) exec -T app php artisan sim:report; verdict=$$?; \
 	       $(SIM_COMPOSE) exec -T app php artisan sim:stop --purge; \
@@ -113,6 +115,7 @@ sim-stop: ## Stop the current run and remove everything it created
 
 sim-down: ## Switch the Traffic lab off again (the app keeps running)
 	-$(SIM_COMPOSE) exec -T app php artisan sim:stop --purge
+	-$(SIM_COMPOSE) stop runner
 	$(APP_COMPOSE) up -d app worker scheduler
 
 sim-logs: ## Follow the logs of the app and its worker during a run

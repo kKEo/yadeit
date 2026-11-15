@@ -7,6 +7,10 @@ export interface RunConfig {
   day_mode: DayMode
   ramp_up_seconds: number
   intensity: number
+  /** Actions and flows the scenario switches off. */
+  disabled_actions?: string[]
+  /** The scenario's own pause and weights per persona, laid over the defaults. */
+  personas?: Record<string, { pause?: number; weights?: Record<string, number> }>
   [key: string]: unknown
 }
 
@@ -46,6 +50,15 @@ export interface Registration { runner_id: number; run: RunState; origin: string
 const ACTIVE = ['provisioning', 'running', 'paused', 'stopping']
 export const isActive = (run: RunState) => ACTIVE.includes(run.status)
 
+export class ControlError extends Error {
+  readonly status: number
+
+  constructor(status: number, message: string) {
+    super(message)
+    this.status = status
+  }
+}
+
 /** The runner's line to the coordinator: who to play, how fast, and the mail of its simulated people. */
 export class Control {
   private readonly target: string
@@ -60,8 +73,8 @@ export class Control {
     return this.call('POST', '/register', { name, host })
   }
 
-  poll(runnerId: number, lagMs: number): Promise<{ run: RunState; teams: TeamPlan[] }> {
-    return this.call('POST', '/poll', { runner_id: runnerId, lag_ms: Math.max(0, Math.round(lagMs)) })
+  poll(runnerId: number, lagMs: number, activity: Record<number, string> = {}): Promise<{ run: RunState; teams: TeamPlan[] }> {
+    return this.call('POST', '/poll', { runner_id: runnerId, lag_ms: Math.max(0, Math.round(lagMs)), activity })
   }
 
   /** Waits for a message to arrive, as a person waits for an email, and returns its first link. */
@@ -90,7 +103,7 @@ export class Control {
       body: body ? JSON.stringify(body) : undefined,
       signal: AbortSignal.timeout(20_000),
     })
-    if (!response.ok) throw new Error(`Coordinator answered ${response.status} to ${method} ${path}: ${(await response.text()).slice(0, 200)}`)
+    if (!response.ok) throw new ControlError(response.status, `Coordinator answered ${response.status} to ${method} ${path}: ${(await response.text()).slice(0, 200)}`)
     return ((await response.json()) as { data: T }).data
   }
 }

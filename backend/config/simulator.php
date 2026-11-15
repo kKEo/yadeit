@@ -8,6 +8,10 @@ return [
     // In production a second switch is needed, so that one stray variable cannot start a load test on real users.
     'allow_production' => (bool) env('SIMULATOR_ALLOW_PRODUCTION', false),
 
+    // A runner that is always running signs in with "standby|<this>" and plays whichever run is started from the admin panel.
+    // Empty means no standing runner: each run then prints a token of its own.
+    'runner_token' => env('SIMULATOR_RUNNER_TOKEN', ''),
+
     // Simulated people have addresses in this domain. ".invalid" can never receive mail, and mail to it is never sent anyway.
     'mail_domain' => env('SIMULATOR_MAIL_DOMAIN', 'sim.invalid'),
 

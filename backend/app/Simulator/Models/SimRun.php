@@ -21,6 +21,8 @@ use Illuminate\Support\Str;
  * @property Carbon|null $started_at
  * @property string|null $runner_token_hash
  * @property string|null $stop_reason
+ * @property string|null $verdict
+ * @property string $name
  */
 class SimRun extends Model
 {

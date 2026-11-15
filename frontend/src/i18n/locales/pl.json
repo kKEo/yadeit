@@ -980,7 +980,8 @@
       "users": "Osoby",
       "mail": "Poczta",
       "broadcasts": "Ogłoszenia",
-      "audit": "Dziennik zdarzeń"
+      "audit": "Dziennik zdarzeń",
+      "sim": "Laboratorium ruchu"
     },
     "status": {
       "label": "Stan",
@@ -1362,6 +1363,245 @@
           ]
         }
       ]
+    }
+  },
+  "sim": {
+    "title": "Laboratorium ruchu",
+    "intro": "Symulowane zespoły, które logują się i pracują jak prawdziwe, aby sprawdzić, jak instalacja zachowuje się pod obciążeniem i czy całe ścieżki nadal działają. Wszystko, co utworzy przebieg, jest oznaczone, nie dostaje e-maili ani rachunków i można to usunąć.",
+    "off": {
+      "title": "Laboratorium ruchu jest wyłączone",
+      "text": "Ustaw SIMULATOR_ENABLED=true (a na produkcji także SIMULATOR_ALLOW_PRODUCTION=true), aby z niego korzystać. Zobacz docs/traffic-lab.md."
+    },
+    "production": {
+      "title": "To jest instalacja produkcyjna",
+      "text": "Przebieg spowalnia usługę prawdziwym użytkownikom, dopóki trwa. Poza krótkim sprawdzeniem lepiej użyć kopii instalacji."
+    },
+    "start": {
+      "title": "Uruchom przebieg",
+      "scenario": "Scenariusz",
+      "defaults": "Ustawienia domyślne",
+      "name": "Nazwa",
+      "namePlaceholder": "Opcjonalnie",
+      "button": "Uruchom przebieg",
+      "running": "Trwa przebieg „{name}”.",
+      "open": "Otwórz",
+      "standing": "Runner czeka w gotowości: przebieg zacznie się sam.",
+      "noStanding": "Żaden runner nie czeka: po uruchomieniu dostaniesz polecenie, którym go wystartujesz."
+    },
+    "scenarios": {
+      "title": "Scenariusze",
+      "empty": "Nie ma jeszcze scenariuszy. Scenariusz to zapisany zestaw ustawień przebiegu.",
+      "size": "Wielkość zespołu",
+      "edit": "Edytuj",
+      "deleteTitle": "Usunąć scenariusz „{name}”?",
+      "deleteDescription": "Przebiegi, które go użyły, zachowują swoje ustawienia i raporty."
+    },
+    "scenario": {
+      "new": "Nowy scenariusz",
+      "edit": "Edytuj scenariusz",
+      "description": "Z czego składa się przebieg. Liczby są ograniczane do limitów tej instalacji w chwili startu.",
+      "name": "Nazwa",
+      "teams": "Zespoły",
+      "teamCount": "Zespoły",
+      "sizeMin": "Najmniejszy zespół",
+      "sizeMax": "Największy zespół",
+      "upTo": "Najwyżej {n}",
+      "realSignup": "Prawdziwa rejestracja (%)",
+      "realSignupHint": "Jaka część zespołów rejestruje się, potwierdza e-mail i zaprasza się nawzajem.",
+      "volume": "Początkowy backlog",
+      "volumeHint": "Zadania w każdym obszarze przed przebiegiem.",
+      "pack": "Pakiet treści",
+      "pace": "Tempo",
+      "speed": "Prędkość",
+      "speedHint": "Wielokrotność naturalnego tempa.",
+      "minutes": "Minuty",
+      "dayMode": "Dni",
+      "ramp": "Rozbieg (sekundy)",
+      "rampHint": "Zespoły dołączają kolejno w tym czasie.",
+      "intensity": "Intensywność",
+      "intensityHint": "Mnoży częstość działań wszystkich osób.",
+      "seed": "Ziarno",
+      "seedHint": "To samo ziarno, te same zespoły i zachowanie.",
+      "thresholds": "Zaliczony albo nie",
+      "p95": "95% żądań w czasie (ms)",
+      "errorRate": "Nieudanych żądań najwyżej (%)",
+      "flowSuccess": "Ukończonych ścieżek co najmniej (%)",
+      "flows": "Ścieżki sprawdzane w trakcie przebiegu",
+      "personas": "Zmiany person (JSON, opcjonalnie)",
+      "personasHint": "Własna pauza w sekundach i wagi działań dla person: lead, developer, designer, client.",
+      "personasInvalid": "To nie jest poprawny JSON."
+    },
+    "volume": {
+      "empty": "Pusty",
+      "small": "Mały (30 zadań)",
+      "medium": "Średni (200 zadań)",
+      "large": "Duży (1000 zadań)"
+    },
+    "dayMode": {
+      "realistic": "Realistyczne (ciche noce)",
+      "workday": "Tylko godziny pracy",
+      "continuous": "Całą dobę"
+    },
+    "flow": {
+      "flowLifecycle": "Zadanie od utworzenia do zakończenia",
+      "flowNotify": "Przypisanie trafia do skrzynki",
+      "flowSearch": "Nowe zadanie znajduje wyszukiwarka",
+      "flowFeedback": "Opinia staje się zadaniem",
+      "flowDoc": "Publiczny link do dokumentu",
+      "flowIsolation": "Zespoły nie widzą się nawzajem"
+    },
+    "flowName": {
+      "onboarding": "Od rejestracji do zaproszonej osoby",
+      "itemLifecycle": "Zadanie od utworzenia do zakończenia",
+      "assignToInbox": "Przypisanie trafia do skrzynki",
+      "createToSearch": "Nowe zadanie znajduje wyszukiwarka",
+      "feedbackToItem": "Opinia staje się zadaniem",
+      "docPublicLink": "Publiczny link do dokumentu",
+      "isolation": "Zespoły nie widzą się nawzajem"
+    },
+    "runs": {
+      "title": "Przebiegi",
+      "empty": "Nie było jeszcze przebiegów.",
+      "run": "Przebieg",
+      "verdict": "Wynik",
+      "started": "Start"
+    },
+    "status": {
+      "draft": "Szkic",
+      "provisioning": "Przygotowanie",
+      "running": "Trwa",
+      "paused": "Wstrzymany",
+      "stopping": "Zatrzymywanie",
+      "finished": "Zakończony",
+      "failed": "Nieudany",
+      "aborted": "Przerwany"
+    },
+    "verdict": {
+      "pass": "Zaliczony",
+      "fail": "Niezaliczony",
+      "sofar_pass": "Na razie zaliczony",
+      "sofar_fail": "Niezaliczony"
+    },
+    "totals": {
+      "requests": "Żądania",
+      "requests_per_second": "Na sekundę",
+      "p50_ms": "Mediana",
+      "p95_ms": "95%",
+      "p99_ms": "99%",
+      "error_rate": "Nieudane żądania",
+      "flows": "Ścieżki",
+      "failed_flows": "Nieudane ścieżki",
+      "findings": "Znaleziska",
+      "oldest_job_seconds": "Najstarsze czekające zadanie kolejki"
+    },
+    "packs": {
+      "title": "Pakiety treści",
+      "intro": "Nazwy i teksty, z których składa się symulacja: osoby, zespoły, projekty z zadaniami, komentarze, dokumenty i opinie.",
+      "preview": "Podgląd",
+      "source": {
+        "builtin": "Wbudowany",
+        "ai": "Napisany przez AI"
+      },
+      "counts": "Osoby: {people}, nazwy zespołów: {teams}, zadania: {items}, komentarze: {comments}, dokumenty: {pages}, opinie: {feedback}."
+    },
+    "token": {
+      "title": "Uruchom runnera",
+      "description": "Przebieg jest gotowy, ale nic go jeszcze nie odgrywa. Uruchom runnera tym poleceniem; token widać tylko teraz.",
+      "hint": "Uruchom je z repozytorium, na tej maszynie albo, gdy liczby mają znaczenie, na innej.",
+      "open": "Otwórz przebieg"
+    },
+    "run": {
+      "missing": "Taki przebieg nie istnieje.",
+      "shape": "Zespoły: {teams}, osoby: {members}, {speed}x",
+      "controls": "Sterowanie",
+      "teams": "Zespoły",
+      "addTeam": "Dodaj zespół",
+      "removeTeam": "Usuń zespół",
+      "pause": "Wstrzymaj",
+      "resume": "Wznów",
+      "stop": "Zatrzymaj",
+      "download": "Pobierz raport",
+      "purge": "Usuń to, co utworzył",
+      "forget": "Usuń przebieg",
+      "purged": "Jego obszary robocze i konta zostały usunięte.",
+      "reasons": "Dlaczego nie zalicza",
+      "noRunner": {
+        "title": "Żaden runner nie odgrywa tego przebiegu",
+        "text": "Nic się nie dzieje, dopóki nie dołączy runner. Uruchom go z tokenem przebiegu albo trzymaj runnera w gotowości (make sim-up)."
+      },
+      "saturated": {
+        "title": "Runner nie nadążał",
+        "text": "Działania zaczynały się z opóźnieniem, więc instalacja dostała mniej ruchu, niż chciał scenariusz. Dobre liczby mogą ją tu przeceniać: dodaj runnery albo uruchom je na innej maszynie."
+      },
+      "flows": "Ścieżki",
+      "flow": "Ścieżka",
+      "findings": "Znaleziska",
+      "endpoints": "Punkty końcowe",
+      "endpoint": "Punkt końcowy",
+      "endpointsNote": "Czasy w milisekundach, tak jak widział je runner. Serwer i baza to własny rachunek serwera dla tych samych żądań; zapytania to liczba na jedno żądanie.",
+      "runners": "Runnery",
+      "runnerAlive": "odgrywa",
+      "runnerGone": "zniknął",
+      "lag": "{ms} ms spóźnienia"
+    },
+    "teamStatus": {
+      "planned": "Zaplanowany",
+      "ready": "Gra",
+      "awaiting_signup": "Rejestruje się",
+      "removed": "Usunięty"
+    },
+    "persona": {
+      "lead": "lider",
+      "developer": "programista",
+      "designer": "projektant",
+      "client": "klient",
+      "agent": "agent"
+    },
+    "kind": {
+      "ai": "AI",
+      "agent": "Agent",
+      "scripted": "Skrypt"
+    },
+    "table": {
+      "count": "Liczba",
+      "failed": "Nieudane",
+      "server": "Serwer",
+      "db": "Baza",
+      "queries": "Zapytania"
+    },
+    "chart": {
+      "requests": "Żądania na sekundę",
+      "latency": "Czas odpowiedzi",
+      "failures": "Niepowodzenia",
+      "failedRequests": "Żądania",
+      "failedFlows": "Ścieżki",
+      "backlog": "Czekająca praca",
+      "jobs": "Czekające zadania kolejki",
+      "jobAge": "Najstarsze (s)",
+      "runnerLag": "Spóźnienie runnera (s)"
+    },
+    "compare": {
+      "title": "Porównaj z wcześniejszym przebiegiem",
+      "choose": "Wybierz przebieg",
+      "before": "Wcześniej",
+      "change": "Zmiana"
+    },
+    "confirm": {
+      "stop": {
+        "title": "Zatrzymać ten przebieg?",
+        "text": "Symulowane zespoły zatrzymają się od razu. Raport zostanie.",
+        "button": "Zatrzymaj"
+      },
+      "purge": {
+        "title": "Usunąć to, co utworzył ten przebieg?",
+        "text": "Jego obszary robocze, konta i pliki zostaną usunięte. Raport zostanie.",
+        "button": "Usuń"
+      },
+      "forget": {
+        "title": "Usunąć ten przebieg?",
+        "text": "Wszystko, co utworzył, i jego raport zostaną usunięte. Tego nie da się cofnąć.",
+        "button": "Usuń"
+      }
     }
   }
 }

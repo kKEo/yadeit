@@ -78,19 +78,80 @@ class SimRuns
         $real = (int) round($config['teams'] * $config['real_signup_share']);
 
         for ($number = 1; $number <= $config['teams']; $number++) {
-            $team = SimTeam::create([
-                'run_id' => $run->id,
-                'name' => ($names[($number - 1) % max(1, count($names))] ?? 'Team')." {$run->id}-{$number}",
-                'size' => $random->getInt($config['size_min'], $config['size_max']),
-                'onboarding' => $number <= $real ? 'real' : 'fast',
-            ]);
-
-            $this->provision->handle($run, $team, $number);
+            $this->createTeam($run, $number, $names, $random, $number <= $real ? 'real' : 'fast');
         }
 
         $run->update(['status' => SimRunStatus::Running, 'started_at' => now()]);
 
         return [$run, "{$run->id}|{$token}"];
+    }
+
+    /**
+     * @param  list<mixed>  $names
+     */
+    private function createTeam(SimRun $run, int $number, array $names, Randomizer $random, string $onboarding): SimTeam
+    {
+        $team = SimTeam::create([
+            'run_id' => $run->id,
+            'name' => ($names[($number - 1) % max(1, count($names))] ?? 'Team')." {$run->id}-{$number}",
+            'size' => $random->getInt((int) $run->config['size_min'], (int) $run->config['size_max']),
+            'onboarding' => $onboarding,
+        ]);
+
+        return $this->provision->handle($run, $team, $number);
+    }
+
+    /** More teams join a run that is going on. They are created directly, so they are in at once. */
+    public function addTeams(SimRun $run, int $count): SimRun
+    {
+        $this->mustBeActive($run);
+        $have = SimTeam::query()->where('run_id', $run->id)->count();
+        $playing = SimTeam::query()->where('run_id', $run->id)->where('status', '!=', 'removed')->count();
+        $count = max(0, min($count, (int) config('simulator.caps.teams') - $playing));
+        $names = ContentPack::load(data_get($run->config, 'pack_id'))->list('teams');
+
+        for ($number = $have + 1; $number <= $have + $count; $number++) {
+            $this->createTeam($run, $number, $names, new Randomizer(new Mt19937(($run->seed + $number) & 0x7FFFFFFF)), 'fast');
+        }
+
+        return $run;
+    }
+
+    /** The newest teams leave the run. Their workspaces stay until the run is purged. */
+    public function removeTeams(SimRun $run, int $count): SimRun
+    {
+        $this->mustBeActive($run);
+        $playing = SimTeam::query()->where('run_id', $run->id)->where('status', '!=', 'removed')->orderByDesc('id');
+        // A run keeps at least one team.
+        $count = max(0, min($count, (clone $playing)->count() - 1));
+        (clone $playing)->limit($count)->get()->each->update(['status' => 'removed', 'runner_id' => null]);
+
+        return $run;
+    }
+
+    public function setSpeed(SimRun $run, int $speed): SimRun
+    {
+        $this->mustBeActive($run);
+        $speed = $this->normalise(['speed' => $speed])['speed'];
+        $run->update(['speed' => $speed, 'config' => ['speed' => $speed] + $run->config]);
+
+        return $run;
+    }
+
+    /** A paused run stands still: simulated time stops and nobody acts. Its time limit keeps counting. */
+    public function pause(SimRun $run, bool $paused): SimRun
+    {
+        $this->mustBeActive($run);
+        $run->update(['status' => $paused ? SimRunStatus::Paused : SimRunStatus::Running]);
+
+        return $run;
+    }
+
+    private function mustBeActive(SimRun $run): void
+    {
+        if (! $run->status->isActive()) {
+            throw new ApiException(409, 'conflict', 'This run has ended.');
+        }
     }
 
     public function stop(SimRun $run, string $reason, SimRunStatus $as = SimRunStatus::Finished): SimRun
@@ -179,6 +240,11 @@ class SimRuns
         $config['volume'] = array_key_exists((string) $config['volume'], (array) config('simulator.volumes')) ? (string) $config['volume'] : 'small';
         $config['intensity'] = max(0.1, min(10.0, (float) $config['intensity']));
         $config['seed'] = max(1, (int) $config['seed']);
+        $config['pack_id'] = $config['pack_id'] === null ? null : (int) $config['pack_id'];
+        $config['thresholds'] = array_intersect_key((array) $config['thresholds'], SimReport::THRESHOLDS);
+        // Actions and flows a scenario switches off, and its own weights and pauses per persona; the runner applies them.
+        $config['disabled_actions'] = array_values(array_filter((array) ($config['disabled_actions'] ?? []), 'is_string'));
+        $config['personas'] = (array) ($config['personas'] ?? []);
 
         return $config;
     }

@@ -10,10 +10,10 @@ import { endpointName, serverTiming, Session } from './session.ts'
 
 const pack = { projects: [], comments: [], pages: [], feedback: [] }
 
-function member(id: number, persona: string, role: MemberPlan['role'], seed = 7, run = 1): Member {
+function member(id: number, persona: string, role: MemberPlan['role'], seed = 7, run = 1, config: ConstructorParameters<typeof Member>[5] = { intensity: 1 }): Member {
   const plan: MemberPlan = { id: id + run * 1000, name: 'A', persona, role, kind: 'scripted', email: `r${run}-t1-m${id}@sim.invalid`, password: 'x', header: 'h' }
   const recorder = new Recorder([10, 100], 10)
-  return new Member(plan, { id: 1, name: 'T', slug: 't', pack, members: [], visitor: new Session('http://localhost', 'http://localhost', 'v', recorder), others: () => [] }, new Session('http://localhost', 'http://localhost', 'h', recorder), recorder, seed, 1)
+  return new Member(plan, { id: 1, name: 'T', slug: 't', pack, members: [], visitor: new Session('http://localhost', 'http://localhost', 'v', recorder), others: () => [] }, new Session('http://localhost', 'http://localhost', 'h', recorder), recorder, seed, config)
 }
 
 const steps = (m: Member, n = 200) => Array.from({ length: n }, () => m.next())
@@ -46,6 +46,16 @@ describe('what a member does next', () => {
     for (const action of ['createItem', 'moveItem', 'editItem', 'attach', 'triage', 'settings']) expect(guest.has(action as never)).toBe(false)
     expect(Object.keys(weightsFor(PERSONAS.lead!, 'member'))).not.toContain('settings')
     expect(Object.keys(weightsFor(PERSONAS.lead!, 'admin'))).toContain('settings')
+  })
+
+  it('follows what the scenario switches off and reweights', () => {
+    const quiet = new Set(steps(member(8, 'developer', 'member', 7, 1, { intensity: 1, disabled_actions: ['flowLifecycle', 'comment'] }), 3000).map((s) => s.action))
+    expect(quiet.has('flowLifecycle')).toBe(false)
+    expect(quiet.has('comment')).toBe(false)
+
+    const only = steps(member(8, 'client', 'guest', 7, 1, { intensity: 1, personas: { client: { pause: 10, weights: { search: 100000 } } } }), 300)
+    expect(only.filter((s) => s.action === 'search').length).toBeGreaterThan(290)
+    expect(only.reduce((sum, s) => sum + s.pause, 0) / only.length).toBeLessThan(15)
   })
 
   it('pauses around the persona\'s mean', () => {

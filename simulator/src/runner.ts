@@ -27,6 +27,7 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
   const pending: Promise<void>[] = []
   let state = registration.run
   let members = 0
+  let rampDone = false
 
   options.log(`Runner ${registration.runner_id} joined run ${state.id}: ${state.speed}x, ${state.config.day_mode} days, ${state.config.duration_minutes} min.`)
 
@@ -41,12 +42,13 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
     const people = team.members
       // Agents join in a later phase; until then only people are played.
       .filter((plan) => plan.kind !== 'agent')
-      .map((plan) => new Member(plan, context, new Session(options.target, registration.origin, plan.header, recorder), recorder, state.seed, state.config.intensity))
+      .map((plan) => new Member(plan, context, new Session(options.target, registration.origin, plan.header, recorder), recorder, state.seed, state.config))
     context.members = people
     members += people.length
 
     // Teams join one after another over the ramp-up, each member a little after the one before.
-    const delay = (state.config.ramp_up_seconds * position) / Math.max(1, state.config.teams)
+    // A team added while the run is going on joins at once.
+    const delay = rampDone ? 0 : (state.config.ramp_up_seconds * position) / Math.max(1, state.config.teams)
     const enter = (): void => people.forEach((member, index) => scheduler.add(member, clock.now() + index * 5))
 
     pending.push((async () => {
@@ -83,11 +85,21 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
     if (Date.now() - lastPoll >= POLL_MS) {
       lastPoll = Date.now()
       try {
-        const answer = await control.poll(registration.runner_id, recorder.takeLag())
+        const activity: Record<number, string> = {}
+        for (const context of contexts) for (const member of context.members) activity[member.plan.id] = member.current
+        const answer = await control.poll(registration.runner_id, recorder.takeLag(), activity)
         state = answer.run
         // A paused run stands still: simulated time stops and nobody acts.
         clock.setSpeed(state.status === 'running' ? state.speed : 0)
         answer.teams.filter((team) => !known.has(team.id)).forEach((team) => adopt(team, known.size))
+        rampDone = true
+
+        // Teams the coordinator no longer lists were removed from the run, or went to another runner.
+        const listed = new Set(answer.teams.map((team) => team.id))
+        for (const context of contexts.filter((c) => !listed.has(c.id) && c.members.length > 0)) {
+          scheduler.remove((actor) => context.members.includes(actor as Member))
+          context.members = []
+        }
       } catch (error) {
         options.log(`Coordinator unreachable: ${error instanceof Error ? error.message : String(error)}`)
       }

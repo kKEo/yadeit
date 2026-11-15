@@ -35,6 +35,11 @@ export class Scheduler<S> {
     this.actors.push(actor)
   }
 
+  /** Takes actors out, for a team that left the run. What they are doing right now still finishes. */
+  remove(gone: (actor: Actor<S>) => boolean): void {
+    for (let i = this.actors.length - 1; i >= 0; i--) if (gone(this.actors[i]!)) this.actors.splice(i, 1)
+  }
+
   /** Starts everything that is due. Returns how many actions it started. */
   tick(wallNow: number = Date.now()): number {
     const speed = this.clock.speed

@@ -52,9 +52,13 @@ class RunnerController extends Controller
     public function poll(Request $request): JsonResponse
     {
         $run = $this->run($request);
-        $data = $request->validate(['runner_id' => ['required', 'integer'], 'lag_ms' => ['sometimes', 'integer', 'min:0']]);
+        $data = $request->validate([
+            'runner_id' => ['required', 'integer'], 'lag_ms' => ['sometimes', 'integer', 'min:0'],
+            // What each member is doing right now, for the live screen.
+            'activity' => ['sometimes', 'array', 'max:2000'], 'activity.*' => ['string', 'max:40'],
+        ]);
         $runner = SimRunner::query()->where('run_id', $run->id)->findOrFail($data['runner_id']);
-        $runner->update(['last_seen_at' => now(), 'lag_ms' => $data['lag_ms'] ?? 0]);
+        $runner->update(['last_seen_at' => now(), 'lag_ms' => $data['lag_ms'] ?? 0, 'meta' => ['activity' => $data['activity'] ?? []]]);
 
         $this->runs->enforceLimits($run);
         $run->refresh();
@@ -62,12 +66,12 @@ class RunnerController extends Controller
         if ($run->status->isActive()) {
             // Teams without a runner, or whose runner went silent, go to the one asking.
             $alive = SimRunner::query()->where('run_id', $run->id)->where('last_seen_at', '>=', now()->subSeconds(self::STALE_SECONDS))->pluck('id');
-            DB::transaction(fn () => SimTeam::query()->where('run_id', $run->id)
+            DB::transaction(fn () => SimTeam::query()->where('run_id', $run->id)->where('status', '!=', 'removed')
                 ->where(fn ($q) => $q->whereNull('runner_id')->orWhereNotIn('runner_id', $alive))
                 ->lockForUpdate()->get()->each->update(['runner_id' => $runner->id]));
         }
 
-        $teams = SimTeam::query()->where('run_id', $run->id)->where('runner_id', $runner->id)->orderBy('id')->get();
+        $teams = SimTeam::query()->where('run_id', $run->id)->where('runner_id', $runner->id)->where('status', '!=', 'removed')->orderBy('id')->get();
         $members = SimMember::query()->whereIn('team_id', $teams->pluck('id'))->orderBy('id')->get()->groupBy('team_id');
         $slugs = DB::table('workspaces')->whereIn('id', $teams->pluck('workspace_id')->filter())->pluck('slug', 'id');
 
