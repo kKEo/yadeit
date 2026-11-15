@@ -30,6 +30,7 @@ use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceExportController;
+use App\Simulator\Http\SimStatusController;
 use App\Support\Health;
 use Illuminate\Support\Facades\Route;
 
@@ -91,6 +92,11 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
         Route::get('broadcasts', [OutboxController::class, 'broadcasts'])->name('admin.broadcasts.index');
         Route::post('broadcasts/preview', [OutboxController::class, 'preview'])->name('admin.broadcasts.preview');
         Route::post('broadcasts', [OutboxController::class, 'store'])->name('admin.broadcasts.store');
+
+        // The Traffic lab (docs/traffic-lab.md). Does not exist unless it is switched on.
+        Route::prefix('sim')->middleware('sim.enabled')->group(function () {
+            Route::get('/', SimStatusController::class)->name('admin.sim.status');
+        });
     });
 
     Route::get('me', [MeController::class, 'show'])->name('me.show');

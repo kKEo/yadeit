@@ -8,6 +8,7 @@ use App\Models\Webhook;
 use App\Models\WebhookDelivery;
 use App\Models\Workspace;
 use App\Services\WebhookDispatcher;
+use App\Simulator\Simulator;
 use App\Support\CurrentWorkspace;
 use App\Support\WebhookTarget;
 use Illuminate\Http\JsonResponse;
@@ -130,6 +131,11 @@ class WebhookController extends Controller
             'events.*' => ['string', Rule::in(Webhook::EVENTS)],
             'is_active' => ['sometimes', 'boolean'],
         ]);
+
+        // A simulated workspace must not call anyone: its webhooks go to the Traffic lab's own receiver.
+        if (isset($data['url']) && $this->current->get()?->sim_run_id !== null && ! Simulator::isSink($data['url'])) {
+            throw ValidationException::withMessages(['url' => ['A simulated workspace can only send to '.Simulator::sinkUrl().'.']]);
+        }
 
         if (isset($data['url']) && ($problem = WebhookTarget::problem($data['url'])) !== null) {
             throw ValidationException::withMessages(['url' => [$problem]]);

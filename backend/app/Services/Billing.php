@@ -7,7 +7,7 @@ use App\Models\Workspace;
 use App\Support\Plans;
 use Stripe\Exception\ApiErrorException;
 
-/** Paid plans through Stripe. The workspace is the customer; one price per workspace, whatever its size. */
+/** Paid plans through Stripe. The workspace is the customer; one price per workspace, whatever its size. Simulated workspaces never reach Stripe. */
 class Billing
 {
     public const SUBSCRIPTION = 'default';
@@ -17,7 +17,7 @@ class Billing
     {
         $price = config("plans.plans.{$plan}.stripe_price");
 
-        if (! Plans::billingEnabled() || ! is_string($price) || $price === '') {
+        if (! Plans::billingEnabled() || $workspace->sim_run_id !== null || ! is_string($price) || $price === '') {
             throw new ApiException(409, 'billing_unavailable', 'This plan cannot be bought here. Ask whoever runs this installation.');
         }
 
@@ -36,7 +36,7 @@ class Billing
     /** The address of Stripe's customer portal: invoices, payment method, cancelling. */
     public function portalUrl(Workspace $workspace): string
     {
-        if (! Plans::billingEnabled() || ! $workspace->hasStripeId()) {
+        if (! Plans::billingEnabled() || ! $workspace->hasStripeId() || $workspace->sim_run_id !== null) {
             throw new ApiException(409, 'billing_unavailable', 'This workspace has no billing account yet.');
         }
 

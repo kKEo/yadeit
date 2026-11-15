@@ -6,6 +6,8 @@ use App\Exceptions\ApiException;
 use App\Models\AiUsage;
 use App\Models\User;
 use App\Models\Workspace;
+use App\Simulator\CannedAiProvider;
+use App\Simulator\Simulator;
 use App\Support\Plans;
 
 /**
@@ -24,7 +26,9 @@ class AiService
             throw new ApiException(403, 'ai_disabled', 'AI features are switched off for this workspace. An admin can switch them on in the settings.');
         }
 
-        $key = $this->key($workspace);
+        // A simulated workspace is answered without a model, unless its run asks for the real one.
+        $canned = Simulator::usesCannedAi($workspace);
+        $key = $canned ? 'simulated' : $this->key($workspace);
 
         if ($key === null) {
             throw new ApiException(503, 'ai_not_configured', 'No AI provider key is configured. An admin can add one in the workspace settings.');
@@ -38,7 +42,7 @@ class AiService
             ]);
         }
 
-        $completion = $this->provider->complete($prompt, $key);
+        $completion = ($canned ? new CannedAiProvider : $this->provider)->complete($prompt, $key);
 
         AiUsage::create([
             'workspace_id' => $workspace->id,

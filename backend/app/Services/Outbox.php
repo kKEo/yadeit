@@ -22,7 +22,9 @@ class Outbox
      */
     public function recipients(array $filter): Builder
     {
-        $query = User::query()->where('type', 'human')->whereNull('suspended_at')->whereNotNull('email_verified_at');
+        $query = User::query()->where('type', 'human')->whereNull('suspended_at')->whereNotNull('email_verified_at')
+            // Simulated people are nobody's audience.
+            ->whereNull('sim_run_id');
 
         if (! ($filter['important'] ?? false)) {
             $query->where('email_notifications', true);

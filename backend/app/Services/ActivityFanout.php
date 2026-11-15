@@ -10,6 +10,7 @@ use App\Models\WorkItem;
 use App\Models\Workspace;
 use App\Notifications\ItemActivity;
 use App\Support\CurrentWorkspace;
+use Closure;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -20,11 +21,36 @@ use Illuminate\Support\Facades\DB;
  */
 class ActivityFanout
 {
+    /** While a simulated team's starting backlog is written, nobody is told about every item of it. */
+    private static bool $muted = false;
+
     public function __construct(private CurrentWorkspace $current) {}
+
+    /**
+     * @template T
+     *
+     * @param  Closure(): T  $callback
+     * @return T
+     */
+    public static function muted(Closure $callback): mixed
+    {
+        $before = self::$muted;
+        self::$muted = true;
+
+        try {
+            return $callback();
+        } finally {
+            self::$muted = $before;
+        }
+    }
 
     /** @param  array<string, mixed>|null  $changes */
     public function dispatch(WorkItem $item, string $event, ?int $actorId, ?array $changes): void
     {
+        if (self::$muted) {
+            return;
+        }
+
         // Resolved now: by the time the callback runs, the request's workspace context may be gone.
         $key = $item->key;
         $workspace = Workspace::findOrFail($item->workspace_id);

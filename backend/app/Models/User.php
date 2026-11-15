@@ -23,6 +23,8 @@ use Laravel\Sanctum\TransientToken;
  * @property Carbon|null $email_verified_at
  * @property bool $is_operator
  * @property Carbon|null $suspended_at
+ * @property int|null $sim_run_id
+ * @property int|null $workspace_id
  * @property-read User|null $owner
  */
 #[Fillable(['name', 'email', 'password', 'locale', 'email_notifications'])]
@@ -33,6 +35,16 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens, HasFactory, Notifiable;
 
     public const LOCALES = ['en', 'pl'];
+
+    protected static function booted(): void
+    {
+        // An agent made inside a simulated workspace is simulated too.
+        static::creating(function (User $user): void {
+            if ($user->sim_run_id === null && $user->workspace_id !== null) {
+                $user->sim_run_id = Workspace::query()->whereKey($user->workspace_id)->value('sim_run_id');
+            }
+        });
+    }
 
     /** @var array<string, mixed> */
     protected $attributes = ['locale' => 'en', 'email_notifications' => true, 'type' => 'human'];
