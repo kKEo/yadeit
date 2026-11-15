@@ -30,6 +30,7 @@ use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceExportController;
+use App\Simulator\Http\RunnerController;
 use App\Simulator\Http\SimStatusController;
 use App\Support\Health;
 use Illuminate\Support\Facades\Route;
@@ -69,6 +70,14 @@ Route::get('public/pages/{token}', [PageController::class, 'publicShow'])
 Route::prefix('public/feedback/{token}')->where(['token' => '[A-Za-z0-9]{20,64}'])->group(function () {
     Route::get('/', [PublicFeedbackController::class, 'show'])->middleware('throttle:auth')->name('feedback.public.show');
     Route::post('/', [PublicFeedbackController::class, 'store'])->middleware('throttle:public-feedback')->name('feedback.public.store');
+});
+
+// What the runners of the Traffic lab talk to. Signed in with the token of their run; absent unless the lab is on.
+Route::prefix('sim/runner')->middleware(['sim.enabled', 'sim.runner'])->group(function () {
+    Route::post('register', [RunnerController::class, 'register'])->name('sim.runner.register');
+    Route::post('poll', [RunnerController::class, 'poll'])->name('sim.runner.poll');
+    Route::get('mailbox', [RunnerController::class, 'mailbox'])->name('sim.runner.mailbox');
+    Route::post('teams/{team}/ready', [RunnerController::class, 'teamReady'])->whereNumber('team')->name('sim.runner.team-ready');
 });
 
 Route::get('invitations/{token}', [InvitationController::class, 'preview'])

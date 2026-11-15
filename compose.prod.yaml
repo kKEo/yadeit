@@ -23,6 +23,9 @@ x-app: &app
     DB_HOST: db
     DB_PORT: 5432
     BACKUP_HEARTBEAT: /backups/last-success
+    # The Traffic lab (docs/traffic-lab.md). Off unless both are set to true.
+    SIMULATOR_ENABLED: ${SIMULATOR_ENABLED:-false}
+    SIMULATOR_ALLOW_PRODUCTION: ${SIMULATOR_ALLOW_PRODUCTION:-false}
   volumes:
     - storage:/app/storage
     - backups:/backups:ro
@@ -71,6 +74,21 @@ services:
     command: ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
     healthcheck:
       disable: true
+    depends_on:
+      app:
+        condition: service_healthy
+
+  # A runner of the Traffic lab: plays simulated teams against the app. Only with  --profile sim
+  # and the token of a run (php artisan sim:start). For numbers that matter, run it on another machine.
+  simulator:
+    profiles: ["sim"]
+    image: yadeit-simulator:latest
+    build: ./simulator
+    environment:
+      SIM_TARGET: http://app:8080
+      SIM_TOKEN: ${SIM_TOKEN:-}
+      SIM_NAME: ${SIM_NAME:-compose}
+      SIM_MAX_ERROR_RATE: ${SIM_MAX_ERROR_RATE:-0.01}
     depends_on:
       app:
         condition: service_healthy

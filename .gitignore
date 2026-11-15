@@ -14,3 +14,4 @@
 
 # Production-like settings of the local Docker stack hold generated secrets.
 .env.docker
+.env

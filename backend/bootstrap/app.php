@@ -7,6 +7,7 @@ use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\EnsureOperator;
 use App\Http\Middleware\Idempotency;
 use App\Http\Middleware\ResolveWorkspace;
+use App\Simulator\Http\AuthenticateRunner;
 use App\Simulator\Http\EnsureSimulatorEnabled;
 use App\Simulator\Http\SimTraffic;
 use Illuminate\Foundation\Application;
@@ -30,7 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
 
         // The workspace must be known before tenant models are bound from the route.
-        $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class, 'token.scope' => EnforceTokenScope::class, 'active' => EnsureAccountActive::class, 'operator' => EnsureOperator::class, 'sim.enabled' => EnsureSimulatorEnabled::class]);
+        $middleware->alias(['workspace' => ResolveWorkspace::class, 'idempotent' => Idempotency::class, 'token.scope' => EnforceTokenScope::class, 'active' => EnsureAccountActive::class, 'operator' => EnsureOperator::class, 'sim.enabled' => EnsureSimulatorEnabled::class, 'sim.runner' => AuthenticateRunner::class]);
         // First of all, so that rate limits already know a simulated request when they count it.
         $middleware->prepend(SimTraffic::class);
         // There is no sign-in page on this side: a signed-out request gets a 401, also when a browser asks (a download link).
