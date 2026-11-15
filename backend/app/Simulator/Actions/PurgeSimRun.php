@@ -3,7 +3,9 @@
 namespace App\Simulator\Actions;
 
 use App\Models\Workspace;
+use App\Simulator\Models\SimMetricBucket;
 use App\Simulator\Models\SimRun;
+use App\Simulator\SimReport;
 use App\Simulator\Simulator;
 use Illuminate\Support\Facades\DB;
 
@@ -17,6 +19,11 @@ class PurgeSimRun
 {
     public function handle(SimRun $run, bool $forget = false): void
     {
+        // The numbers go with the purge; what they added up to stays on the run.
+        if ($run->summary === null || SimMetricBucket::query()->where('run_id', $run->id)->exists()) {
+            app(SimReport::class)->save($run);
+        }
+
         $workspaceIds = Workspace::query()->where('sim_run_id', $run->id)->pluck('id');
         $userIds = DB::table('users')->where('sim_run_id', $run->id)
             ->when($workspaceIds->isNotEmpty(), fn ($q) => $q->orWhereIn('workspace_id', $workspaceIds))->pluck('id');

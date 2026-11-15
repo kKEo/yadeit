@@ -77,6 +77,7 @@ Route::prefix('sim/runner')->middleware(['sim.enabled', 'sim.runner'])->group(fu
     Route::post('register', [RunnerController::class, 'register'])->name('sim.runner.register');
     Route::post('poll', [RunnerController::class, 'poll'])->name('sim.runner.poll');
     Route::get('mailbox', [RunnerController::class, 'mailbox'])->name('sim.runner.mailbox');
+    Route::post('metrics', [RunnerController::class, 'metrics'])->name('sim.runner.metrics');
     Route::post('teams/{team}/ready', [RunnerController::class, 'teamReady'])->whereNumber('team')->name('sim.runner.team-ready');
 });
 

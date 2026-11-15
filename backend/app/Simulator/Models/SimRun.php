@@ -15,6 +15,8 @@ use Illuminate\Support\Str;
  * @property string $secret
  * @property int $speed
  * @property int $seed
+ * @property int $ai_tokens_used
+ * @property array<string, mixed>|null $summary
  * @property Carbon|null $finished_at
  * @property Carbon|null $started_at
  * @property string|null $runner_token_hash

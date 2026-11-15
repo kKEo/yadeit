@@ -5,8 +5,11 @@ namespace App\Simulator;
 use App\Exceptions\ApiException;
 use App\Models\User;
 use App\Simulator\Actions\ProvisionSimTeam;
+use App\Simulator\Models\SimMetricBucket;
 use App\Simulator\Models\SimRun;
+use App\Simulator\Models\SimRunner;
 use App\Simulator\Models\SimTeam;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Random\Engine\Mt19937;
 use Random\Randomizer;
@@ -32,9 +35,13 @@ class SimRuns
         'intensity' => 1.0,
         'seed' => 1,
         'pack_id' => null,
+        // When to give up by itself: this share of requests failing over a minute, or no runner heard for this long.
+        'stop' => ['error_rate' => 0.5, 'runner_silence_seconds' => 90],
+        // What the verdict is measured against (see SimReport::THRESHOLDS).
+        'thresholds' => [],
     ];
 
-    public function __construct(private ProvisionSimTeam $provision) {}
+    public function __construct(private ProvisionSimTeam $provision, private SimReport $reports) {}
 
     /**
      * Creates the run with its teams and returns it with the token its runners sign in with.
@@ -90,6 +97,7 @@ class SimRuns
     {
         if ($run->status->isActive()) {
             $run->update(['status' => $as, 'stop_reason' => mb_substr($reason, 0, 200), 'finished_at' => now()]);
+            $this->reports->save($run);
         }
 
         return $run;
@@ -103,13 +111,48 @@ class SimRuns
         ))->orderByDesc('id')->first();
     }
 
-    /** Ends the run when its time is up. Called whenever a runner checks in. */
+    /**
+     * Ends the run when a stop rule applies: its time is up, the installation
+     * is failing, its runners are gone, or the AI budget is spent. Called
+     * whenever a runner checks in or reports, and once a minute by the scheduler.
+     */
     public function enforceLimits(SimRun $run): void
     {
+        if (! $run->status->isActive() || $run->started_at === null) {
+            return;
+        }
+
         $minutes = (int) data_get($run->config, 'duration_minutes');
 
-        if ($run->status->isActive() && $run->started_at !== null && $run->started_at->copy()->addMinutes($minutes)->isPast()) {
+        if ($run->started_at->copy()->addMinutes($minutes)->isPast()) {
             $this->stop($run, "Ran for its {$minutes} minutes.");
+
+            return;
+        }
+
+        $recent = SimMetricBucket::query()->where('run_id', $run->id)->where('kind', 'endpoint')->where('bucket_at', '>=', now()->subSeconds(60));
+        $requests = (int) (clone $recent)->sum('count');
+        $limit = (float) data_get($run->config, 'stop.error_rate', 0.5);
+
+        if ($requests >= 50 && (int) (clone $recent)->sum('errors') / $requests > $limit) {
+            $this->stop($run, sprintf('More than %d%% of requests failed over the last minute.', $limit * 100), SimRunStatus::Aborted);
+
+            return;
+        }
+
+        $silence = (int) data_get($run->config, 'stop.runner_silence_seconds', 90);
+        $lastSeen = SimRunner::query()->where('run_id', $run->id)->max('last_seen_at');
+
+        if ($lastSeen !== null && Carbon::parse($lastSeen)->addSeconds($silence)->isPast()) {
+            $this->stop($run, "No runner has been heard for {$silence} seconds.", SimRunStatus::Failed);
+
+            return;
+        }
+
+        $budget = (int) data_get($run->config, 'ai.token_budget', 0);
+
+        if ($budget > 0 && $run->ai_tokens_used >= $budget) {
+            $this->stop($run, 'The AI token budget of the run is spent.');
         }
     }
 

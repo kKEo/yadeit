@@ -1,4 +1,5 @@
 import type { DayMode } from './clock.ts'
+import type { Report } from './metrics.ts'
 
 export interface RunConfig {
   teams: number
@@ -40,7 +41,7 @@ export interface Pack {
   [key: string]: unknown
 }
 
-export interface Registration { runner_id: number; run: RunState; origin: string; pack: Pack }
+export interface Registration { runner_id: number; run: RunState; origin: string; pack: Pack; histogram_bounds: number[]; step_seconds: number }
 
 const ACTIVE = ['provisioning', 'running', 'paused', 'stopping']
 export const isActive = (run: RunState) => ACTIVE.includes(run.status)
@@ -72,6 +73,10 @@ export class Control {
       await new Promise((resolve) => setTimeout(resolve, 250))
     }
     throw new Error(`No ${kind} message arrived for ${email}`)
+  }
+
+  metrics(report: Report): Promise<{ status: string }> {
+    return this.call('POST', '/metrics', report)
   }
 
   teamReady(teamId: number): Promise<{ status: string }> {

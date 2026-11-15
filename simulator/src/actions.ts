@@ -10,13 +10,13 @@ import type { Member } from './member.ts'
  * web app sends for the same thing (see docs/traffic-lab.md), in the same
  * order, in parallel where the app sends them in parallel.
  */
-export const ACTIONS = {
+export const BASIC = {
   /** Sign in, then what the app loads when it starts. */
   async signIn(m: Member) {
     await m.session.csrfCookie()
     await m.session.post('/auth/login', { email: m.plan.email, password: m.plan.password })
     m.signedIn = true
-    await ACTIONS.appStart(m)
+    await BASIC.appStart(m)
   },
 
   /** A page reload: the account, then the workspace shell and the items page together. */
@@ -27,7 +27,7 @@ export const ACTIONS = {
       m.session.get(`${m.R}/views`),
       m.session.get(`${m.R}/inbox?unread=1&limit=1`),
       m.session.get<ListResponse<WorkspaceMember>>(`${m.R}/members`),
-      ACTIONS.openItems(m),
+      BASIC.openItems(m),
     ])
     m.people = people.data.data
   },
@@ -138,13 +138,13 @@ export const ACTIONS = {
   },
 
   async openDoc(m: Member) {
-    if (m.pages.length === 0) await ACTIONS.docs(m)
+    if (m.pages.length === 0) await BASIC.docs(m)
     const page = m.dataRng.pick(m.pages)
     if (page) await Promise.all([m.session.get(`${m.R}/pages/${page.id}`), loadProjects(m, true)])
   },
 
   async editDoc(m: Member) {
-    if (m.pages.length === 0) await ACTIONS.docs(m)
+    if (m.pages.length === 0) await BASIC.docs(m)
     const summary = m.dataRng.pick(m.pages)
     if (!summary) return
 
@@ -176,7 +176,7 @@ export const ACTIONS = {
 
   /** Working through the feedback inbox: most becomes an item, some is declined. */
   async triage(m: Member) {
-    await ACTIONS.feedbackList(m)
+    await BASIC.feedbackList(m)
     const entry = m.feedback.shift()
     if (!entry) return
 
@@ -199,24 +199,22 @@ export const ACTIONS = {
   },
 } satisfies Record<string, (m: Member) => Promise<unknown>>
 
-export type ActionName = Exclude<keyof typeof ACTIONS, 'signIn'>
-
-async function listItems(m: Member, filters: string): Promise<Item[]> {
+export async function listItems(m: Member, filters: string): Promise<Item[]> {
   return (await m.session.get<ListResponse<Item>>(`${m.R}/items?limit=50${filters}&sort=-updated_at`)).data.data
 }
 
 /** The project list is cached by the app for a few seconds; here it is fetched when missing or when a page always asks for it. */
-async function loadProjects(m: Member, always = false): Promise<Project[]> {
+export async function loadProjects(m: Member, always = false): Promise<Project[]> {
   if (always || m.projects.length === 0) m.projects = (await m.session.get<ListResponse<Project>>(`${m.R}/projects`)).data.data
   return m.projects
 }
 
-async function someItem(m: Member): Promise<Item | undefined> {
-  if (m.items.length === 0) await ACTIONS.openItems(m)
+export async function someItem(m: Member): Promise<Item | undefined> {
+  if (m.items.length === 0) await BASIC.openItems(m)
   return m.dataRng.pick(m.items)
 }
 
-async function openDetail(m: Member, item: { key: string; project: { key: string } } | undefined): Promise<ItemDetail | null> {
+export async function openDetail(m: Member, item: { key: string; project: { key: string } } | undefined): Promise<ItemDetail | null> {
   if (!item) return null
 
   // Deleted by a teammate since the list was loaded: the app shows "not found" and moves on.

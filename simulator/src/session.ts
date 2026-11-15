@@ -1,4 +1,4 @@
-import type { Recorder } from './metrics.ts'
+import type { Recorder, ServerTiming } from './metrics.ts'
 
 /** A request the server refused in a way the action did not expect. */
 export class ApiFailure extends Error {
@@ -110,7 +110,7 @@ export class Session {
     const ms = performance.now() - started
     const expected = response.ok || (options.allow ?? []).includes(response.status)
     // Only the server failing counts against the endpoint; a refusal the action expects is an answer.
-    this.recorder.endpoint(name, ms, expected && response.status < 500)
+    this.recorder.endpoint(name, ms, expected && response.status < 500, serverTiming(response.headers.get('Server-Timing')))
 
     let data: unknown = null
     if (text !== '') {
@@ -128,6 +128,15 @@ export class Session {
 
     return { status: response.status, data: data as T, headers: response.headers }
   }
+}
+
+/** What the server said about its own work on a simulated request: `app;dur=12.3, db;dur=4.5, queries;desc="7"`. */
+export function serverTiming(header: string | null): ServerTiming | undefined {
+  if (!header) return undefined
+  const app = /app;dur=([\d.]+)/.exec(header)
+  const db = /db;dur=([\d.]+)/.exec(header)
+  const queries = /queries;desc="?(\d+)/.exec(header)
+  return app ? { app: Number(app[1]), db: Number(db?.[1] ?? 0), queries: Number(queries?.[1] ?? 0) } : undefined
 }
 
 /** The address with everything that differs between teams and items taken out, so requests add up per endpoint. */

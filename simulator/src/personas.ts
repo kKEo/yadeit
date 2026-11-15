@@ -1,4 +1,4 @@
-import type { ActionName } from './actions.ts'
+import type { ActionName } from './catalogue.ts'
 import type { MemberPlan } from './control.ts'
 
 export interface Persona {
@@ -18,6 +18,7 @@ export const PERSONAS: Record<string, Persona> = {
     weights: {
       appStart: 2, openItems: 14, openMine: 4, filterItems: 4, openItem: 14, createItem: 4, moveItem: 3, editItem: 3, comment: 3,
       inbox: 6, search: 3, docs: 3, openDoc: 2, editDoc: 1, createDoc: 0.5, feedbackList: 3, triage: 2, members: 2, settings: 1,
+      flowFeedback: 0.6, flowDoc: 0.3, flowIsolation: 0.3,
     },
   },
   developer: {
@@ -25,6 +26,7 @@ export const PERSONAS: Record<string, Persona> = {
     weights: {
       appStart: 2, openItems: 14, openMine: 8, filterItems: 3, openItem: 18, createItem: 2, moveItem: 6, editItem: 1, comment: 5,
       attach: 1, inbox: 6, search: 4, docs: 2, openDoc: 2, sendFeedback: 0.5,
+      flowLifecycle: 1, flowNotify: 0.7, flowSearch: 0.5, flowIsolation: 0.2,
     },
   },
   designer: {
@@ -32,16 +34,17 @@ export const PERSONAS: Record<string, Persona> = {
     weights: {
       appStart: 2, openItems: 12, openMine: 6, filterItems: 3, openItem: 16, createItem: 2, moveItem: 4, comment: 5, attach: 3,
       inbox: 5, search: 3, docs: 4, openDoc: 4, editDoc: 2, createDoc: 1, sendFeedback: 0.5,
+      flowDoc: 0.8, flowLifecycle: 0.5,
     },
   },
   client: {
     pause: 120,
-    weights: { appStart: 2, openItems: 10, openItem: 12, comment: 3, sendFeedback: 2, inbox: 4, search: 2, docs: 3, openDoc: 3 },
+    weights: { appStart: 2, openItems: 10, openItem: 12, comment: 3, sendFeedback: 2, inbox: 4, search: 2, docs: 3, openDoc: 3, flowFeedback: 0.5, flowIsolation: 0.4 },
   },
 }
 
 /** Actions a guest's role does not allow; a guest persona never draws them. */
-const NOT_FOR_GUESTS: ActionName[] = ['createItem', 'moveItem', 'editItem', 'attach', 'editDoc', 'createDoc', 'triage', 'feedbackList', 'settings']
+const NOT_FOR_GUESTS: ActionName[] = ['createItem', 'moveItem', 'editItem', 'attach', 'editDoc', 'createDoc', 'triage', 'feedbackList', 'settings', 'flowLifecycle', 'flowNotify', 'flowSearch', 'flowDoc']
 const ADMIN_ONLY: ActionName[] = ['settings']
 
 export function weightsFor(persona: Persona, role: MemberPlan['role']): Partial<Record<ActionName, number>> {

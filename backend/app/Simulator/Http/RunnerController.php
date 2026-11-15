@@ -10,10 +10,13 @@ use App\Simulator\Models\SimMember;
 use App\Simulator\Models\SimRun;
 use App\Simulator\Models\SimRunner;
 use App\Simulator\Models\SimTeam;
+use App\Simulator\SimMetrics;
+use App\Simulator\SimReport;
 use App\Simulator\SimRuns;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 /**
  * What a runner talks to: it registers, is told which teams to play and how
@@ -24,7 +27,7 @@ class RunnerController extends Controller
     /** A runner that has not checked in for this long has its teams given to another. */
     private const STALE_SECONDS = 20;
 
-    public function __construct(private SimRuns $runs) {}
+    public function __construct(private SimRuns $runs, private SimMetrics $metrics, private SimReport $reports) {}
 
     public function register(Request $request): JsonResponse
     {
@@ -39,6 +42,9 @@ class RunnerController extends Controller
             // Requests of simulated people must look like the web app's, or they get no session.
             'origin' => rtrim((string) config('app.frontend_url'), '/'),
             'pack' => ContentPack::load(data_get($run->config, 'pack_id'))->content,
+            // Runners sort latencies into these buckets, so that their numbers add up.
+            'histogram_bounds' => SimMetrics::BOUNDS,
+            'step_seconds' => SimMetrics::STEP_SECONDS,
         ]], 201);
     }
 
@@ -98,6 +104,46 @@ class RunnerController extends Controller
             ->where('kind', $data['kind'])->orderByDesc('id')->first();
 
         return response()->json(['data' => $mail === null ? null : ['subject' => $mail->subject, 'links' => $mail->links, 'created_at' => $mail->created_at]]);
+    }
+
+    /** What a runner measured since it last reported, and what its checks found wrong. */
+    public function metrics(Request $request): JsonResponse
+    {
+        $run = $this->run($request);
+        $size = count(SimMetrics::BOUNDS) + 1;
+
+        $data = $request->validate([
+            'buckets' => ['present', 'array', 'max:5000'],
+            'buckets.*.at' => ['required', 'integer', 'min:0'],
+            'buckets.*.kind' => ['required', Rule::in(SimMetrics::KINDS)],
+            'buckets.*.name' => ['required', 'string', 'max:120'],
+            'buckets.*.count' => ['required', 'integer', 'min:0'],
+            'buckets.*.errors' => ['sometimes', 'integer', 'min:0'],
+            'buckets.*.sum_ms' => ['sometimes', 'numeric', 'min:0'],
+            'buckets.*.max_ms' => ['sometimes', 'numeric', 'min:0'],
+            'buckets.*.histogram' => ['sometimes', 'array', "size:{$size}"],
+            'buckets.*.histogram.*' => ['integer', 'min:0'],
+            'buckets.*.extra' => ['sometimes', 'array', 'max:8'],
+            'buckets.*.extra.*' => ['numeric'],
+            'findings' => ['sometimes', 'array', 'max:200'],
+            'findings.*.flow' => ['required', 'string', 'max:40'],
+            'findings.*.step' => ['sometimes', 'nullable', 'string', 'max:60'],
+            'findings.*.severity' => ['sometimes', Rule::in(['error', 'warning', 'note'])],
+            'findings.*.message' => ['required', 'string', 'max:2000'],
+            'findings.*.team_id' => ['sometimes', 'nullable', 'integer'],
+            'findings.*.member_id' => ['sometimes', 'nullable', 'integer'],
+            'findings.*.details' => ['sometimes', 'nullable', 'array'],
+        ]);
+
+        $this->metrics->ingest($run, $data['buckets'], $data['findings'] ?? []);
+        $this->runs->enforceLimits($run);
+
+        // What arrives after the end still belongs in the report.
+        if (! $run->refresh()->status->isActive()) {
+            $this->reports->save($run);
+        }
+
+        return response()->json(['data' => ['status' => $run->status->value]]);
     }
 
     /** A team that signed up by itself reports that it exists; the run then knows its workspace and accounts. */

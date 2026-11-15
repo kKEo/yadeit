@@ -1,18 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { ACTIONS } from './actions.ts'
+import { ACTIONS } from './catalogue.ts'
 import type { MemberPlan } from './control.ts'
 import { Member } from './member.ts'
 import { Recorder } from './metrics.ts'
 import { PERSONAS, weightsFor } from './personas.ts'
 import { Rng } from './rng.ts'
-import { endpointName, Session } from './session.ts'
+import { slot } from './metrics.ts'
+import { endpointName, serverTiming, Session } from './session.ts'
 
 const pack = { projects: [], comments: [], pages: [], feedback: [] }
 
-function member(id: number, persona: string, role: MemberPlan['role'], seed = 7): Member {
-  const plan: MemberPlan = { id, name: 'A', persona, role, kind: 'scripted', email: `m${id}@sim.invalid`, password: 'x', header: 'h' }
-  const recorder = new Recorder()
-  return new Member(plan, { id: 1, name: 'T', slug: 't', pack }, new Session('http://localhost', 'http://localhost', 'h', recorder), recorder, seed, 1)
+function member(id: number, persona: string, role: MemberPlan['role'], seed = 7, run = 1): Member {
+  const plan: MemberPlan = { id: id + run * 1000, name: 'A', persona, role, kind: 'scripted', email: `r${run}-t1-m${id}@sim.invalid`, password: 'x', header: 'h' }
+  const recorder = new Recorder([10, 100], 10)
+  return new Member(plan, { id: 1, name: 'T', slug: 't', pack, members: [], visitor: new Session('http://localhost', 'http://localhost', 'v', recorder), others: () => [] }, new Session('http://localhost', 'http://localhost', 'h', recorder), recorder, seed, 1)
 }
 
 const steps = (m: Member, n = 200) => Array.from({ length: n }, () => m.next())
@@ -20,6 +21,10 @@ const steps = (m: Member, n = 200) => Array.from({ length: n }, () => m.next())
 describe('what a member does next', () => {
   it('is the same sequence for the same seed', () => {
     expect(steps(member(3, 'developer', 'member'))).toEqual(steps(member(3, 'developer', 'member')))
+  })
+
+  it('does not depend on the run or on database ids, only on the seed and the place in the team', () => {
+    expect(steps(member(3, 'developer', 'member', 7, 1))).toEqual(steps(member(3, 'developer', 'member', 7, 2)))
   })
 
   it('differs between members and between seeds', () => {
@@ -64,6 +69,34 @@ describe('the catalogue', () => {
     expect(endpointName('/api/v1/workspaces/acme/inbox/41')).toBe('/api/v1/workspaces/{workspace}/inbox/{id}')
     expect(endpointName('/api/v1/invitations/AbCdEfGhIjKlMnOpQrStUvWxYz012345/accept')).toBe('/api/v1/invitations/{token}/accept')
     expect(endpointName('/api/v1/me')).toBe('/api/v1/me')
+  })
+})
+
+describe('Recorder', () => {
+  it('sorts latencies into the buckets the coordinator gave it', () => {
+    const bounds = [10, 100, 1000]
+    expect([5, 10, 11, 1000, 5000].map((ms) => slot(bounds, ms))).toEqual([0, 0, 1, 2, 3])
+  })
+
+  it('hands over what it measured once, with the server\'s own timing added up', () => {
+    const recorder = new Recorder([10, 100], 10)
+    recorder.endpoint('GET /x', 5, true, { app: 3, db: 1, queries: 4 })
+    recorder.endpoint('GET /x', 50, false, { app: 30, db: 10, queries: 6 })
+    recorder.flow('itemLifecycle', 400, false)
+    recorder.finding({ flow: 'itemLifecycle', step: 'create', severity: 'error', message: 'broken' })
+
+    const report = recorder.drain()
+    const x = report.buckets.find((b) => b.name === 'GET /x')!
+    expect(x).toMatchObject({ kind: 'endpoint', count: 2, errors: 1, max_ms: 50, histogram: [1, 1, 0], extra: { timed: 2, server_ms: 33, db_ms: 11, queries: 10 } })
+    expect(report.findings).toHaveLength(1)
+    expect(recorder.drain()).toEqual({ buckets: [], findings: [] })
+    // The running totals for the summary are kept.
+    expect(recorder.totals(recorder.endpoints).count).toBe(2)
+  })
+
+  it('reads the Server-Timing header', () => {
+    expect(serverTiming('app;dur=12.5, db;dur=4.0, queries;desc="7"')).toEqual({ app: 12.5, db: 4, queries: 7 })
+    expect(serverTiming(null)).toBeUndefined()
   })
 })
 

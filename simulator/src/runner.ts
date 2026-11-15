@@ -1,5 +1,5 @@
 import { hostname } from 'node:os'
-import type { ActionName } from './actions.ts'
+import type { ActionName } from './catalogue.ts'
 import { SimClock } from './clock.ts'
 import { Control, isActive, type Registration, type RunState, type TeamPlan } from './control.ts'
 import { Member, type TeamContext } from './member.ts'
@@ -19,10 +19,11 @@ const TICK_MS = 100
 export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Outcome> {
   const control = new Control(options.target, options.token)
   const registration: Registration = await control.register(options.name, hostname())
-  const recorder = new Recorder()
+  const recorder = new Recorder(registration.histogram_bounds, registration.step_seconds)
   const clock = new SimClock(registration.run.speed)
   const scheduler = new Scheduler<ActionName>(clock, registration.run.config.day_mode, (ms) => recorder.lag(ms))
   const known = new Set<number>()
+  const contexts: TeamContext[] = []
   const pending: Promise<void>[] = []
   let state = registration.run
   let members = 0
@@ -31,11 +32,17 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
 
   const adopt = (team: TeamPlan, position: number): void => {
     known.add(team.id)
-    const context: TeamContext = { id: team.id, name: team.name, slug: team.workspace, pack: registration.pack }
+    const context: TeamContext = {
+      id: team.id, name: team.name, slug: team.workspace, pack: registration.pack, members: [],
+      visitor: new Session(options.target, registration.origin, team.visitor_header, recorder),
+      others: () => contexts.filter((other) => other !== context),
+    }
+    contexts.push(context)
     const people = team.members
       // Agents join in a later phase; until then only people are played.
       .filter((plan) => plan.kind !== 'agent')
       .map((plan) => new Member(plan, context, new Session(options.target, registration.origin, plan.header, recorder), recorder, state.seed, state.config.intensity))
+    context.members = people
     members += people.length
 
     // Teams join one after another over the ramp-up, each member a little after the one before.
@@ -52,7 +59,8 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
           await signUpTeam(control, people, team.id)
           recorder.flow('onboarding', performance.now() - started, true)
         } catch (error) {
-          recorder.flow('onboarding', performance.now() - started, false, `${team.name}: ${error instanceof Error ? error.message : String(error)}`)
+          recorder.flow('onboarding', performance.now() - started, false)
+          recorder.finding({ flow: 'onboarding', step: null, severity: 'error', team_id: team.id, message: error instanceof Error ? error.message : String(error) })
           return
         }
       }
@@ -61,6 +69,16 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
   }
 
   let lastPoll = 0
+  let lastReport = Date.now()
+  const send = async (): Promise<void> => {
+    const report = recorder.drain()
+    if (report.buckets.length === 0 && report.findings.length === 0) return
+    try {
+      await control.metrics(report)
+    } catch (error) {
+      options.log(`Could not report measurements: ${error instanceof Error ? error.message : String(error)}`)
+    }
+  }
   while (!stop.aborted) {
     if (Date.now() - lastPoll >= POLL_MS) {
       lastPoll = Date.now()
@@ -76,6 +94,11 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
       if (!isActive(state)) break
     }
 
+    if (Date.now() - lastReport >= registration.step_seconds * 1000) {
+      lastReport = Date.now()
+      void send()
+    }
+
     scheduler.tick()
     await sleep(TICK_MS, stop)
   }
@@ -83,6 +106,7 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
   // Let what is under way finish, but not for long.
   const deadline = Date.now() + 10_000
   while (scheduler.busy > 0 && Date.now() < deadline) await sleep(100)
+  await send()
 
   return { run: state, recorder, skipped: scheduler.skipped, teams: known.size, members }
 }

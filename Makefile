@@ -19,7 +19,7 @@ APP_COMPOSE = ENV_FILE=$(ENV_DOCKER) HTTP_PORT=$(HTTP_PORT) docker compose -p ya
 DOCS_PORT ?= $(or $(PORT),8000)
 SITE      := site
 
-.PHONY: app-up app-down app-reset app-logs app-ps app-shell app-operator db-up db-down docs-build docs-site sim-up sim-run sim-smoke sim-stop sim-down sim-logs
+.PHONY: app-up app-down app-reset app-logs app-ps app-shell app-operator db-up db-down docs-build docs-site sim-up sim-run sim-smoke sim-report sim-stop sim-down sim-logs
 
 # Settings for a local trial, generated once with fresh secrets. Mail is only logged, not sent.
 $(ENV_DOCKER):
@@ -100,8 +100,13 @@ sim-run: ## Start a run and play it: make sim-run TEAMS=5 SIZE=3-8 SPEED=50 MINU
 
 sim-smoke: sim-up ## Short check: 3 teams for 2 minutes at 10x; fails when actions or flows fail, then cleans up
 	@TOKEN=$$($(SIM_START) --teams=3 --size=2-5 --speed=10 --minutes=2 --ramp=10 --seed=$(SEED)) \
-	  && { SIM_TOKEN="$$TOKEN" $(SIM_PLAY) --smoke; status=$$?; \
-	       $(SIM_COMPOSE) exec -T app php artisan sim:stop --purge; exit $$status; }
+	  && { SIM_TOKEN="$$TOKEN" SIM_SELF_TEST=$(SELF_TEST) $(SIM_PLAY) --smoke; played=$$?; \
+	       $(SIM_COMPOSE) exec -T app php artisan sim:report; verdict=$$?; \
+	       $(SIM_COMPOSE) exec -T app php artisan sim:stop --purge; \
+	       test $$played -eq 0 -a $$verdict -eq 0; }
+
+sim-report: ## Show what the latest run measured, with its verdict
+	$(SIM_COMPOSE) exec -T app php artisan sim:report
 
 sim-stop: ## Stop the current run and remove everything it created
 	$(SIM_COMPOSE) exec -T app php artisan sim:stop --purge

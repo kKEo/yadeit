@@ -89,6 +89,8 @@ services:
       SIM_TOKEN: ${SIM_TOKEN:-}
       SIM_NAME: ${SIM_NAME:-compose}
       SIM_MAX_ERROR_RATE: ${SIM_MAX_ERROR_RATE:-0.01}
+      # 1 makes one flow check fail on purpose, to see the alarm work.
+      SIM_SELF_TEST: ${SIM_SELF_TEST:-}
     depends_on:
       app:
         condition: service_healthy
