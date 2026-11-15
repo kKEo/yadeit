@@ -1,0 +1,22 @@
+# Laid over compose.prod.yaml by the sim-* targets of the Makefile: the local stack with realtime
+# switched on, so that a Traffic lab run also covers websockets. The values are for a local trial only;
+# an installation that uses realtime sets its own REVERB_* settings in its environment file.
+x-realtime: &realtime
+  BROADCAST_CONNECTION: reverb
+  REVERB_APP_ID: yadeit-local
+  REVERB_APP_KEY: yadeit-local-key
+  REVERB_APP_SECRET: yadeit-local-secret
+  # Where the app publishes to and where runners connect: the reverb service of this stack.
+  REVERB_HOST: reverb
+  REVERB_PORT: "8080"
+  REVERB_SCHEME: http
+
+services:
+  app:
+    environment: *realtime
+  worker:
+    environment: *realtime
+  scheduler:
+    environment: *realtime
+  reverb:
+    environment: *realtime

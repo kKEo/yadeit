@@ -1,6 +1,7 @@
 import type { DocPageSummary, Feedback, Item, Me, Member as WorkspaceMember, Project } from '../../frontend/src/api/types.ts'
 import { ACTIONS, type ActionName } from './catalogue.ts'
-import type { MemberPlan, Pack, RunConfig } from './control.ts'
+import type { MemberPlan, Pack, RealtimeConfig, RunConfig } from './control.ts'
+import type { Socket } from './realtime.ts'
 import type { Recorder } from './metrics.ts'
 import { personaFor, weightsFor } from './personas.ts'
 import { Rng, seedFor } from './rng.ts'
@@ -17,8 +18,22 @@ export interface TeamContext {
   members: Member[]
   /** A browser nobody is signed in to: what the public sees. */
   visitor: Session
+  /** A fresh browser of someone else who is not signed in. */
+  newVisitor: () => Session
   /** The other teams this runner plays. */
   others: () => TeamContext[]
+  /** Where members open their websocket; null when realtime is off. */
+  realtime: RealtimeConfig | null
+  /** The numeric id of the workspace, which realtime channels are named after. */
+  workspaceId: number | null
+  /** Agents the lead created, with the token each works with. */
+  agents: { id: number; memberId: number; name: string; token: string; header: string }[]
+  /** Set once the lead has opened the public feedback form of a project. */
+  feedbackToken: string | null
+  /** Links of pages shared with the public. */
+  publicPages: string[]
+  /** Where the team's webhook sends to. */
+  sinkUrl: string
 }
 
 /**
@@ -65,6 +80,9 @@ export class Member {
   people: WorkspaceMember[] = []
   pages: DocPageSummary[] = []
   feedback: Feedback[] = []
+  /** The websocket the web app would hold open, and the item changes it has announced. */
+  socket: Socket | null = null
+  readonly heard: { key: string; at: number }[] = []
 
   constructor(plan: MemberPlan, team: TeamContext, session: Session, recorder: Recorder, runSeed: number, config: Pick<RunConfig, 'intensity' | 'disabled_actions' | 'personas'>) {
     this.plan = plan

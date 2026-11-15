@@ -247,3 +247,14 @@ it('prunes runs that ended before the retention period', function () {
     expect(SimRun::query()->pluck('id')->all())->toBe([$recent->id])
         ->and(Workspace::query()->count())->toBe(0);
 });
+
+it('gives a simulated caller as many minutes of allowance as its run packs into one', function () {
+    $run = simRun();
+    $run->update(['speed' => 3]);
+    $attempts = fn (string $header, int $times) => array_map(fn () => $this->withHeaders([Simulator::HEADER => $header])
+        ->postJson('/api/v1/auth/login', ['email' => fake()->unique()->safeEmail(), 'password' => 'wrong-password'])->status(), range(1, $times));
+
+    // Ten a minute for a real caller; at 3x a simulated one gets thirty, and not one more.
+    expect($attempts($run->headerFor('fast'), 30))->not->toContain(429)
+        ->and($attempts($run->headerFor('fast'), 1))->toBe([429]);
+});

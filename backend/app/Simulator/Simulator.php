@@ -61,10 +61,22 @@ class Simulator
         return $context !== null ? "sim:{$context->runId}:{$context->client}" : (string) $request->ip();
     }
 
+    /**
+     * How much more a simulated caller may do per minute than a real one. A
+     * run at 50x packs fifty minutes of one person's work into one minute, and
+     * limits count by the server's clock; without this every fast run would
+     * end in "too many requests" that no real person would ever see. At 1x
+     * the limits are exactly the real ones.
+     */
+    public static function allowance(Request $request, int $perMinute): int
+    {
+        return $perMinute * (self::context($request)->speed ?? 1);
+    }
+
     /** The only address a simulated workspace may send webhooks to. */
     public static function sinkUrl(): string
     {
-        return rtrim((string) config('app.url'), '/').'/api/v1/sim/sink';
+        return (string) (config('simulator.sink_url') ?: rtrim((string) config('app.url'), '/').'/api/v1/sim/sink');
     }
 
     public static function isSink(string $url): bool

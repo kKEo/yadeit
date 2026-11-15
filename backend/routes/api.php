@@ -33,6 +33,7 @@ use App\Http\Controllers\WorkspaceExportController;
 use App\Simulator\Http\RunnerController;
 use App\Simulator\Http\SimAdminController;
 use App\Simulator\Http\SimStatusController;
+use App\Simulator\Http\SinkController;
 use App\Support\Health;
 use Illuminate\Support\Facades\Route;
 
@@ -81,6 +82,9 @@ Route::prefix('sim/runner')->middleware(['sim.enabled', 'sim.runner'])->group(fu
     Route::post('metrics', [RunnerController::class, 'metrics'])->name('sim.runner.metrics');
     Route::post('teams/{team}/ready', [RunnerController::class, 'teamReady'])->whereNumber('team')->name('sim.runner.team-ready');
 });
+
+// Webhooks of simulated workspaces arrive here.
+Route::post('sim/sink', SinkController::class)->middleware('sim.enabled')->name('sim.sink');
 
 Route::get('invitations/{token}', [InvitationController::class, 'preview'])
     ->middleware('throttle:auth')->name('invitations.preview');

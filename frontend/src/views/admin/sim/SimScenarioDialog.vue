@@ -20,7 +20,7 @@ const emit = defineEmits<{ 'update:open': [value: boolean]; saved: [scenario: Si
 
 const { t } = useI18n()
 const form = useApiForm()
-const FLOWS = ['flowLifecycle', 'flowNotify', 'flowSearch', 'flowFeedback', 'flowDoc', 'flowIsolation'] as const
+const FLOWS = ['flowLifecycle', 'flowNotify', 'flowSearch', 'flowFeedback', 'flowDoc', 'flowIsolation', 'flowRealtime'] as const
 
 const name = ref('')
 const personas = ref('')

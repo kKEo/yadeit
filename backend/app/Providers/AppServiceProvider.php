@@ -59,11 +59,12 @@ class AppServiceProvider extends ServiceProvider
         Cashier::useSubscriptionModel(PlanSubscription::class);
         Cashier::useSubscriptionItemModel(PlanSubscriptionItem::class);
 
-        // Simulated people all come from the runner's address; Simulator::callerKey counts each of them on their own.
+        // Simulated people all come from the runner's address; Simulator::callerKey counts each of them on their own,
+        // and Simulator::allowance gives them as many minutes' worth as their run packs into one.
         // Per caller, and per account whoever calls: guessing one password from many addresses is slowed down too.
         RateLimiter::for('auth', fn (Request $request) => array_filter([
-            Limit::perMinute(10)->by(Simulator::callerKey($request)),
-            is_string($request->input('email')) ? Limit::perMinute(20)->by('email:'.sha1(mb_strtolower($request->input('email')))) : null,
+            Limit::perMinute(Simulator::allowance($request, 10))->by(Simulator::callerKey($request)),
+            is_string($request->input('email')) ? Limit::perMinute(Simulator::allowance($request, 20))->by('email:'.sha1(mb_strtolower($request->input('email')))) : null,
         ]));
         // The consent screen of an app connecting over OAuth: the person picks which of their agents it works as.
         Passport::authorizationView(function (array $parameters) {
@@ -95,10 +96,10 @@ class AppServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(CarbonInterval::day());
         Passport::refreshTokensExpireIn(CarbonInterval::days(30));
 
-        RateLimiter::for('public-feedback', fn (Request $request) => Limit::perMinute(5)->by(Simulator::callerKey($request)));
-        RateLimiter::for('mcp', fn (Request $request) => Limit::perMinute(120)->by($request->user()?->currentAccessToken()?->id ?: Simulator::callerKey($request)));
+        RateLimiter::for('public-feedback', fn (Request $request) => Limit::perMinute(Simulator::allowance($request, 5))->by(Simulator::callerKey($request)));
+        RateLimiter::for('mcp', fn (Request $request) => Limit::perMinute(Simulator::allowance($request, 120))->by($request->user()?->currentAccessToken()?->id ?: Simulator::callerKey($request)));
         // Each access token has its own allowance, so one busy agent cannot starve another.
-        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(300)->by(
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(Simulator::allowance($request, 300))->by(
             $request->bearerToken() !== null && $request->user()?->currentAccessToken()?->id
                 ? 'token:'.$request->user()->currentAccessToken()->id
                 : ($request->user()?->id ?: Simulator::callerKey($request))

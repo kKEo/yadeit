@@ -15,7 +15,7 @@ export class CheckFailure extends Error {
 
 type Steps = (label: string) => void
 
-const SKIP = Symbol('skip')
+export const SKIP = Symbol('skip')
 /** Makes one check fail on purpose, to see that a broken flow reaches the report: SIM_SELF_TEST=1. */
 const SELF_TEST = process.env.SIM_SELF_TEST === '1'
 
@@ -25,7 +25,7 @@ const SELF_TEST = process.env.SIM_SELF_TEST === '1'
  * then carries on. Returning SKIP means the journey could not be tried here
  * (no teammate signed in, no other team) and nothing is recorded.
  */
-async function flow(m: Member, name: string, body: (step: Steps) => Promise<typeof SKIP | void>): Promise<void> {
+export async function flow(m: Pick<Member, 'recorder' | 'team'> & { plan: { id: number } }, name: string, body: (step: Steps) => Promise<typeof SKIP | void>): Promise<void> {
   const started = performance.now()
   let current = 'start'
 
@@ -43,7 +43,7 @@ async function flow(m: Member, name: string, body: (step: Steps) => Promise<type
 }
 
 /** Asks again until `found` returns something, like a person refreshing a page; gives up after `seconds` of wall time. */
-async function eventually<T>(seconds: number, what: string, look: () => Promise<T | undefined | null | false>): Promise<T> {
+export async function eventually<T>(seconds: number, what: string, look: () => Promise<T | undefined | null | false>): Promise<T> {
   const deadline = Date.now() + seconds * 1000
   for (;;) {
     const result = await look()
@@ -53,7 +53,7 @@ async function eventually<T>(seconds: number, what: string, look: () => Promise<
   }
 }
 
-const tag = () => `zq${randomBytes(4).toString('hex')}`
+export const tag = () => `zq${randomBytes(4).toString('hex')}`
 
 async function createItem(m: Member, title: string, extra: Record<string, unknown> = {}): Promise<ItemDetail> {
   const project = m.dataRng.pick(await loadProjects(m))
@@ -70,7 +70,12 @@ export const FLOWS = {
 
     for (const state of ['In progress', 'In review', 'Done']) {
       step(`move to ${state}`)
-      await m.session.patch(path, { state, expected_version: item.version })
+      // A teammate, an agent or the nightly rollover may touch the item in between: then the app reloads and the person tries again.
+      const first = await m.session.patch(path, { state, expected_version: item.version }, { allow: [412] })
+      if (first.status === 412) {
+        item = (await m.session.get<ItemResponse<ItemDetail>>(path)).data.data
+        await m.session.patch(path, { state, expected_version: item.version })
+      }
       const read = (await m.session.get<ItemResponse<ItemDetail>>(path)).data.data
       if (read.state.name !== state) throw new CheckFailure(`Wrote state "${state}" but read back "${read.state.name}"`, { item: item.key })
       if (read.version <= item.version) throw new CheckFailure('The version did not increase after a change', { item: item.key, before: item.version, after: read.version })
@@ -149,6 +154,20 @@ export const FLOWS = {
     await m.session.patch(`${m.R}/pages/${page.id}`, { public: false, expected_version: page.version })
     const closed = await m.team.visitor.get(`/public/pages/${page.public_token}`, { allow: [404] })
     if (closed.status !== 404) throw new CheckFailure('The page still opens signed out after the link was withdrawn', { page: page.id, status: closed.status })
+  }),
+
+  /** A change by one member is announced to a teammate's open browser over the websocket. */
+  flowRealtime: (m: Member) => flow(m, 'changeToSocket', async (step) => {
+    const mate = m.team.members.find((other) => other !== m && other.socket?.ready)
+    if (!mate) return SKIP
+
+    step('change')
+    const item = await createItem(m, `Realtime check ${tag()}`)
+    const since = Date.now() - 2000
+
+    step('announcement')
+    await eventually(10, `No announcement of ${item.key} reached ${mate.plan.email}`, async () =>
+      mate.heard.some((event) => event.key === item.key && event.at >= since))
   }),
 
   /** Nobody sees another team's workspace, and a guest cannot write. Runs all the time, as a canary. */

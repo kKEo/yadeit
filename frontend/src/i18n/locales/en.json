@@ -1448,7 +1448,8 @@
       "flowSearch": "New item is found by search",
       "flowFeedback": "Feedback becomes an item",
       "flowDoc": "Public link of a doc",
-      "flowIsolation": "Teams cannot see each other"
+      "flowIsolation": "Teams cannot see each other",
+      "flowRealtime": "Change reaches an open browser"
     },
     "flowName": {
       "onboarding": "Sign-up to invited teammate",
@@ -1457,7 +1458,13 @@
       "createToSearch": "New item is found by search",
       "feedbackToItem": "Feedback becomes an item",
       "docPublicLink": "Public link of a doc",
-      "isolation": "Teams cannot see each other"
+      "isolation": "Teams cannot see each other",
+      "teamSetup": "Lead prepares the workspace",
+      "agentRun": "Agent takes an item to review",
+      "changeToSocket": "Change reaches an open browser",
+      "webhookDelivery": "Webhook arrives and verifies",
+      "publicFeedback": "Public feedback form",
+      "midnight": "Night: cycles and stale items"
     },
     "runs": {
       "title": "Runs",

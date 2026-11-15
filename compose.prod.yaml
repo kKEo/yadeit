@@ -27,6 +27,8 @@ x-app: &app
     SIMULATOR_ENABLED: ${SIMULATOR_ENABLED:-false}
     SIMULATOR_ALLOW_PRODUCTION: ${SIMULATOR_ALLOW_PRODUCTION:-false}
     SIMULATOR_RUNNER_TOKEN: ${SIMULATOR_RUNNER_TOKEN:-}
+    # Webhooks of simulated workspaces go to the app's own receiver; the worker reaches the app under this name.
+    SIMULATOR_SINK_URL: ${SIMULATOR_SINK_URL:-http://app:8080/api/v1/sim/sink}
   volumes:
     - storage:/app/storage
     - backups:/backups:ro

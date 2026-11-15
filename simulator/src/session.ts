@@ -21,6 +21,8 @@ export interface RequestOptions {
   headers?: Record<string, string>
   /** Statuses the caller handles itself; anything else outside 2xx throws. */
   allow?: number[]
+  /** What the request is counted under, when the address alone does not say (an MCP tool call). */
+  name?: string
 }
 
 const API = '/api/v1'
@@ -36,7 +38,7 @@ export class Session {
   private readonly origin: string
   private readonly simHeader: string
   private readonly recorder: Recorder
-  /** Sent as a bearer token instead of cookies: how agents sign in. */
+  /** Sent as a bearer token instead of cookies: how agents sign in. A client with a token is no browser and sends no Origin. */
   token: string | null = null
 
   constructor(target: string, origin: string, simHeader: string, recorder: Recorder) {
@@ -58,6 +60,11 @@ export class Session {
     return this.request<T>('PATCH', path, { ...options, body })
   }
 
+  /** A page or file of the web app itself, not of the API. */
+  page(path: string): Promise<Reply<string>> {
+    return this.request<string>('GET', path, { headers: { Accept: 'text/html,*/*' } }, '')
+  }
+
   /** The cookie that the XSRF header is read from; fetched before signing in, as the web app does. */
   async csrfCookie(): Promise<void> {
     await this.request('GET', '/sanctum/csrf-cookie', {}, '')
@@ -70,8 +77,7 @@ export class Session {
   async request<T>(method: string, path: string, options: RequestOptions = {}, prefix: string = API): Promise<Reply<T>> {
     const headers: Record<string, string> = {
       Accept: 'application/json',
-      Origin: this.origin,
-      Referer: `${this.origin}/`,
+      ...(this.token ? {} : { Origin: this.origin, Referer: `${this.origin}/` }),
       'X-Sim-Run': this.simHeader,
       ...options.headers,
     }
@@ -89,7 +95,7 @@ export class Session {
       body = JSON.stringify(options.body)
     }
 
-    const name = `${method} ${endpointName(prefix + path)}`
+    const name = options.name ?? `${method} ${endpointName(prefix + path)}`
     const started = performance.now()
     let response: Response
 
@@ -143,6 +149,7 @@ export function serverTiming(header: string | null): ServerTiming | undefined {
 export function endpointName(path: string): string {
   return path
     .replace(/\?.*$/, '')
+    .replace(/^\/assets\/.*$/, '/assets/{file}')
     .replace(/^(\/api\/v1\/workspaces\/)[^/]+/, '$1{workspace}')
     .replace(/\/[A-Z][A-Z0-9]{1,9}-\d+(?=\/|$)/g, '/{item}')
     .replace(/(\/projects\/)[A-Z][A-Z0-9]{1,9}(?=\/|$)/, '$1{project}')

@@ -85,6 +85,28 @@ class SimMetrics
     }
 
     /**
+     * A histogram holding one measurement.
+     *
+     * @return list<int>
+     */
+    public static function histogramOf(int $ms): array
+    {
+        $histogram = array_fill(0, count(self::BOUNDS) + 1, 0);
+        $slot = count(self::BOUNDS);
+
+        foreach (self::BOUNDS as $index => $bound) {
+            if ($ms <= $bound) {
+                $slot = $index;
+                break;
+            }
+        }
+
+        $histogram[$slot] = 1;
+
+        return $histogram;
+    }
+
+    /**
      * Adds two lists or maps of numbers, position by position.
      *
      * @param  array<array-key, int|float>  $a

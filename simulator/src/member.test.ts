@@ -13,7 +13,7 @@ const pack = { projects: [], comments: [], pages: [], feedback: [] }
 function member(id: number, persona: string, role: MemberPlan['role'], seed = 7, run = 1, config: ConstructorParameters<typeof Member>[5] = { intensity: 1 }): Member {
   const plan: MemberPlan = { id: id + run * 1000, name: 'A', persona, role, kind: 'scripted', email: `r${run}-t1-m${id}@sim.invalid`, password: 'x', header: 'h' }
   const recorder = new Recorder([10, 100], 10)
-  return new Member(plan, { id: 1, name: 'T', slug: 't', pack, members: [], visitor: new Session('http://localhost', 'http://localhost', 'v', recorder), others: () => [] }, new Session('http://localhost', 'http://localhost', 'h', recorder), recorder, seed, config)
+  return new Member(plan, { id: 1, name: 'T', slug: 't', pack, members: [], visitor: new Session('http://localhost', 'http://localhost', 'v', recorder), newVisitor: () => new Session('http://localhost', 'http://localhost', 'v', recorder), others: () => [], realtime: null, workspaceId: 1, agents: [], feedbackToken: null, publicPages: [], sinkUrl: '' }, new Session('http://localhost', 'http://localhost', 'h', recorder), recorder, seed, config)
 }
 
 const steps = (m: Member, n = 200) => Array.from({ length: n }, () => m.next())

@@ -52,7 +52,7 @@ describe('Scheduler', () => {
   it('starts an action when its moment has come and plans the next from the intended moment', () => {
     const clock = new SimClock(10, 0)
     const lags: number[] = []
-    const scheduler = new Scheduler<string>(clock, 'continuous', (ms) => lags.push(ms))
+    const scheduler = new Scheduler(clock, 'continuous', (ms) => lags.push(ms))
     const a = actor(100)
     scheduler.add(a, SIM_START + 50)
 
@@ -65,7 +65,7 @@ describe('Scheduler', () => {
 
   it('never runs two actions of one member at once', async () => {
     const clock = new SimClock(10, 0)
-    const scheduler = new Scheduler<string>(clock, 'continuous', () => {})
+    const scheduler = new Scheduler(clock, 'continuous', () => {})
     let release = () => {}
     const a = actor(10, new Promise<void>((resolve) => { release = resolve }))
     scheduler.add(a, SIM_START)
@@ -80,7 +80,7 @@ describe('Scheduler', () => {
 
   it('gives up catching up when far behind, and says so', () => {
     const clock = new SimClock(10, 0)
-    const scheduler = new Scheduler<string>(clock, 'continuous', () => {})
+    const scheduler = new Scheduler(clock, 'continuous', () => {})
     const a = actor(5)
     scheduler.add(a, SIM_START)
 
@@ -91,8 +91,46 @@ describe('Scheduler', () => {
 
   it('does nothing while the run is paused', () => {
     const clock = new SimClock(0, 0)
-    const scheduler = new Scheduler<string>(clock, 'continuous', () => {})
+    const scheduler = new Scheduler(clock, 'continuous', () => {})
     scheduler.add(actor(5), 0)
     expect(scheduler.tick(60_000)).toBe(0)
+  })
+})
+
+describe('nights in office-hours mode', () => {
+  it('can be skipped: the clock jumps forward and never back', async () => {
+    const { dayOf } = await import('./clock.ts')
+    const clock = new SimClock(10, 0)
+    clock.jumpTo(DAY + 9 * HOUR, 1000)
+    expect(clock.now(1000)).toBe(DAY + 9 * HOUR)
+    expect(clock.now(2000)).toBe(DAY + 9 * HOUR + 10)
+    clock.jumpTo(5 * HOUR, 2000)
+    expect(clock.now(2000)).toBe(DAY + 9 * HOUR + 10)
+    expect(dayOf(clock.now(2000))).toBe(1)
+  })
+})
+
+describe('skipping the night', () => {
+  it('moves everyone still due that evening to the morning, without counting it as late', () => {
+    const clock = new SimClock(100, 0)
+    const lags: number[] = []
+    const scheduler = new Scheduler(clock, 'workday', (ms) => lags.push(ms))
+    const late = { due: 0, busy: false, next: () => ({ action: 'x', pause: 60 }), act: () => Promise.resolve() }
+    scheduler.add(late, 16.99 * HOUR)
+
+    // 8 simulated hours after nine is five o'clock: 288 wall seconds at 100x.
+    expect(scheduler.skipNight(200_000)).toBe(false)
+    expect(scheduler.skipNight(288_001)).toBe(true)
+    expect(clock.now(288_001)).toBe(DAY + 9 * HOUR)
+    expect(late.due).toBe(DAY + 9 * HOUR)
+
+    scheduler.tick(288_001)
+    expect(lags).toEqual([0])
+    expect(scheduler.skipped).toBe(0)
+  })
+
+  it('leaves other day modes alone', () => {
+    const scheduler = new Scheduler(new SimClock(100, 0), 'realistic', () => {})
+    expect(scheduler.skipNight(400_000)).toBe(false)
   })
 })

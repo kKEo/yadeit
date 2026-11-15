@@ -33,7 +33,8 @@ export interface TeamPlan {
   onboarding: 'fast' | 'real'
   status: string
   workspace: string | null
-  visitor_header: string
+  /** Signed headers for people who are not signed in; each visit uses another. */
+  visitor_headers: string[]
   members: MemberPlan[]
 }
 
@@ -45,7 +46,15 @@ export interface Pack {
   [key: string]: unknown
 }
 
-export interface Registration { runner_id: number; run: RunState; origin: string; pack: Pack; histogram_bounds: number[]; step_seconds: number }
+export interface RealtimeConfig { key: string; host: string; port: number; scheme: string }
+
+export interface Registration {
+  runner_id: number; run: RunState; origin: string; pack: Pack; histogram_bounds: number[]; step_seconds: number
+  /** Where simulated workspaces send their webhooks. */
+  sink_url: string
+  /** Null when the installation has realtime switched off. */
+  realtime: RealtimeConfig | null
+}
 
 const ACTIVE = ['provisioning', 'running', 'paused', 'stopping']
 export const isActive = (run: RunState) => ACTIVE.includes(run.status)
@@ -73,8 +82,8 @@ export class Control {
     return this.call('POST', '/register', { name, host })
   }
 
-  poll(runnerId: number, lagMs: number, activity: Record<number, string> = {}): Promise<{ run: RunState; teams: TeamPlan[] }> {
-    return this.call('POST', '/poll', { runner_id: runnerId, lag_ms: Math.max(0, Math.round(lagMs)), activity })
+  poll(runnerId: number, lagMs: number, activity: Record<number, string> = {}, simDay = 0): Promise<{ run: RunState; teams: TeamPlan[] }> {
+    return this.call('POST', '/poll', { runner_id: runnerId, lag_ms: Math.max(0, Math.round(lagMs)), activity, sim_day: simDay })
   }
 
   /** Waits for a message to arrive, as a person waits for an email, and returns its first link. */

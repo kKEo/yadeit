@@ -79,7 +79,8 @@ app-operator: ## Make an account an operator: make app-operator EMAIL=you@exampl
 
 ##@ Traffic lab: simulated teams that load the local app (docs/traffic-lab.md)
 # The same stack with the lab switched on. Both switches are needed because the image runs as production.
-SIM_COMPOSE = SIMULATOR_ENABLED=true SIMULATOR_ALLOW_PRODUCTION=true $(APP_COMPOSE) --profile sim
+# compose.sim.yaml adds realtime (the reverb service), so that runs cover websockets too.
+SIM_COMPOSE = SIMULATOR_ENABLED=true SIMULATOR_ALLOW_PRODUCTION=true $(APP_COMPOSE) -f compose.sim.yaml --profile sim --profile realtime
 TEAMS   ?= 3
 SIZE    ?= 2-6
 SPEED   ?= 10
@@ -94,7 +95,7 @@ sim-up: $(ENV_DOCKER) ## Start the app with the Traffic lab on and a runner stan
 	$(SIM_COMPOSE) build app simulator
 	$(SIM_COMPOSE) up -d app worker scheduler db backup
 	$(SIM_COMPOSE) up -d --wait app
-	$(SIM_COMPOSE) up -d runner
+	$(SIM_COMPOSE) up -d reverb runner
 
 sim-run: ## Start a run and play it here: make sim-run TEAMS=5 SIZE=3-8 SPEED=50 MINUTES=15
 	@$(SIM_COMPOSE) stop runner >/dev/null 2>&1; TOKEN=$$($(SIM_START) --teams=$(TEAMS) --size=$(SIZE) --speed=$(SPEED) --minutes=$(MINUTES) --seed=$(SEED)) \
@@ -115,7 +116,7 @@ sim-stop: ## Stop the current run and remove everything it created
 
 sim-down: ## Switch the Traffic lab off again (the app keeps running)
 	-$(SIM_COMPOSE) exec -T app php artisan sim:stop --purge
-	-$(SIM_COMPOSE) stop runner
+	-$(SIM_COMPOSE) stop runner reverb
 	$(APP_COMPOSE) up -d app worker scheduler
 
 sim-logs: ## Follow the logs of the app and its worker during a run

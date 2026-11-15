@@ -59,6 +59,6 @@ class SimTraffic
             return null;
         }
 
-        return new SimContext($run->id, $m[2]);
+        return new SimContext($run->id, $m[2], max(1, $run->speed));
     }
 }

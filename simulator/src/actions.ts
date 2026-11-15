@@ -4,6 +4,7 @@ import type {
   Member as WorkspaceMember, Project, ProjectDetail,
 } from '../../frontend/src/api/types.ts'
 import type { Member } from './member.ts'
+import { Socket } from './realtime.ts'
 
 /**
  * Everything a simulated person can do. Each action sends the requests the
@@ -22,14 +23,25 @@ export const BASIC = {
   /** A page reload: the account, then the workspace shell and the items page together. */
   async appStart(m: Member) {
     m.me = (await m.session.get<ItemResponse<Me>>('/me')).data.data
-    const [, , , people] = await Promise.all([
-      m.session.get(m.R),
+    const [workspace, , , people] = await Promise.all([
+      m.session.get<ItemResponse<{ id: number }>>(m.R),
       m.session.get(`${m.R}/views`),
       m.session.get(`${m.R}/inbox?unread=1&limit=1`),
       m.session.get<ListResponse<WorkspaceMember>>(`${m.R}/members`),
       BASIC.openItems(m),
     ])
     m.people = people.data.data
+    m.team.workspaceId = workspace.data.data.id
+    await listen(m)
+  },
+
+  /** The lead hands an open item to one of the team's agents. */
+  async delegate(m: Member) {
+    const agent = m.dataRng.pick(m.team.agents)
+    const item = m.dataRng.pick(m.items.filter((i) => i.state.group === 'unstarted' && i.delegate === null))
+    if (!agent || !item) return
+    const detail = await openDetail(m, item)
+    if (detail) await change(m, detail, { delegate: agent.id })
   },
 
   async openItems(m: Member) {
@@ -199,7 +211,31 @@ export const BASIC = {
   },
 } satisfies Record<string, (m: Member) => Promise<unknown>>
 
-export async function listItems(m: Member, filters: string): Promise<Item[]> {
+export /** Opens the websocket the web app keeps while a workspace is on screen, once. */
+async function listen(m: Member): Promise<void> {
+  const config = m.team.realtime
+  if (!config || m.socket || m.team.workspaceId === null || m.me === null) return
+
+  const socket = new Socket(config, async (socketId, channel) =>
+    (await m.session.post<{ auth: string }>('/broadcasting/auth', { socket_id: socketId, channel_name: channel })).data.auth)
+  m.socket = socket
+
+  try {
+    await socket.open()
+    await socket.subscribe(`private-workspace.${m.team.workspaceId}`, (event, data) => {
+      if (event !== 'item.changed' || typeof data.key !== 'string') return
+      m.heard.push({ key: data.key, at: Date.now() })
+      if (m.heard.length > 200) m.heard.shift()
+    })
+    await socket.subscribe(`private-user.${m.me.id}`, () => {})
+  } catch (error) {
+    m.socket = null
+    socket.close()
+    throw error
+  }
+}
+
+async function listItems(m: Member, filters: string): Promise<Item[]> {
   return (await m.session.get<ListResponse<Item>>(`${m.R}/items?limit=50${filters}&sort=-updated_at`)).data.data
 }
 

@@ -12,6 +12,10 @@ return [
     // Empty means no standing runner: each run then prints a token of its own.
     'runner_token' => env('SIMULATOR_RUNNER_TOKEN', ''),
 
+    // Where simulated workspaces send their webhooks: this installation's own receiver, as the queue worker reaches it.
+    // Empty means APP_URL/api/v1/sim/sink; in Docker the worker reaches the app under another name.
+    'sink_url' => env('SIMULATOR_SINK_URL', ''),
+
     // Simulated people have addresses in this domain. ".invalid" can never receive mail, and mail to it is never sent anyway.
     'mail_domain' => env('SIMULATOR_MAIL_DOMAIN', 'sim.invalid'),
 

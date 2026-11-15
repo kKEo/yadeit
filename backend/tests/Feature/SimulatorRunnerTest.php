@@ -1,10 +1,16 @@
 <?php
 
 use App\Models\User;
+use App\Models\Webhook;
+use App\Models\Workspace;
+use App\Simulator\Models\SimFinding;
+use App\Simulator\Models\SimMetricBucket;
 use App\Simulator\Models\SimRun;
 use App\Simulator\Models\SimTeam;
 use App\Simulator\SimRuns;
 use App\Simulator\Simulator;
+use App\Support\CurrentWorkspace;
+use Illuminate\Support\Facades\DB;
 
 beforeEach(function () {
     config(['simulator.enabled' => true]);
@@ -88,4 +94,46 @@ it('starts and stops from the command line', function () {
 
     $this->artisan('sim:start --teams=1 --size=2 --real=0 --volume=empty')->assertSuccessful();
     expect(app(SimRuns::class)->active())->not->toBeNull();
+});
+
+it('plays the nights of the simulated calendar: cycles roll over and untouched items go stale', function () {
+    $id = $this->withToken($this->token)->postJson('/api/v1/sim/runner/register', ['name' => 'r1'])->assertCreated()
+        ->assertJsonPath('data.realtime', null)->json('data.runner_id');
+    $workspace = Workspace::query()->where('sim_run_id', $this->run->id)->firstOrFail();
+    $open = fn () => DB::table('work_items')->join('states', 'states.id', '=', 'work_items.state_id')
+        ->where('work_items.workspace_id', $workspace->id)->whereIn('states.group', ['unstarted', 'started'])->count();
+    $before = $open();
+    expect($before)->toBeGreaterThan(0);
+
+    // Three simulated days: nothing is a week old yet.
+    $this->postJson('/api/v1/sim/runner/poll', ['runner_id' => $id, 'sim_day' => 3])->assertOk();
+    expect($this->run->refresh()->sim_day)->toBe(3)->and($open())->toBe($before);
+
+    // Ten days in, the starting backlog has not been touched for over a week and the first cycle has ended.
+    $this->postJson('/api/v1/sim/runner/poll', ['runner_id' => $id, 'sim_day' => 10])->assertOk();
+    // Items the cycle rollover just moved along count as touched; the rest went back to the backlog.
+    expect($open())->toBeLessThan($before)
+        ->and(DB::table('cycles')->where('workspace_id', $workspace->id)->whereNotNull('closed_at')->count())->toBeGreaterThan(0)
+        ->and((int) SimMetricBucket::query()->where('name', 'midnight')->sum('count'))->toBe(10);
+
+    // The server's own clock was never touched: nothing real is affected.
+    [$real] = workspaceWith();
+    expect(DB::table('cycles')->where('workspace_id', $real->id)->count())->toBe(0);
+});
+
+it('receives the webhooks of simulated workspaces and checks their signature', function () {
+    $workspace = Workspace::query()->where('sim_run_id', $this->run->id)->firstOrFail();
+    $hook = app(CurrentWorkspace::class)->runIn($workspace, fn () => Webhook::create([
+        'workspace_id' => $workspace->id, 'name' => 'Sink', 'url' => Simulator::sinkUrl(), 'secret' => 'whsec-test', 'is_active' => true,
+    ]));
+    $body = '{"event":"item.created"}';
+    $t = now()->getTimestamp();
+    $send = fn (string $signature) => $this->call('POST', '/api/v1/sim/sink', [], [], [], ['HTTP_X_YADEIT_SIGNATURE' => $signature, 'CONTENT_TYPE' => 'application/json'], $body);
+
+    $send("t={$t},v1=".hash_hmac('sha256', "{$t}.{$body}", $hook->secret))->assertOk()->assertJsonPath('data.received', true);
+    $send("t={$t},v1=".str_repeat('0', 64))->assertStatus(400);
+
+    $row = SimMetricBucket::query()->where('name', 'webhookDelivery')->sole();
+    expect($row->count)->toBe(2)->and($row->errors)->toBe(1)
+        ->and(SimFinding::query()->where('flow', 'webhookDelivery')->count())->toBe(1);
 });

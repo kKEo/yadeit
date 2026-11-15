@@ -127,7 +127,10 @@ class ProvisionSimTeam
             $created = [];
 
             foreach ($projects as $definition) {
-                $created[] = [$this->createProject->handle($workspace, $owner, (string) $definition['key'], (string) $definition['name'], $definition['description'] ?? null), (array) ($definition['items'] ?? [])];
+                $project = $this->createProject->handle($workspace, $owner, (string) $definition['key'], (string) $definition['name'], $definition['description'] ?? null);
+                // One-week cycles and the shortest staleness, so that a run of a few simulated weeks sees both happen.
+                $project->update(['cycle_weeks' => 1, 'stale_after_days' => 7]);
+                $created[] = [$project, (array) ($definition['items'] ?? [])];
             }
 
             $comments = $pack->list('comments');

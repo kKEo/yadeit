@@ -1448,7 +1448,8 @@
       "flowSearch": "Nowe zadanie znajduje wyszukiwarka",
       "flowFeedback": "Opinia staje się zadaniem",
       "flowDoc": "Publiczny link do dokumentu",
-      "flowIsolation": "Zespoły nie widzą się nawzajem"
+      "flowIsolation": "Zespoły nie widzą się nawzajem",
+      "flowRealtime": "Zmiana dociera do otwartej przeglądarki"
     },
     "flowName": {
       "onboarding": "Od rejestracji do zaproszonej osoby",
@@ -1457,7 +1458,13 @@
       "createToSearch": "Nowe zadanie znajduje wyszukiwarka",
       "feedbackToItem": "Opinia staje się zadaniem",
       "docPublicLink": "Publiczny link do dokumentu",
-      "isolation": "Zespoły nie widzą się nawzajem"
+      "isolation": "Zespoły nie widzą się nawzajem",
+      "teamSetup": "Lider przygotowuje obszar roboczy",
+      "agentRun": "Agent doprowadza zadanie do przeglądu",
+      "changeToSocket": "Zmiana dociera do otwartej przeglądarki",
+      "webhookDelivery": "Webhook dociera i jest poprawnie podpisany",
+      "publicFeedback": "Publiczny formularz opinii",
+      "midnight": "Noc: cykle i nieruszane zadania"
     },
     "runs": {
       "title": "Przebiegi",

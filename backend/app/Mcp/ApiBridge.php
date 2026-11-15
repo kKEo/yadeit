@@ -47,6 +47,8 @@ class ApiBridge
 
         $inner->setUserResolver($outer->getUserResolver());
         $inner->attributes->set('mcp.oauth', (bool) $outer->attributes->get('mcp.oauth'));
+        // A simulated agent stays simulated on the inside, so the same allowance applies to both requests.
+        $inner->attributes->set('sim', $outer->attributes->get('sim'));
 
         // The inner request is "the request" while it runs, then the outer one is put back.
         app()->instance('request', $inner);

@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
  * @property int $speed
  * @property int $seed
  * @property int $ai_tokens_used
+ * @property int $sim_day
  * @property array<string, mixed>|null $summary
  * @property Carbon|null $finished_at
  * @property Carbon|null $started_at

@@ -1,4 +1,4 @@
-import { type DayMode, nextMoment, SimClock } from './clock.ts'
+import { activity, type DayMode, nextMoment, nextOfficeStart, SimClock } from './clock.ts'
 
 /** Something that acts at simulated moments: a member, in practice. */
 export interface Actor<S> {
@@ -17,8 +17,8 @@ const MAX_BACKLOG_SECONDS = 30
  * the server answered: a slow server therefore shows up as actions starting
  * late (lag) instead of quietly producing less traffic.
  */
-export class Scheduler<S> {
-  readonly actors: Actor<S>[] = []
+export class Scheduler {
+  readonly actors: Actor<unknown>[] = []
   skipped = 0
   private readonly clock: SimClock
   private readonly mode: DayMode
@@ -30,14 +30,30 @@ export class Scheduler<S> {
     this.onLag = onLag
   }
 
-  add(actor: Actor<S>, firstDue: number): void {
+  add<S>(actor: Actor<S>, firstDue: number): void {
     actor.due = firstDue
-    this.actors.push(actor)
+    this.actors.push(actor as Actor<unknown>)
   }
 
   /** Takes actors out, for a team that left the run. What they are doing right now still finishes. */
-  remove(gone: (actor: Actor<S>) => boolean): void {
+  remove(gone: (actor: Actor<unknown>) => boolean): void {
     for (let i = this.actors.length - 1; i >= 0; i--) if (gone(this.actors[i]!)) this.actors.splice(i, 1)
+  }
+
+  /**
+   * In "office hours only" nobody acts at night, so the night is skipped
+   * instead of waited for: simulated time moves to the next working morning,
+   * and whoever was still due that evening acts first thing, without that
+   * counting as being late.
+   */
+  skipNight(wallNow: number = Date.now()): boolean {
+    const now = this.clock.now(wallNow)
+    if (this.mode !== 'workday' || this.clock.speed <= 0 || activity(now, this.mode) > 0) return false
+
+    const morning = nextOfficeStart(now)
+    this.actors.forEach((actor, index) => { if (actor.due < morning) actor.due = morning + (index % 60) })
+    this.clock.jumpTo(morning, wallNow)
+    return true
   }
 
   /** Starts everything that is due. Returns how many actions it started. */

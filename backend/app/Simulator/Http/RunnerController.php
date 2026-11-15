@@ -10,9 +10,11 @@ use App\Simulator\Models\SimMember;
 use App\Simulator\Models\SimRun;
 use App\Simulator\Models\SimRunner;
 use App\Simulator\Models\SimTeam;
+use App\Simulator\SimCalendar;
 use App\Simulator\SimMetrics;
 use App\Simulator\SimReport;
 use App\Simulator\SimRuns;
+use App\Simulator\Simulator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +29,7 @@ class RunnerController extends Controller
     /** A runner that has not checked in for this long has its teams given to another. */
     private const STALE_SECONDS = 20;
 
-    public function __construct(private SimRuns $runs, private SimMetrics $metrics, private SimReport $reports) {}
+    public function __construct(private SimRuns $runs, private SimMetrics $metrics, private SimReport $reports, private SimCalendar $calendar) {}
 
     public function register(Request $request): JsonResponse
     {
@@ -45,6 +47,14 @@ class RunnerController extends Controller
             // Runners sort latencies into these buckets, so that their numbers add up.
             'histogram_bounds' => SimMetrics::BOUNDS,
             'step_seconds' => SimMetrics::STEP_SECONDS,
+            'sink_url' => Simulator::sinkUrl(),
+            // Where members open their websocket, as the web app does; null when the installation has realtime off.
+            'realtime' => config('broadcasting.default') === 'reverb' && filled(config('broadcasting.connections.reverb.key')) ? [
+                'key' => config('broadcasting.connections.reverb.key'),
+                'host' => config('broadcasting.connections.reverb.options.host'),
+                'port' => (int) config('broadcasting.connections.reverb.options.port'),
+                'scheme' => config('broadcasting.connections.reverb.options.scheme'),
+            ] : null,
         ]], 201);
     }
 
@@ -56,12 +66,18 @@ class RunnerController extends Controller
             'runner_id' => ['required', 'integer'], 'lag_ms' => ['sometimes', 'integer', 'min:0'],
             // What each member is doing right now, for the live screen.
             'activity' => ['sometimes', 'array', 'max:2000'], 'activity.*' => ['string', 'max:40'],
+            // The simulated day the runner has reached; a new day plays the night before it (cycles, stale items).
+            'sim_day' => ['sometimes', 'integer', 'min:0'],
         ]);
         $runner = SimRunner::query()->where('run_id', $run->id)->findOrFail($data['runner_id']);
         $runner->update(['last_seen_at' => now(), 'lag_ms' => $data['lag_ms'] ?? 0, 'meta' => ['activity' => $data['activity'] ?? []]]);
 
         $this->runs->enforceLimits($run);
         $run->refresh();
+
+        if ($run->status->isActive() && ($data['sim_day'] ?? 0) > $run->sim_day) {
+            $this->calendar->advanceTo($run, (int) $data['sim_day']);
+        }
 
         if ($run->status->isActive()) {
             // Teams without a runner, or whose runner went silent, go to the one asking.
@@ -83,7 +99,8 @@ class RunnerController extends Controller
                 'onboarding' => $team->onboarding,
                 'status' => $team->status,
                 'workspace' => $slugs[$team->workspace_id] ?? null,
-                'visitor_header' => $run->headerFor("v{$team->id}"),
+                // People who are not signed in: each visit is someone else.
+                'visitor_headers' => array_map(fn (int $n) => $run->headerFor("v{$team->id}x{$n}"), range(1, 10)),
                 'members' => ($members[$team->id] ?? collect())->map(fn (SimMember $m) => [
                     'id' => $m->id,
                     'name' => $m->name,

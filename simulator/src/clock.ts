@@ -36,11 +36,21 @@ export class SimClock {
     this.currentSpeed = speed
   }
 
+  /** Moves simulated time forward at once: the night between two working days, which nobody needs to sit through. */
+  jumpTo(sim: number, wallNow: number = Date.now()): void {
+    if (sim <= this.now(wallNow)) return
+    this.anchorSim = sim
+    this.anchorWall = wallNow
+  }
+
   /** Wall milliseconds until the simulated moment `sim` (negative when it has passed). */
   wallUntil(sim: number, wallNow: number = Date.now()): number {
     return ((sim - this.now(wallNow)) / this.currentSpeed) * 1000
   }
 }
+
+/** Days since the run began, counted from its first Monday. */
+export const dayOf = (sim: number) => Math.floor(sim / DAY)
 
 const isWeekend = (sim: number) => Math.floor((sim % WEEK) / DAY) >= 5
 const hourOf = (sim: number) => (sim % DAY) / 3600
