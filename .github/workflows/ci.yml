@@ -107,6 +107,42 @@ jobs:
       - name: Tests
         run: npm run test
 
+  # The runner of the Traffic lab (docs/traffic-lab.md). Its types come from the web app's API types,
+  # so an API change that the simulator does not follow fails here.
+  simulator:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: simulator
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: simulator/package-lock.json
+      - run: npm ci
+      - name: Type check
+        run: npm run typecheck
+      - name: Tests
+        run: npm run test
+
+  # Simulated teams against the real stack in Docker: three teams for two minutes at ten times speed.
+  # Fails when requests, actions or whole flows fail, or the run misses its thresholds. Only on master:
+  # it builds the image and takes several minutes.
+  simulator-smoke:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: [backend-tests, frontend, simulator]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Smoke run
+        run: make sim-smoke
+      - name: Logs of the app, when it failed
+        if: failure()
+        run: docker compose -p yadeit-local --env-file .env.docker -f compose.prod.yaml -f compose.sim.yaml logs --tail=200 app worker
+
   # The documentation site: the landing page above the user guide (make docs-build).
   # Built on every push and pull request, so a broken SUMMARY.md fails the check.
   docs:

@@ -4,7 +4,7 @@ A simple project tool for people and AI agents: work items, boards, docs and fee
 
 This is a rewrite. The original 2012 Yii application is kept under the git tag `legacy-yii`.
 
-**Documentation:** the [user guide](docs/guide/user/README.md) explains Yadeit for everyone who uses it, from a ten-minute quick start to agents and privacy; `docs/guide/index.html` is the landing page of the documentation site. Running it in production is in [docs/deployment.md](docs/deployment.md).
+**Documentation:** the [user guide](docs/guide/user/README.md) explains Yadeit for everyone who uses it, from a ten-minute quick start to agents and privacy; `docs/guide/index.html` is the landing page of the documentation site. Running it in production is in [docs/deployment.md](docs/deployment.md). The built-in load and flow test, with simulated teams, is in [docs/traffic-lab.md](docs/traffic-lab.md) (`make sim-up`, then Operator area → Traffic lab).
 
 ## Layout
 

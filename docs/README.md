@@ -5,7 +5,9 @@
 | Landing page of the documentation site | [guide/index.html](guide/index.html) |
 | User guide (for everyone who uses Yadeit) | [guide/user/](guide/user/README.md) |
 | Running Yadeit in production | [deployment.md](deployment.md) |
+| The Traffic lab: simulated teams for load and flow testing | [traffic-lab.md](traffic-lab.md) |
 | The rebuild plan | [plan.md](plan.md) |
+| The plan the Traffic lab was built from | [traffic-lab-plan.md](traffic-lab-plan.md) |
 
 The user guide is a GitBook space (`guide/user/.gitbook.yaml`) that mdBook can
 also build:
