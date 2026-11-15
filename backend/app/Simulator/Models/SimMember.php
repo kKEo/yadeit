@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property string $password
+ * @property string $name
+ * @property string $persona
+ * @property string $role
+ * @property string $kind
  */
 class SimMember extends Model
 {

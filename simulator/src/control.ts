@@ -9,6 +9,8 @@ export interface RunConfig {
   intensity: number
   /** Actions and flows the scenario switches off. */
   disabled_actions?: string[]
+  /** Which AI layers the scenario switched on. */
+  ai?: { director?: boolean; explorers_per_team?: number; replay_run_id?: number | null }
   /** The scenario's own pause and weights per persona, laid over the defaults. */
   personas?: Record<string, { pause?: number; weights?: Record<string, number> }>
   [key: string]: unknown
@@ -26,6 +28,9 @@ export interface MemberPlan {
   password: string
   header: string
 }
+
+/** One step of a team's day as the director wrote it: which member (by place among the scripted ones), what, and the text to use. */
+export interface DirectedStep { member: number; action: string; text: string | null }
 
 export interface TeamPlan {
   id: number
@@ -50,6 +55,7 @@ export interface RealtimeConfig { key: string; host: string; port: number; schem
 
 export interface Registration {
   runner_id: number; run: RunState; origin: string; pack: Pack; histogram_bounds: number[]; step_seconds: number
+  explorer_speed_cap: number
   /** Where simulated workspaces send their webhooks. */
   sink_url: string
   /** Null when the installation has realtime switched off. */
@@ -99,6 +105,16 @@ export class Control {
 
   metrics(report: Report): Promise<{ status: string }> {
     return this.call('POST', '/metrics', report)
+  }
+
+  /** The steps the director wrote for one team's day; empty when the run has no director. */
+  async storyline(teamId: number, simDay: number): Promise<DirectedStep[]> {
+    return (await this.call<{ steps: DirectedStep[] }>('POST', '/storyline', { team_id: teamId, sim_day: simDay })).steps
+  }
+
+  /** An explorer's next step, chosen by the model from what the member may do. */
+  decide(memberId: number, options: string[], history: string[], seen: string): Promise<{ action: string; reason: string; stuck: string | null }> {
+    return this.call('POST', '/decide', { member_id: memberId, options, history, seen })
   }
 
   teamReady(teamId: number): Promise<{ status: string }> {

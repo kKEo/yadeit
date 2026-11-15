@@ -13,6 +13,7 @@ use App\Simulator\Models\SimRun;
 use App\Simulator\Models\SimRunner;
 use App\Simulator\Models\SimScenario;
 use App\Simulator\Models\SimTeam;
+use App\Simulator\SimAi;
 use App\Simulator\SimReport;
 use App\Simulator\SimRuns;
 use Illuminate\Http\JsonResponse;
@@ -73,6 +74,22 @@ class SimAdminController extends Controller
     public function pack(int $id): JsonResponse
     {
         return response()->json(['data' => ContentPack::load($id === 0 ? null : $id)->content]);
+    }
+
+    /** Has the model write a new pack for a theme. One call; the pack can then be used by any number of runs. */
+    public function generatePack(Request $request, SimAi $ai): JsonResponse
+    {
+        $data = $request->validate(['name' => ['required', 'string', 'max:80'], 'theme' => ['required', 'string', 'min:10', 'max:500']]);
+        $pack = SimContentPack::create(['name' => $data['name'], 'theme' => $data['theme'], 'source' => 'ai', 'content' => $ai->writePack($data['name'], $data['theme'])]);
+
+        return response()->json(['data' => $pack->only(['id', 'name', 'theme', 'source', 'created_at'])], 201);
+    }
+
+    public function destroyPack(int $id): JsonResponse
+    {
+        SimContentPack::query()->findOrFail($id)->delete();
+
+        return response()->json(null, 204);
     }
 
     public function runs(): JsonResponse
@@ -248,6 +265,11 @@ class SimAdminController extends Controller
             'personas.*.weights' => ['sometimes', 'array', 'max:60'],
             'personas.*.weights.*' => ['numeric', 'min:0', 'max:1000'],
             'ai' => ['sometimes', 'array'],
+            'ai.director' => ['sometimes', 'boolean'],
+            'ai.explorers_per_team' => ['sometimes', 'integer', 'min:0', 'max:3'],
+            'ai.token_budget' => ['sometimes', 'integer', 'min:0', 'max:50000000'],
+            'ai.real_help' => ['sometimes', 'boolean'],
+            'ai.replay_run_id' => ['sometimes', 'nullable', 'integer'],
         ])->validate();
     }
 
@@ -270,6 +292,7 @@ class SimAdminController extends Controller
             'config' => $run->config,
             'verdict' => $run->verdict,
             'stop_reason' => $run->stop_reason,
+            'ai_tokens_used' => $run->ai_tokens_used,
             'totals' => $run->summary['totals'] ?? null,
             // Whether its workspaces and accounts are still there.
             'purged' => ! SimTeam::query()->where('run_id', $run->id)->exists(),

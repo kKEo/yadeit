@@ -30,6 +30,7 @@ use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceExportController;
+use App\Simulator\Http\RunnerAiController;
 use App\Simulator\Http\RunnerController;
 use App\Simulator\Http\SimAdminController;
 use App\Simulator\Http\SimStatusController;
@@ -80,6 +81,8 @@ Route::prefix('sim/runner')->middleware(['sim.enabled', 'sim.runner'])->group(fu
     Route::post('poll', [RunnerController::class, 'poll'])->name('sim.runner.poll');
     Route::get('mailbox', [RunnerController::class, 'mailbox'])->name('sim.runner.mailbox');
     Route::post('metrics', [RunnerController::class, 'metrics'])->name('sim.runner.metrics');
+    Route::post('storyline', [RunnerAiController::class, 'storyline'])->name('sim.runner.storyline');
+    Route::post('decide', [RunnerAiController::class, 'decide'])->name('sim.runner.decide');
     Route::post('teams/{team}/ready', [RunnerController::class, 'teamReady'])->whereNumber('team')->name('sim.runner.team-ready');
 });
 
@@ -117,6 +120,8 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
             Route::delete('scenarios/{id}', [SimAdminController::class, 'destroyScenario'])->whereNumber('id')->name('admin.sim.scenarios.destroy');
             Route::get('packs', [SimAdminController::class, 'packs'])->name('admin.sim.packs.index');
             Route::get('packs/{id}', [SimAdminController::class, 'pack'])->whereNumber('id')->name('admin.sim.packs.show');
+            Route::post('packs', [SimAdminController::class, 'generatePack'])->name('admin.sim.packs.store');
+            Route::delete('packs/{id}', [SimAdminController::class, 'destroyPack'])->whereNumber('id')->name('admin.sim.packs.destroy');
             Route::get('runs', [SimAdminController::class, 'runs'])->name('admin.sim.runs.index');
             Route::post('runs', [SimAdminController::class, 'start'])->name('admin.sim.runs.store');
             Route::get('runs/{id}', [SimAdminController::class, 'run'])->whereNumber('id')->name('admin.sim.runs.show');

@@ -4,6 +4,9 @@ namespace App\Simulator\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property list<array{member: int, action: string, text: string|null}> $intents
+ */
 class SimStoryline extends Model
 {
     protected $table = 'sim_storylines';

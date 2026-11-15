@@ -48,6 +48,8 @@ class RunnerController extends Controller
             'histogram_bounds' => SimMetrics::BOUNDS,
             'step_seconds' => SimMetrics::STEP_SECONDS,
             'sink_url' => Simulator::sinkUrl(),
+            // Explorers think for seconds per step; above this speed they simply act less often.
+            'explorer_speed_cap' => (int) config('simulator.ai.explorer_speed_cap'),
             // Where members open their websocket, as the web app does; null when the installation has realtime off.
             'realtime' => config('broadcasting.default') === 'reverb' && filled(config('broadcasting.connections.reverb.key')) ? [
                 'key' => config('broadcasting.connections.reverb.key'),

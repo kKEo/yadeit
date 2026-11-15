@@ -46,12 +46,14 @@ const timeline = computed(() => report.value?.timeline ?? [])
 const playing = computed(() => (detail.value?.teams ?? []).filter((team) => team.status !== 'removed'))
 const noRunner = computed(() => run.value?.active === true && !(detail.value?.runners ?? []).some((r) => r.alive))
 const speeds = computed(() => (status.value?.speeds ?? []).filter((s) => s <= (status.value?.caps.speed ?? 100)))
+const usesAi = computed(() => run.value?.config.ai?.director === true || (run.value?.config.ai?.explorers_per_team ?? 0) > 0)
 const tiles = computed(() => {
   const totals = report.value?.totals
   return totals ? ([
     ['requests', totals.requests], ['requests_per_second', totals.requests_per_second], ['p50_ms', `${totals.p50_ms} ms`], ['p95_ms', `${totals.p95_ms} ms`],
     ['p99_ms', `${totals.p99_ms} ms`], ['error_rate', `${(totals.error_rate * 100).toFixed(1)}%`], ['flows', totals.flows], ['failed_flows', totals.failed_flows],
     ['findings', totals.findings], ['oldest_job_seconds', `${totals.oldest_job_seconds} s`],
+    ...(usesAi.value ? [['ai_tokens', `${(run.value?.ai_tokens_used ?? 0).toLocaleString()} / ${(run.value?.config.ai?.token_budget ?? 0).toLocaleString()}`] as const] : []),
   ] as const) : []
 })
 const series = (key: keyof (typeof timeline.value)[number]) => timeline.value.map((point) => Number(point[key]))

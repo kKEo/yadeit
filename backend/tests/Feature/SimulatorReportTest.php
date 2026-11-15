@@ -113,7 +113,7 @@ it('stops by itself when its runners are gone', function () {
 });
 
 it('stops when the AI budget is spent', function () {
-    $this->run->update(['config' => ['ai' => ['token_budget' => 1000]] + $this->run->config, 'ai_tokens_used' => 1000]);
+    $this->run->update(['config' => ['ai' => ['director' => true, 'token_budget' => 1000]] + $this->run->config, 'ai_tokens_used' => 1000]);
     $this->postJson('/api/v1/sim/runner/poll', ['runner_id' => $this->runner])->assertJsonPath('data.run.status', 'finished');
 });
 

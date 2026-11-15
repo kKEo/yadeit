@@ -35,6 +35,9 @@ const dayMode = ref('workday')
 const volume = ref('small')
 const pack = ref('0')
 const flows = reactive<Record<string, boolean>>({})
+const director = ref(false)
+const explorers = ref('0')
+const budget = ref('')
 
 watch(() => props.open, (open) => {
   if (!open) return
@@ -53,6 +56,9 @@ watch(() => props.open, (open) => {
   pack.value = String(config.pack_id ?? 0)
   for (const flow of FLOWS) flows[flow] = !(config.disabled_actions ?? []).includes(flow)
   personas.value = Object.keys(config.personas ?? {}).length ? JSON.stringify(config.personas, null, 2) : ''
+  director.value = config.ai?.director ?? false
+  explorers.value = String(config.ai?.explorers_per_team ?? 0)
+  budget.value = String(config.ai?.token_budget ?? props.status.defaults.ai.token_budget)
   personasError.value = null
   form.clear()
 }, { immediate: true })
@@ -85,6 +91,10 @@ function config(): Partial<SimConfig> | null {
     },
     disabled_actions: FLOWS.filter((flow) => !flows[flow]),
     personas: own,
+    ai: {
+      director: director.value, explorers_per_team: Number(explorers.value),
+      token_budget: number(budget.value, d.ai.token_budget), replay_run_id: props.scenario?.config.ai?.replay_run_id ?? null,
+    },
   }
 }
 
@@ -160,6 +170,23 @@ async function save() {
             <Checkbox :id="`sim-${flow}`" :model-value="flows[flow]" @update:model-value="flows[flow] = $event === true" />
             {{ t(`sim.flow.${flow}`) }}
           </label>
+        </div>
+      </fieldset>
+
+      <fieldset class="space-y-3">
+        <legend class="mb-2 text-sm font-medium">{{ t('sim.scenario.ai') }}</legend>
+        <p v-if="!status.ai_available" class="text-sm text-muted-foreground">{{ t('sim.scenario.aiUnavailable') }}</p>
+        <label class="flex items-start gap-2 text-sm">
+          <Checkbox id="sim-director" class="mt-0.5" :model-value="director" :disabled="!status.ai_available" @update:model-value="director = $event === true" />
+          <span>{{ t('sim.scenario.director') }}<span class="block text-xs text-muted-foreground">{{ t('sim.scenario.directorHint') }}</span></span>
+        </label>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <FormField id="sim-explorers" :label="t('sim.scenario.explorers')" :hint="t('sim.scenario.explorersHint')">
+            <Select id="sim-explorers" v-model="explorers" :disabled="!status.ai_available" :options="options([0, 1, 2, 3], (v) => v)" />
+          </FormField>
+          <FormField id="sim-budget" :label="t('sim.scenario.budget')" :hint="t('sim.scenario.budgetHint')">
+            <Input id="sim-budget" v-model="budget" type="number" min="0" step="10000" :disabled="!status.ai_available" />
+          </FormField>
         </div>
       </fieldset>
 

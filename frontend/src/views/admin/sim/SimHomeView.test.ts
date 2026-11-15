@@ -46,6 +46,11 @@ describe('SimHomeView', () => {
       if (path.endsWith('/admin/sim/scenarios/2') && method === 'DELETE') return new Response(null, { status: 204 })
       if (path.endsWith('/admin/sim/runs') && method === 'GET') return jsonResponse({ data: runs })
       if (path.endsWith('/admin/sim/runs') && method === 'POST') return jsonResponse({ data: { ...makeRun({ id: 8 }), runner_token: '8|secret-token' } }, 201)
+      if (path.endsWith('/admin/sim/packs') && method === 'POST') {
+        const body = JSON.parse(String(init?.body))
+        return jsonResponse({ data: { id: 4, name: body.name, theme: body.theme, source: 'ai', created_at: '2026-11-15T09:00:00Z' } }, 201)
+      }
+      if (path.endsWith('/admin/sim/packs/4') && method === 'DELETE') return new Response(null, { status: 204 })
       if (path.endsWith('/admin/sim/packs')) return jsonResponse({ data: [{ id: 0, name: 'Default', theme: 'A small product team', source: 'builtin', created_at: null }] })
       if (path.endsWith('/admin/sim/packs/0')) {
         return jsonResponse({ data: { theme: 'A small product team', people: ['A', 'B'], teams: ['T'], projects: [{ key: 'WEB', name: 'Web app', items: [{ title: 'Export invoices as CSV' }] }], comments: ['x'], pages: [], feedback: [] } })
@@ -108,7 +113,7 @@ describe('SimHomeView', () => {
     const wrapper = await open()
 
     expect(wrapper.find('[data-testid="active-run"]').text()).toContain('"Now" is running')
-    expect(wrapper.find('form').exists()).toBe(false)
+    expect(wrapper.find('#sim-run-name').exists()).toBe(false)
   })
 
   it('saves a new scenario with the numbers typed into the form', async () => {
@@ -143,6 +148,46 @@ describe('SimHomeView', () => {
 
     expect(calls('DELETE')[0]!.url).toContain('/admin/sim/scenarios/2')
     expect(wrapper.find('[data-testid="scenario-row"]').exists()).toBe(false)
+  })
+
+  it('has AI write a content pack, which can be deleted again', async () => {
+    const wrapper = await open()
+    const form = wrapper.find('[data-testid="pack-form"]')
+    const [name, theme] = form.findAll('input')
+
+    await name!.setValue('Clinic')
+    await theme!.setValue('The IT team of a small clinic building a booking system')
+    await form.trigger('submit')
+    await flushPromises()
+
+    expect(calls('POST')[0]!.body).toEqual({ name: 'Clinic', theme: 'The IT team of a small clinic building a booking system' })
+    const rows = wrapper.findAll('[data-testid="pack-row"]')
+    expect(rows).toHaveLength(2)
+    expect(rows[1]!.text()).toContain('Written by AI')
+    // The built-in pack cannot be deleted; the written one can.
+    expect(rows[0]!.findAll('button')).toHaveLength(1)
+
+    await rows[1]!.findAll('button').find((b) => b.text() === 'Delete')!.trigger('click')
+    await flushPromises()
+    expect(wrapper.findAll('[data-testid="pack-row"]')).toHaveLength(1)
+  })
+
+  it('saves the AI settings of a scenario', async () => {
+    const wrapper = await open()
+    await wrapper.findAll('button').find((b) => b.text() === 'New scenario')!.trigger('click')
+    await flushPromises()
+    const name = document.body.querySelector<HTMLInputElement>('#sim-name')!
+    name.value = 'Directed'
+    name.dispatchEvent(new Event('input'))
+    document.body.querySelector<HTMLButtonElement>('#sim-director')!.click()
+    const budget = document.body.querySelector<HTMLInputElement>('#sim-budget')!
+    budget.value = '120000'
+    budget.dispatchEvent(new Event('input'))
+    await flushPromises()
+    document.body.querySelector<HTMLFormElement>('[role="dialog"] form')!.dispatchEvent(new Event('submit', { cancelable: true }))
+    await flushPromises()
+
+    expect(calls('POST')[0]!.body.config.ai).toEqual({ director: true, explorers_per_team: 0, token_budget: 120000, replay_run_id: null })
   })
 
   it('previews a content pack', async () => {

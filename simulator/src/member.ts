@@ -34,6 +34,10 @@ export interface TeamContext {
   publicPages: string[]
   /** Where the team's webhook sends to. */
   sinkUrl: string
+  /** Asks the model what an explorer does next. */
+  decide: (memberId: number, options: string[], history: string[], seen: string) => Promise<{ action: string; stuck: string | null }>
+  /** How much longer explorers pause when the run is faster than they can think. */
+  explorerSlowdown: () => number
 }
 
 /**
@@ -83,6 +87,12 @@ export class Member {
   /** The websocket the web app would hold open, and the item changes it has announced. */
   socket: Socket | null = null
   readonly heard: { key: string; at: number }[] = []
+  /** Steps the director gave this person for today, done before anything drawn at random. */
+  readonly directed: { action: ActionName; text: string | null }[] = []
+  /** The text the director wants used by the action under way: an item title, a comment. */
+  note: string | null = null
+  /** What an explorer did lately and how it went, which the model is told. */
+  private readonly history: string[] = []
 
   constructor(plan: MemberPlan, team: TeamContext, session: Session, recorder: Recorder, runSeed: number, config: Pick<RunConfig, 'intensity' | 'disabled_actions' | 'personas'>) {
     this.plan = plan
@@ -111,12 +121,49 @@ export class Member {
     return this.plan.role === 'owner' || this.plan.role === 'admin'
   }
 
+  /** Whether this person's role and scenario let them do this at all. */
+  allows(action: ActionName): boolean {
+    return action in this.weights
+  }
+
   /** The next thing this person does and the pause before the one after, in simulated seconds. */
   next(): Step {
+    // Both are always drawn, so that a directed day does not shift what the same seed gives afterwards.
+    const drawn = this.planRng.weighted(this.weights)
+    const pause = Math.max(2, this.planRng.pause(this.pause / this.intensity))
+    const step = this.directed.shift()
+    this.note = step?.text ?? null
+
     return {
-      action: this.planRng.weighted(this.weights),
-      pause: Math.max(2, this.planRng.pause(this.pause / this.intensity)),
+      action: step?.action ?? drawn,
+      pause: this.plan.kind === 'ai' ? pause * this.team.explorerSlowdown() : pause,
     }
+  }
+
+  /**
+   * An explorer asks the model what to do instead of following the draw, and
+   * passes on what the model found strange. When the model cannot be asked
+   * (budget spent, provider down) the explorer carries on as a scripted member.
+   */
+  private async explore(drawn: ActionName): Promise<ActionName> {
+    const options = Object.keys(this.weights).filter((name) => !name.startsWith('flow') && name !== 'delegate')
+    const seen = [
+      `${this.items.length} items in the list` + (this.items.length ? `, for example: ${this.items.slice(0, 5).map((i) => `${i.key} "${i.title}" (${i.state.name})`).join('; ')}` : ''),
+      `${this.pages.length} docs known, ${this.feedback.length} pieces of feedback waiting, ${this.people.length} people in the workspace`,
+    ].join('\n')
+
+    try {
+      const choice = await this.team.decide(this.plan.id, options, this.history, seen)
+      if (choice.stuck) this.recorder.finding({ flow: 'explorer', step: null, severity: 'note', message: choice.stuck, team_id: this.team.id, member_id: this.plan.id })
+      return options.includes(choice.action) ? (choice.action as ActionName) : drawn
+    } catch {
+      return drawn
+    }
+  }
+
+  private remember(line: string): void {
+    this.history.push(line.slice(0, 280))
+    if (this.history.length > 10) this.history.shift()
   }
 
   /** Runs one action, timed and recorded. A failure is noted and the person carries on. */
@@ -126,6 +173,8 @@ export class Member {
       action = 'flowSearch'
     }
 
+    if (this.plan.kind === 'ai' && this.signedIn) action = await this.explore(action)
+
     const started = performance.now()
     const name = this.signedIn ? action : 'signIn'
     this.current = name
@@ -134,8 +183,10 @@ export class Member {
       if (!this.signedIn) await ACTIONS.signIn(this)
       else await ACTIONS[action](this)
       this.recorder.action(name, performance.now() - started, true)
+      this.remember(`${name}: ok`)
     } catch (error) {
       this.recorder.action(name, performance.now() - started, false)
+      this.remember(`${name}: failed, ${error instanceof Error ? error.message : String(error)}`)
       this.recorder.finding({ flow: name, step: null, severity: 'error', message: error instanceof Error ? error.message : String(error), team_id: this.team.id, member_id: this.plan.id })
       // A session that ended is signed in again on the next turn, as a person would.
       if (error instanceof ApiFailure && error.status === 401) {

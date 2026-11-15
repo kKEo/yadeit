@@ -74,7 +74,7 @@ export const BASIC = {
 
     const created = await m.session.post<ItemResponse<ItemDetail>>(`${m.R}/items`, {
       project: project.key,
-      title: `${source.title} ${m.dataRng.int(100, 999)}`,
+      title: m.note ?? `${source.title} ${m.dataRng.int(100, 999)}`,
       description: source.description ?? null,
       kind: source.kind ?? 'task',
       priority: source.priority ?? 'none',
@@ -105,7 +105,7 @@ export const BASIC = {
 
   async comment(m: Member) {
     const item = await someItem(m)
-    const body = m.dataRng.pick(m.team.pack.comments)
+    const body = m.note ?? m.dataRng.pick(m.team.pack.comments)
     if (!item || !body) return
 
     await openDetail(m, item)
@@ -170,7 +170,7 @@ export const BASIC = {
     const source = m.dataRng.pick(m.team.pack.pages)
     if (!source) return
 
-    const page = (await m.session.post<ItemResponse<DocPage>>(`${m.R}/pages`, { title: `${source.title} ${m.dataRng.int(2, 99)}`, body: source.body })).data.data
+    const page = (await m.session.post<ItemResponse<DocPage>>(`${m.R}/pages`, { title: m.note ?? `${source.title} ${m.dataRng.int(2, 99)}`, body: source.body })).data.data
     if (m.dataRng.chance(0.6)) await m.session.patch(`${m.R}/pages/${page.id}`, { status: 'published', expected_version: page.version }, { allow: [412] })
     m.pages.unshift(page)
   },
@@ -183,7 +183,7 @@ export const BASIC = {
   async sendFeedback(m: Member) {
     const project = m.dataRng.pick(await loadProjects(m))
     const source = m.dataRng.pick(m.team.pack.feedback)
-    if (project && source) await m.session.post(`${m.R}/feedback`, { project: project.key, title: source.title, body: source.body })
+    if (project && source) await m.session.post(`${m.R}/feedback`, { project: project.key, title: m.note ?? source.title, body: source.body })
   },
 
   /** Working through the feedback inbox: most becomes an item, some is declined. */

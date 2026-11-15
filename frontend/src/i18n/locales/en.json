@@ -1429,7 +1429,15 @@
       "flows": "Journeys checked during the run",
       "personas": "Persona overrides (JSON, optional)",
       "personasHint": "Own pause in seconds and action weights per persona: lead, developer, designer, client.",
-      "personasInvalid": "This is not valid JSON."
+      "personasInvalid": "This is not valid JSON.",
+      "ai": "AI",
+      "aiUnavailable": "The installation has no AI provider key (ANTHROPIC_API_KEY), so the AI layers cannot be used.",
+      "director": "Director: the model writes each team's day",
+      "directorHint": "A few calls per team and simulated day. The members play the story before anything drawn at random; it is kept, so a run can be replayed.",
+      "explorers": "Explorers per team",
+      "explorersHint": "Members whose every step the model chooses. At most three per run; they act less often above 5x.",
+      "budget": "Token budget",
+      "budgetHint": "The run stops when this many tokens are spent."
     },
     "volume": {
       "empty": "Empty",
@@ -1464,7 +1472,8 @@
       "changeToSocket": "Change reaches an open browser",
       "webhookDelivery": "Webhook arrives and verifies",
       "publicFeedback": "Public feedback form",
-      "midnight": "Night: cycles and stale items"
+      "midnight": "Night: cycles and stale items",
+      "explorer": "Explorer's observation"
     },
     "runs": {
       "title": "Runs",
@@ -1499,7 +1508,8 @@
       "flows": "Flows",
       "failed_flows": "Failed flows",
       "findings": "Findings",
-      "oldest_job_seconds": "Oldest waiting job"
+      "oldest_job_seconds": "Oldest waiting job",
+      "ai_tokens": "AI tokens used"
     },
     "packs": {
       "title": "Content packs",
@@ -1509,7 +1519,14 @@
         "builtin": "Built in",
         "ai": "Written by AI"
       },
-      "counts": "{people} people, {teams} team names, {items} items, {comments} comments, {pages} docs, {feedback} pieces of feedback."
+      "counts": "{people} people, {teams} team names, {items} items, {comments} comments, {pages} docs, {feedback} pieces of feedback.",
+      "write": {
+        "title": "Have AI write a pack",
+        "name": "Name",
+        "theme": "Who the team is and what they build, in a sentence",
+        "button": "Write pack",
+        "busy": "Writing…"
+      }
     },
     "token": {
       "title": "Start a runner",

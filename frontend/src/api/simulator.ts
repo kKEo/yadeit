@@ -6,6 +6,17 @@ import type { ItemResponse } from './types'
 export type SimDayMode = 'realistic' | 'workday' | 'continuous'
 export interface SimThresholds { p95_ms: number; error_rate: number; flow_success: number }
 
+/** Which AI layers a run uses. All off by default; every call counts against the token budget. */
+export interface SimAiConfig {
+  /** The model writes each team's day as a storyline the scripted members play. */
+  director: boolean
+  /** Members per team whose every step the model chooses (at most three per run). */
+  explorers_per_team: number
+  token_budget: number
+  /** Play the storylines of this earlier run instead of asking for new ones. */
+  replay_run_id: number | null
+}
+
 export interface SimConfig {
   teams: number
   size_min: number
@@ -25,6 +36,7 @@ export interface SimConfig {
   disabled_actions: string[]
   /** Own pause and weights per persona, laid over the defaults. */
   personas: Record<string, { pause?: number; weights?: Record<string, number> }>
+  ai: SimAiConfig
 }
 
 export interface SimStatus {
@@ -37,6 +49,8 @@ export interface SimStatus {
   thresholds: SimThresholds
   /** A runner is always there, so a run starts playing by itself. */
   standing_runner: boolean
+  /** The installation has a provider key, which the AI layers need. */
+  ai_available: boolean
   active_run_id: number | null
 }
 
@@ -72,6 +86,7 @@ export interface SimRun {
   config: SimConfig
   verdict: 'pass' | 'fail' | null
   stop_reason: string | null
+  ai_tokens_used: number
   totals: SimTotals | null
   /** Its workspaces and accounts are gone; the report stays. */
   purged: boolean
@@ -134,6 +149,9 @@ export const updateScenario = (id: number, name: string, config: Partial<SimConf
 export const deleteScenario = (id: number) => request<void>('DELETE', `/admin/sim/scenarios/${id}`)
 
 export const listPacks = () => data<SimPack[]>('GET', '/packs')
+/** Has the model write a pack for a theme. Takes a while: it is one long answer. */
+export const generatePack = (name: string, theme: string) => data<SimPack>('POST', '/packs', { name, theme })
+export const deletePack = (id: number) => request<void>('DELETE', `/admin/sim/packs/${id}`)
 export const getPack = (id: number) => data<SimPackContent>('GET', `/packs/${id}`)
 
 export const listRuns = () => data<SimRun[]>('GET', '/runs')

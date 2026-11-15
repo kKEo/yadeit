@@ -13,7 +13,7 @@ const pack = { projects: [], comments: [], pages: [], feedback: [] }
 function member(id: number, persona: string, role: MemberPlan['role'], seed = 7, run = 1, config: ConstructorParameters<typeof Member>[5] = { intensity: 1 }): Member {
   const plan: MemberPlan = { id: id + run * 1000, name: 'A', persona, role, kind: 'scripted', email: `r${run}-t1-m${id}@sim.invalid`, password: 'x', header: 'h' }
   const recorder = new Recorder([10, 100], 10)
-  return new Member(plan, { id: 1, name: 'T', slug: 't', pack, members: [], visitor: new Session('http://localhost', 'http://localhost', 'v', recorder), newVisitor: () => new Session('http://localhost', 'http://localhost', 'v', recorder), others: () => [], realtime: null, workspaceId: 1, agents: [], feedbackToken: null, publicPages: [], sinkUrl: '' }, new Session('http://localhost', 'http://localhost', 'h', recorder), recorder, seed, config)
+  return new Member(plan, { id: 1, name: 'T', slug: 't', pack, members: [], visitor: new Session('http://localhost', 'http://localhost', 'v', recorder), newVisitor: () => new Session('http://localhost', 'http://localhost', 'v', recorder), others: () => [], realtime: null, workspaceId: 1, agents: [], feedbackToken: null, publicPages: [], sinkUrl: '', decide: async () => ({ action: 'search', stuck: 'Nothing to do here' }), explorerSlowdown: () => 4 }, new Session('http://localhost', 'http://localhost', 'h', recorder), recorder, seed, config)
 }
 
 const steps = (m: Member, n = 200) => Array.from({ length: n }, () => m.next())
@@ -56,6 +56,32 @@ describe('what a member does next', () => {
     const only = steps(member(8, 'client', 'guest', 7, 1, { intensity: 1, personas: { client: { pause: 10, weights: { search: 100000 } } } }), 300)
     expect(only.filter((s) => s.action === 'search').length).toBeGreaterThan(290)
     expect(only.reduce((sum, s) => sum + s.pause, 0) / only.length).toBeLessThan(15)
+  })
+
+  it('does what the director asked first, with the director\'s words, and then carries on as the seed says', () => {
+    const plain = steps(member(3, 'developer', 'member'), 20)
+    const led = member(3, 'developer', 'member')
+    led.directed.push({ action: 'createItem', text: 'Fix the export of invoices' }, { action: 'comment', text: null })
+
+    expect(led.next().action).toBe('createItem')
+    expect(led.note).toBe('Fix the export of invoices')
+    expect(led.next().action).toBe('comment')
+    expect(led.note).toBeNull()
+    expect(steps(led, 18)).toEqual(plain.slice(2))
+    expect(led.allows('settings')).toBe(false)
+  })
+
+  it('lets an explorer be slower than the run, and follow the model\'s choice', async () => {
+    const explorer = member(4, 'developer', 'member')
+    ;(explorer.plan as { kind: string }).kind = 'ai'
+    const scripted = member(4, 'developer', 'member')
+    expect(explorer.next().pause).toBe(scripted.next().pause * 4)
+
+    explorer.signedIn = true
+    await explorer.act('openItems')
+    // The stand-in model chose "search" and said it was stuck; the request itself fails here, which is recorded too.
+    expect([...explorer.recorder.actions.keys()]).toEqual(['search'])
+    expect(explorer.recorder.drain().findings.map((f) => f.flow)).toContain('explorer')
   })
 
   it('pauses around the persona\'s mean', () => {

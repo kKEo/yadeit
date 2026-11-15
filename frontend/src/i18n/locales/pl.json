@@ -1429,7 +1429,15 @@
       "flows": "Ścieżki sprawdzane w trakcie przebiegu",
       "personas": "Zmiany person (JSON, opcjonalnie)",
       "personasHint": "Własna pauza w sekundach i wagi działań dla person: lead, developer, designer, client.",
-      "personasInvalid": "To nie jest poprawny JSON."
+      "personasInvalid": "To nie jest poprawny JSON.",
+      "ai": "AI",
+      "aiUnavailable": "Instalacja nie ma klucza dostawcy AI (ANTHROPIC_API_KEY), więc warstw AI nie można użyć.",
+      "director": "Reżyser: model pisze dzień każdego zespołu",
+      "directorHint": "Kilka wywołań na zespół i symulowany dzień. Osoby odgrywają tę historię przed działaniami losowymi; jest zapisywana, więc przebieg można odtworzyć.",
+      "explorers": "Odkrywcy na zespół",
+      "explorersHint": "Osoby, których każdy krok wybiera model. Najwyżej trzy na przebieg; powyżej 5x działają rzadziej.",
+      "budget": "Budżet tokenów",
+      "budgetHint": "Przebieg zatrzyma się po zużyciu tylu tokenów."
     },
     "volume": {
       "empty": "Pusty",
@@ -1464,7 +1472,8 @@
       "changeToSocket": "Zmiana dociera do otwartej przeglądarki",
       "webhookDelivery": "Webhook dociera i jest poprawnie podpisany",
       "publicFeedback": "Publiczny formularz opinii",
-      "midnight": "Noc: cykle i nieruszane zadania"
+      "midnight": "Noc: cykle i nieruszane zadania",
+      "explorer": "Obserwacja odkrywcy"
     },
     "runs": {
       "title": "Przebiegi",
@@ -1499,7 +1508,8 @@
       "flows": "Ścieżki",
       "failed_flows": "Nieudane ścieżki",
       "findings": "Znaleziska",
-      "oldest_job_seconds": "Najstarsze czekające zadanie kolejki"
+      "oldest_job_seconds": "Najstarsze czekające zadanie kolejki",
+      "ai_tokens": "Zużyte tokeny AI"
     },
     "packs": {
       "title": "Pakiety treści",
@@ -1509,7 +1519,14 @@
         "builtin": "Wbudowany",
         "ai": "Napisany przez AI"
       },
-      "counts": "Osoby: {people}, nazwy zespołów: {teams}, zadania: {items}, komentarze: {comments}, dokumenty: {pages}, opinie: {feedback}."
+      "counts": "Osoby: {people}, nazwy zespołów: {teams}, zadania: {items}, komentarze: {comments}, dokumenty: {pages}, opinie: {feedback}.",
+      "write": {
+        "title": "Niech AI napisze pakiet",
+        "name": "Nazwa",
+        "theme": "Kim jest zespół i co buduje, w jednym zdaniu",
+        "button": "Napisz pakiet",
+        "busy": "Piszę…"
+      }
     },
     "token": {
       "title": "Uruchom runnera",

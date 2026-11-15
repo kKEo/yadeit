@@ -66,7 +66,9 @@ class ProvisionSimTeam
     {
         $template = (array) config('simulator.templates.'.max(1, min(10, $team->size)));
         $names = $random->shuffleArray($pack->list('people'));
-        $explorers = (int) data_get($run->config, 'ai.explorers_per_team', 0);
+        // A few explorers per run at most: they are there to look around, not to produce load.
+        $room = (int) config('simulator.ai.max_explorers') - SimMember::query()->where('run_id', $run->id)->where('kind', 'ai')->count();
+        $explorers = max(0, min($room, (int) data_get($run->config, 'ai.explorers_per_team', 0)));
         $members = [];
 
         foreach ($template as $index => [$persona, $role]) {

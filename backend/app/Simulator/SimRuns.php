@@ -211,8 +211,9 @@ class SimRuns
         }
 
         $budget = (int) data_get($run->config, 'ai.token_budget', 0);
+        $usesAi = data_get($run->config, 'ai.director') || data_get($run->config, 'ai.explorers_per_team') > 0;
 
-        if ($budget > 0 && $run->ai_tokens_used >= $budget) {
+        if ($usesAi && $budget > 0 && $run->ai_tokens_used >= $budget) {
             $this->stop($run, 'The AI token budget of the run is spent.');
         }
     }
@@ -245,6 +246,17 @@ class SimRuns
         // Actions and flows a scenario switches off, and its own weights and pauses per persona; the runner applies them.
         $config['disabled_actions'] = array_values(array_filter((array) ($config['disabled_actions'] ?? []), 'is_string'));
         $config['personas'] = (array) ($config['personas'] ?? []);
+
+        // AI is off unless the scenario switches a layer on, and never spends more than the run's budget.
+        $ai = (array) ($config['ai'] ?? []);
+        $config['ai'] = [
+            'director' => (bool) ($ai['director'] ?? false),
+            'explorers_per_team' => max(0, min((int) config('simulator.ai.max_explorers'), (int) ($ai['explorers_per_team'] ?? 0))),
+            'token_budget' => max(0, (int) ($ai['token_budget'] ?? config('simulator.ai.token_budget'))),
+            'real_help' => (bool) ($ai['real_help'] ?? false),
+            // Play the storylines an earlier run was given instead of asking for new ones.
+            'replay_run_id' => isset($ai['replay_run_id']) ? (int) $ai['replay_run_id'] : null,
+        ];
 
         return $config;
     }

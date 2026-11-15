@@ -4,17 +4,18 @@ import type { SimConfig, SimReport, SimRun, SimRunDetail, SimStatus } from '@/ap
 export const config: SimConfig = {
   teams: 3, size_min: 2, size_max: 6, speed: 10, duration_minutes: 10, day_mode: 'workday', ramp_up_seconds: 30, real_signup_share: 0.34,
   volume: 'small', intensity: 1, seed: 1, pack_id: null, thresholds: {}, disabled_actions: [], personas: {},
+  ai: { director: false, explorers_per_team: 0, token_budget: 500000, replay_run_id: null },
 }
 
 export const status: SimStatus = {
   enabled: true, production: false, caps: { teams: 50, team_size: 10, speed: 100, duration_minutes: 240 }, speeds: [1, 2, 5, 10, 50, 100],
   volumes: ['empty', 'small', 'medium', 'large'], defaults: config, thresholds: { p95_ms: 1000, error_rate: 0.01, flow_success: 0.99 },
-  standing_runner: false, active_run_id: null,
+  standing_runner: false, ai_available: true, active_run_id: null,
 }
 
 export function makeRun(overrides: Partial<SimRun> = {}): SimRun {
   return {
-    id: 7, name: 'Busy day', status: 'running', active: true, speed: 10, seed: 1, config, verdict: null, stop_reason: null, totals: null,
+    id: 7, name: 'Busy day', status: 'running', active: true, speed: 10, seed: 1, config, verdict: null, stop_reason: null, ai_tokens_used: 0, totals: null,
     purged: false, started_at: '2026-11-15T10:00:00Z', finished_at: null, ...overrides,
   }
 }

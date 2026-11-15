@@ -1,5 +1,5 @@
 import { hostname } from 'node:os'
-import type { ActionName } from './catalogue.ts'
+import { ACTIONS, type ActionName } from './catalogue.ts'
 import { Agent } from './agent.ts'
 import { dayOf, SimClock } from './clock.ts'
 import { Control, isActive, type Registration, type RunState, type TeamPlan } from './control.ts'
@@ -47,6 +47,8 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
       newVisitor: () => new Session(options.target, registration.origin, team.visitor_headers[visits++ % Math.max(1, team.visitor_headers.length)] ?? '', recorder),
       others: () => contexts.filter((other) => other !== context),
       realtime: registration.realtime, workspaceId: null, agents: [], feedbackToken: null, publicPages: [], sinkUrl: registration.sink_url,
+      decide: (memberId, choices, history, seen) => control.decide(memberId, choices, history, seen),
+      explorerSlowdown: () => Math.max(1, clock.speed / Math.max(1, registration.explorer_speed_cap)),
     }
     contexts.push(context)
     const agentPlans = team.members.filter((plan) => plan.kind === 'agent')
@@ -92,6 +94,23 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
     })())
   }
 
+  // With a director (or a replay of one), each team gets the story of the day when the day begins.
+  const directed = state.config.ai?.director === true || (state.config.ai?.replay_run_id ?? null) !== null
+  const toldUntil = new Map<number, number>()
+  const direct = async (context: TeamContext, day: number): Promise<void> => {
+    if (!directed || (toldUntil.get(context.id) ?? -1) >= day || context.members.length === 0) return
+    toldUntil.set(context.id, day)
+    try {
+      const cast = context.members.filter((member) => member.plan.kind === 'scripted')
+      for (const step of await control.storyline(context.id, day)) {
+        const member = cast[step.member - 1]
+        if (member && step.action in ACTIONS && member.allows(step.action as ActionName)) member.directed.push({ action: step.action as ActionName, text: step.text })
+      }
+    } catch (error) {
+      options.log(`No storyline for ${context.name}, day ${day}: ${error instanceof Error ? error.message : String(error)}`)
+    }
+  }
+
   let lastPoll = 0
   let lastReport = Date.now()
   const send = async (): Promise<void> => {
@@ -118,6 +137,7 @@ export async function run(options: RunnerOptions, stop: AbortSignal): Promise<Ou
         clock.setSpeed(state.status === 'running' ? state.speed : 0)
         answer.teams.filter((team) => !known.has(team.id)).forEach((team) => adopt(team, known.size))
         rampDone = true
+        for (const context of contexts) void direct(context, dayOf(clock.now()))
 
         // Teams the coordinator no longer lists were removed from the run, or went to another runner.
         const listed = new Set(answer.teams.map((team) => team.id))

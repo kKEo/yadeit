@@ -40,6 +40,9 @@ const editorOpen = ref(false)
 const deleting = ref<SimScenario | null>(null)
 const started = ref<(SimRun & { runner_token: string }) | null>(null)
 const preview = ref<{ pack: SimPack; content: SimPackContent } | null>(null)
+const packName = ref('')
+const packTheme = ref('')
+const writing = useApiForm()
 
 const scenarioOptions = computed(() => [
   { value: '0', label: t('sim.start.defaults') },
@@ -96,6 +99,22 @@ async function remove() {
 
 async function showPack(pack: SimPack) {
   await action.submit(async () => { preview.value = { pack, content: await api.getPack(pack.id) } })
+}
+
+/** One long answer from the model; the pack is then there for any number of runs. */
+async function writePack() {
+  await writing.submit(async () => {
+    packs.value = [...packs.value, await api.generatePack(packName.value.trim(), packTheme.value.trim())]
+    packName.value = ''
+    packTheme.value = ''
+  })
+}
+
+async function removePack(pack: SimPack) {
+  await action.submit(async () => {
+    await api.deletePack(pack.id)
+    packs.value = packs.value.filter((p) => p.id !== pack.id)
+  })
 }
 
 onMounted(load)
@@ -215,9 +234,24 @@ onMounted(load)
               <Badge variant="outline" class="ml-2">{{ t(`sim.packs.source.${pack.source}`) }}</Badge>
               <span v-if="pack.theme" class="block text-muted-foreground">{{ pack.theme }}</span>
             </span>
-            <Button variant="outline" size="sm" @click="showPack(pack)">{{ t('sim.packs.preview') }}</Button>
+            <span class="flex shrink-0 gap-2">
+              <Button variant="outline" size="sm" @click="showPack(pack)">{{ t('sim.packs.preview') }}</Button>
+              <Button v-if="pack.source !== 'builtin'" variant="outline" size="sm" :disabled="action.pending.value" @click="removePack(pack)">{{ t('common.delete') }}</Button>
+            </span>
           </li>
         </ul>
+        <form class="space-y-3 rounded-lg border p-4" data-testid="pack-form" @submit.prevent="writePack">
+          <h3 class="text-sm font-medium">{{ t('sim.packs.write.title') }}</h3>
+          <p v-if="!status.ai_available" class="text-sm text-muted-foreground">{{ t('sim.scenario.aiUnavailable') }}</p>
+          <Alert v-if="writing.error.value" variant="destructive" :title="writing.error.value" />
+          <div class="grid gap-3 sm:grid-cols-[16rem_1fr]">
+            <Input v-model="packName" maxlength="80" :placeholder="t('sim.packs.write.name')" :aria-label="t('sim.packs.write.name')" :disabled="!status.ai_available" />
+            <Input v-model="packTheme" maxlength="500" :placeholder="t('sim.packs.write.theme')" :aria-label="t('sim.packs.write.theme')" :disabled="!status.ai_available" />
+          </div>
+          <Button type="submit" variant="outline" size="sm" :disabled="!status.ai_available || writing.pending.value || packName.trim() === '' || packTheme.trim().length < 10">
+            {{ t(writing.pending.value ? 'sim.packs.write.busy' : 'sim.packs.write.button') }}
+          </Button>
+        </form>
       </section>
 
       <SimScenarioDialog v-model:open="editorOpen" :status="status" :packs="packs" :scenario="editing" @saved="saved" />
