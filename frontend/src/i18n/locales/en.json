@@ -136,7 +136,6 @@
       "write": "Write",
       "preview": "Preview",
       "parentPlaceholder": "e.g. WEB-12",
-      "openParent": "Open",
       "subscribed": "Subscribed",
       "subscribe": "Subscribe",
       "unsubscribe": "Unsubscribe",
@@ -144,9 +143,18 @@
       "deleteTitle": "Delete {key}?",
       "deleteDescription": "The item disappears from all lists. This action cannot be undone here.",
       "deleting": "Deleting…",
-      "openFull": "Open as full page",
       "notFound": "This item does not exist or was deleted.",
-      "panel": "Item {key}"
+      "panel": "Item {key}",
+      "expand": "Expand",
+      "expandHint": "Expand to full page",
+      "collapse": "Collapse",
+      "collapseHint": "Collapse to side panel",
+      "more": "More actions",
+      "copyLink": "Copy link",
+      "properties": "Properties",
+      "details": "Details",
+      "clearDueDate": "Clear date",
+      "openParentKey": "Open {key}"
     },
     "checklist": {
       "title": "Checklist",
@@ -584,7 +592,9 @@
       "comments": "Comments",
       "pages": "Pages"
     },
-    "designWork": "Show design work"
+    "designWork": "Show design work",
+    "expandItem": "Expand {key} to full page",
+    "collapseItem": "Collapse {key} to the side panel"
   },
   "shortcuts": {
     "title": "Keyboard shortcuts",
@@ -608,7 +618,8 @@
       "priority": "Change priority",
       "assignee": "Change assignee",
       "labels": "Change labels",
-      "assignToMe": "Assign to me"
+      "assignToMe": "Assign to me",
+      "toggleFull": "Expand to full page or collapse to the panel"
     },
     "inbox": {
       "toggleRead": "Mark read or unread",

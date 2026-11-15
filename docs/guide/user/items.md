@@ -21,12 +21,22 @@ short message confirms it.
 ## Open an item
 
 Click an item in a list or on a board to open it in a **side panel**, so you
-keep your place. **Open as full page** gives it the whole window and a link of
-its own, like `/w/acme/items/WEB-14`. Press `Escape` to close the panel.
+keep your place. Press `Escape` to close the panel.
+
+**Expand** (or `F`) gives the item the whole page and a link of its own, like
+`/w/acme/items/WEB-14`. **Collapse** (or `F` again) brings you back to the
+list with the panel open.
+
+The top of an item stays in view while you scroll: its key, its title and its
+properties.
 
 ## Change its properties
 
 Every property is changed in place and saved at once; there is no Save button.
+The properties sit under the title as small buttons: choose one to change it.
+A property that is not set yet shows only its icon; hover over it to see its
+name. On the full page, **Labels**, **Agent** and **Cycle** are in the
+**Details** column on the right instead.
 
 | Property | What it is for |
 |---|---|
@@ -35,9 +45,9 @@ Every property is changed in place and saved at once; there is no Save button.
 | **Assignee** | The one person responsible. Leave it empty for **Unassigned**. |
 | **Agent** | An AI agent the work is delegated to. See [Working with AI agents](agents.md). |
 | **Labels** | Free tags from the project's list |
-| **Kind** | Task, Bug, Feature, Design or Research |
+| **Kind** | Task, Bug, Feature, Design or Research. It is the icon in front of the key. |
 | **Due date** | When it should be done |
-| **Parent** | The bigger item this one is part of, typed as a key, such as `WEB-12` |
+| **Parent** | The bigger item this one is part of, typed as a key, such as `WEB-12`. It is shown next to the key. |
 | **Cycle** | The time box it is planned in, if the project uses cycles |
 
 With the keyboard: open or focus an item and press `S` (state), `P`

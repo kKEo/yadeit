@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useQueryCache } from '@pinia/colada'
-import { Bell, BellOff, Maximize2, Trash2, X } from '@lucide/vue'
 import { ApiError } from '@/api/client'
 import * as api from '@/api/items'
 import { useCanEdit } from '@/composables/useCanEdit'
 import { useItemDetail } from '@/queries/items'
 import { useDeleteItem, useItemPartMutation, useUpdateItem } from '@/queries/itemMutations'
 import { keys, useSlug } from '@/queries/keys'
+import { formatDateTime, formatRelative } from '@/lib/format'
 import { useToastStore } from '@/stores/toast'
 import ConfirmDialog from '@/components/app/ConfirmDialog.vue'
 import Alert from '@/components/ui/Alert.vue'
-import Button from '@/components/ui/Button.vue'
 import Skeleton from '@/components/ui/Skeleton.vue'
 import Tabs from '@/components/ui/Tabs.vue'
 import { useMembers } from '@/queries/workspace'
@@ -24,14 +23,18 @@ import ItemChecklist from './ItemChecklist.vue'
 import ItemChildren from './ItemChildren.vue'
 import ItemComments from './ItemComments.vue'
 import ItemDescription from './ItemDescription.vue'
+import ItemHeader from './ItemHeader.vue'
 import ItemLinks from './ItemLinks.vue'
 import ItemProperties from './ItemProperties.vue'
 import ItemRelations from './ItemRelations.vue'
 
-/** Everything about one item; the side panel and the full page both show this. */
+/**
+ * Everything about one item; the side panel and the full page both show this.
+ * The panel carries every property in the header; the page has the width for a details column.
+ */
 const props = defineProps<{ itemKey: string; variant: 'peek' | 'page' }>()
-const emit = defineEmits<{ close: []; open: [key: string]; expand: []; deleted: [] }>()
-const { t } = useI18n()
+const emit = defineEmits<{ close: []; open: [key: string]; expand: []; collapse: []; deleted: [] }>()
+const { t, locale } = useI18n()
 const canEdit = useCanEdit()
 const cache = useQueryCache()
 const slug = useSlug()
@@ -39,17 +42,6 @@ const toast = useToastStore()
 const detail = useItemDetail(() => props.itemKey)
 const { update } = useUpdateItem()
 const deleteItem = useDeleteItem()
-
-const title = ref('')
-watch(() => detail.data.value?.title, (value) => { title.value = value ?? '' }, { immediate: true })
-
-function saveTitle() {
-  const item = detail.data.value
-  const next = title.value.trim()
-  if (!item || next === item.title) return
-  if (next === '') { title.value = item.title; return }
-  void update(item.key, { title: next })
-}
 
 const subscription = useItemPartMutation(() => props.itemKey, (s, k, subscribed: boolean) => api.setSubscription(s, k, subscribed), ['detail'])
 
@@ -77,47 +69,35 @@ async function confirmDelete() {
   }
 }
 
+const dates = computed(() => {
+  const item = detail.data.value
+  if (!item) return []
+  return [
+    { label: t('items.fields.createdAt'), value: item.created_at },
+    { label: t('items.fields.updatedAt'), value: item.updated_at },
+    ...(item.completed_at ? [{ label: t('items.fields.completedAt'), value: item.completed_at }] : []),
+  ]
+})
+
 const notFound = () => detail.error.value instanceof ApiError && detail.error.value.status === 404
 </script>
 
 <template>
   <article class="flex min-h-0 flex-1 flex-col" :aria-label="itemKey">
-    <header class="flex shrink-0 items-center justify-between gap-2 border-b px-4 py-2">
-      <span class="font-mono text-sm text-muted-foreground">{{ itemKey }}</span>
-      <div class="flex items-center gap-1">
-        <Button
-          v-if="detail.data.value" variant="ghost" size="sm" class="h-8 gap-1.5 px-2" :aria-pressed="detail.data.value.subscribed"
-          @click="toggleSubscription"
-        >
-          <component :is="detail.data.value.subscribed ? Bell : BellOff" class="h-4 w-4" />
-          <span class="hidden sm:inline">{{ detail.data.value.subscribed ? t('items.detail.subscribed') : t('items.detail.subscribe') }}</span>
-          <span class="sr-only sm:hidden">{{ detail.data.value.subscribed ? t('items.detail.unsubscribe') : t('items.detail.subscribe') }}</span>
-        </Button>
-        <Button v-if="canEdit && detail.data.value" variant="ghost" size="icon" class="h-8 w-8" :aria-label="t('items.detail.deleteItem')" @click="deleteOpen = true">
-          <Trash2 class="h-4 w-4" />
-        </Button>
-        <template v-if="variant === 'peek'">
-          <Button variant="ghost" size="icon" class="h-8 w-8" :aria-label="t('items.detail.openFull')" @click="emit('expand')"><Maximize2 class="h-4 w-4" /></Button>
-          <Button variant="ghost" size="icon" class="h-8 w-8" :aria-label="t('common.close')" @click="emit('close')"><X class="h-4 w-4" /></Button>
-        </template>
-      </div>
-    </header>
+    <ItemHeader
+      :item-key="itemKey" :item="detail.data.value ?? null" :can-edit="canEdit" :variant="variant"
+      @open="emit('open', $event)" @expand="emit('expand')" @collapse="emit('collapse')" @close="emit('close')"
+      @delete="deleteOpen = true" @toggle-subscription="toggleSubscription"
+    />
 
-    <div class="min-h-0 flex-1 overflow-y-auto p-4">
+    <div :class="variant === 'page' ? 'pt-6' : 'min-h-0 flex-1 overflow-y-auto p-4'">
       <div v-if="detail.status.value === 'pending'" class="space-y-3" aria-busy="true">
         <Skeleton class="h-8 w-2/3" /><Skeleton class="h-24 w-full" /><Skeleton class="h-40 w-full" />
       </div>
       <Alert v-else-if="!detail.data.value" variant="destructive" :title="notFound() ? t('items.detail.notFound') : (detail.error.value?.message ?? t('errors.fetchOne'))" />
-      <div v-else class="grid gap-6" :class="variant === 'page' ? 'lg:grid-cols-[minmax(0,1fr)_20rem]' : ''">
+      <div v-else class="grid gap-8" :class="variant === 'page' ? 'lg:grid-cols-[minmax(0,1fr)_18rem]' : ''">
         <div class="min-w-0 space-y-6">
-          <input
-            v-model="title" type="text" maxlength="255" :disabled="!canEdit" :aria-label="t('items.fields.title')"
-            class="-mx-2 w-[calc(100%+1rem)] rounded-md border border-transparent bg-transparent px-2 py-1 text-xl font-semibold tracking-tight
-                   hover:border-input focus-visible:border-input focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:hover:border-transparent"
-            @blur="saveTitle" @keydown.enter.prevent="($event.target as HTMLInputElement).blur()"
-          />
           <ItemDescription :description="detail.data.value.description" :can-edit="canEdit" @save="update(itemKey, { description: $event })" />
-          <ItemProperties v-if="variant === 'peek'" :item="detail.data.value" :can-edit="canEdit" class="rounded-lg border p-3" @open="emit('open', $event)" />
           <ItemAi :item="detail.data.value" />
           <ItemChecklist :item="detail.data.value" :can-edit="canEdit" />
           <ItemChildren :item="detail.data.value" :can-edit="canEdit" @open="emit('open', $event)" />
@@ -136,9 +116,16 @@ const notFound = () => detail.error.value instanceof ApiError && detail.error.va
             <template #activity><ItemActivity v-if="tab === 'activity'" :item-key="itemKey" /></template>
             <template #runs><ItemRuns v-if="tab === 'runs'" :item-key="itemKey" /></template>
           </Tabs>
+          <p v-if="variant === 'peek'" class="flex flex-wrap gap-x-1.5 border-t pt-3 text-xs text-muted-foreground" data-item-meta>
+            <span>{{ detail.data.value.project.name }}</span>
+            <template v-for="date in dates" :key="date.label">
+              <span aria-hidden="true">·</span>
+              <span :title="formatDateTime(date.value, locale)">{{ date.label }} {{ formatRelative(date.value, locale) }}</span>
+            </template>
+          </p>
         </div>
-        <aside v-if="variant === 'page'" class="lg:sticky lg:top-0 lg:self-start">
-          <ItemProperties :item="detail.data.value" :can-edit="canEdit" class="rounded-lg border p-3" @open="emit('open', $event)" />
+        <aside v-if="variant === 'page'" class="lg:sticky lg:top-[calc(var(--app-header-height,3.5rem)+9.5rem)] lg:self-start lg:border-l lg:pl-4">
+          <ItemProperties :item="detail.data.value" :can-edit="canEdit" />
         </aside>
       </div>
     </div>

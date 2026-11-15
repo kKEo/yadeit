@@ -3,7 +3,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { queryString } from '@/lib/redirect'
 import { useUiStore } from '@/stores/ui'
 
-/** Opening and closing the item side panel (`?item=KEY`), and which item keyboard actions apply to. */
+/**
+ * Opening and closing the item side panel (`?item=KEY`), expanding it to the full page and back,
+ * and which item keyboard actions apply to.
+ */
 export function useItemPeek() {
   const route = useRoute()
   const router = useRouter()
@@ -29,5 +32,21 @@ export function useItemPeek() {
     return router.push({ query })
   }
 
-  return { peekKey, activeKey, isDetailPage, open, close }
+  /** The panel's item as a full page; the page remembers it came from the panel. */
+  function expand() {
+    if (!peekKey.value) return
+    return router.push({ name: 'item-detail', params: { slug: route.params.slug, key: peekKey.value }, state: { fromPeek: true } })
+  }
+
+  /** Whether the full page on screen was reached by expanding the panel. */
+  const expandedFromPeek = () => isDetailPage.value && router.options.history.state.fromPeek === true
+
+  /** The full page back to the side panel: where it was expanded from, else over the items list. */
+  function collapse() {
+    if (!isDetailPage.value) return
+    if (expandedFromPeek()) return router.back()
+    return router.push({ name: 'items', params: { slug: route.params.slug }, query: { item: String(route.params.key).toUpperCase() } })
+  }
+
+  return { peekKey, activeKey, isDetailPage, open, close, expand, collapse, expandedFromPeek }
 }

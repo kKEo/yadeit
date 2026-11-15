@@ -136,7 +136,6 @@
       "write": "Edycja",
       "preview": "Podgląd",
       "parentPlaceholder": "np. WEB-12",
-      "openParent": "Otwórz",
       "subscribed": "Obserwujesz",
       "subscribe": "Obserwuj",
       "unsubscribe": "Przestań obserwować",
@@ -144,9 +143,18 @@
       "deleteTitle": "Usunąć {key}?",
       "deleteDescription": "Zadanie zniknie ze wszystkich list. Tej operacji nie można tutaj cofnąć.",
       "deleting": "Usuwanie…",
-      "openFull": "Otwórz na całej stronie",
       "notFound": "To zadanie nie istnieje albo zostało usunięte.",
-      "panel": "Zadanie {key}"
+      "panel": "Zadanie {key}",
+      "expand": "Rozwiń",
+      "expandHint": "Rozwiń na całą stronę",
+      "collapse": "Zwiń",
+      "collapseHint": "Zwiń do panelu bocznego",
+      "more": "Więcej działań",
+      "copyLink": "Kopiuj link",
+      "properties": "Właściwości",
+      "details": "Szczegóły",
+      "clearDueDate": "Usuń termin",
+      "openParentKey": "Otwórz {key}"
     },
     "checklist": {
       "title": "Lista kontrolna",
@@ -584,7 +592,9 @@
       "comments": "Komentarze",
       "pages": "Strony"
     },
-    "designWork": "Pokaż prace projektowe"
+    "designWork": "Pokaż prace projektowe",
+    "expandItem": "Rozwiń {key} na całą stronę",
+    "collapseItem": "Zwiń {key} do panelu bocznego"
   },
   "shortcuts": {
     "title": "Skróty klawiszowe",
@@ -608,7 +618,8 @@
       "priority": "Zmień priorytet",
       "assignee": "Zmień osobę przypisaną",
       "labels": "Zmień etykiety",
-      "assignToMe": "Przypisz do mnie"
+      "assignToMe": "Przypisz do mnie",
+      "toggleFull": "Rozwiń na całą stronę albo zwiń do panelu"
     },
     "inbox": {
       "toggleRead": "Oznacz jako przeczytane lub nieprzeczytane",

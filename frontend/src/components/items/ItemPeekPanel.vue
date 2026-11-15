@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useItemPeek } from '@/composables/useItemPeek'
-import { useSlug } from '@/queries/keys'
 import ItemDetail from './ItemDetail.vue'
 
 /** The right-hand side panel for `?item=KEY`. Not modal: the page behind stays usable and in place. */
-const router = useRouter()
 const { t } = useI18n()
-const slug = useSlug()
-const { peekKey, open, close } = useItemPeek()
+const { peekKey, open, close, expand } = useItemPeek()
 
 const panel = ref<HTMLElement | null>(null)
 
@@ -25,10 +21,6 @@ function onPointerDown(e: PointerEvent) {
 
 onMounted(() => document.addEventListener('pointerdown', onPointerDown))
 onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown))
-
-function expand() {
-  if (peekKey.value) void router.push({ name: 'item-detail', params: { slug: slug.value, key: peekKey.value } })
-}
 </script>
 
 <template>
@@ -38,7 +30,7 @@ function expand() {
   >
     <aside
       v-if="peekKey" ref="panel" :aria-label="t('items.detail.panel', { key: peekKey })"
-      class="fixed bottom-0 right-0 top-14 z-30 flex w-full max-w-xl flex-col border-l bg-background shadow-xl"
+      class="fixed bottom-0 right-0 top-[var(--app-header-height,3.5rem)] z-30 flex w-full max-w-xl flex-col border-l bg-background shadow-xl"
     >
       <ItemDetail :key="peekKey" :item-key="peekKey" variant="peek" @close="close" @open="open" @expand="expand" @deleted="close" />
     </aside>

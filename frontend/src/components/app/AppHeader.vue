@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, ref, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useElementSize } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import LocaleSwitcher from '@/components/app/LocaleSwitcher.vue'
 import UserMenu from '@/components/app/UserMenu.vue'
@@ -15,6 +16,12 @@ const props = defineProps<{ slug: string }>()
 const { t } = useI18n()
 
 const ui = useUiStore()
+
+// What sits right under the header (the item side panel, the item page's own header) needs its real height.
+const header = ref<HTMLElement | null>(null)
+const { height } = useElementSize(header, undefined, { box: 'border-box' })
+watchEffect(() => { if (height.value > 0) document.documentElement.style.setProperty('--app-header-height', `${height.value}px`) })
+onBeforeUnmount(() => document.documentElement.style.removeProperty('--app-header-height'))
 const unread = useInboxUnreadCount()
 
 const links = computed(() => [
@@ -30,7 +37,7 @@ const links = computed(() => [
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
+  <header ref="header" class="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
     <div class="mx-auto flex h-14 max-w-[100rem] items-center justify-between gap-4 px-4">
       <div class="flex min-w-0 items-center gap-3">
         <RouterLink :to="{ name: 'home' }" class="flex items-center gap-2" :aria-label="t('app.name')">

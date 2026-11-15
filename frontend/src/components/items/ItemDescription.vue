@@ -30,13 +30,17 @@ function save() {
 </script>
 
 <template>
-  <section :aria-label="t('items.fields.description')">
-    <div v-if="!editing" class="group relative">
-      <MarkdownView v-if="description" :source="description" />
-      <p v-else class="text-sm text-muted-foreground">{{ t('items.noDescription') }}</p>
-      <Button v-if="canEdit" variant="ghost" size="sm" class="mt-2 h-7 gap-1.5 px-2 text-xs text-muted-foreground" @click="start">
+  <section class="space-y-2" :aria-label="t('items.fields.description')">
+    <!-- The heading row is where a way of describing the item other than text will be chosen. -->
+    <div class="flex min-h-7 items-center justify-between gap-2">
+      <h3 class="text-sm font-medium">{{ t('items.fields.description') }}</h3>
+      <Button v-if="canEdit && !editing" variant="ghost" size="sm" class="h-7 gap-1.5 px-2 text-xs text-muted-foreground" @click="start">
         <Pencil class="h-3.5 w-3.5" />{{ t('items.detail.editDescription') }}
       </Button>
+    </div>
+    <div v-if="!editing">
+      <MarkdownView v-if="description" :source="description" />
+      <p v-else class="text-sm text-muted-foreground">{{ t('items.noDescription') }}</p>
     </div>
     <form v-else class="space-y-2" @submit.prevent="save" @keydown.esc.stop="editing = false">
       <Tabs v-model="tab" :tabs="[{ value: 'write', label: t('items.detail.write') }, { value: 'preview', label: t('items.detail.preview') }]" class="h-8">

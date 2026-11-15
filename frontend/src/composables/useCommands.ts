@@ -2,10 +2,11 @@ import { computed, type Component } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
-  Bookmark, Bot, Building2, FileText, Megaphone, Palette, Columns3, Copy, FolderKanban, Inbox, Keyboard, LayoutList, Link2, ListTodo, Plus, Settings,
+  Bookmark, Bot, Building2, FileText, Megaphone, Palette, Columns3, Copy, FolderKanban, Inbox, Keyboard, LayoutList, Link2, ListTodo, Maximize2, Minimize2, Plus, Settings,
   SignalHigh, Tag, CircleDot, User, UserCheck, Users,
 } from '@lucide/vue'
 import { useCanEdit } from '@/composables/useCanEdit'
+import { useItemLink } from '@/composables/useItemLink'
 import { useItemPeek } from '@/composables/useItemPeek'
 import { useViewState } from '@/composables/useViewState'
 import { BUILT_IN_VIEWS, viewToState } from '@/lib/viewState'
@@ -40,8 +41,9 @@ export function useCommands() {
   const canEdit = useCanEdit()
   const views = useSavedViews()
   const { state, apply, patch } = useViewState()
-  const { activeKey } = useItemPeek()
+  const { activeKey, peekKey, isDetailPage, expand, collapse } = useItemPeek()
   const { update } = useUpdateItem()
+  const { copyLink } = useItemLink()
 
   const go = (name: string) => () => void router.push({ name, params: { slug: slug.value } })
 
@@ -57,8 +59,6 @@ export function useCommands() {
   function assignToMe(key: string) {
     if (auth.user) void update(key, { assignee: { id: auth.user.id, name: auth.user.name } })
   }
-
-  const itemLink = (key: string) => `${window.location.origin}${router.resolve({ name: 'item-detail', params: { slug: slug.value, key } }).href}`
 
   const commands = computed<Command[]>(() => {
     const list: Command[] = []
@@ -78,9 +78,11 @@ export function useCommands() {
         }
         list.push({ id: 'item-assign-me', group, icon: UserCheck, shortcut: 'i', label: t('commands.assignToMe', { key }), run: () => assignToMe(key) })
       }
+      if (peekKey.value) list.push({ id: 'item-expand', group, icon: Maximize2, shortcut: 'f', label: t('commands.expandItem', { key }), run: () => void expand() })
+      if (isDetailPage.value) list.push({ id: 'item-collapse', group, icon: Minimize2, shortcut: 'f', label: t('commands.collapseItem', { key }), run: () => void collapse() })
       list.push(
         { id: 'item-copy-key', group, icon: Copy, label: t('commands.copyKey', { key }), run: () => void copy(key, t('commands.copied', { text: key })) },
-        { id: 'item-copy-link', group, icon: Link2, label: t('commands.copyLink', { key }), run: () => void copy(itemLink(key), t('commands.linkCopied')) },
+        { id: 'item-copy-link', group, icon: Link2, label: t('commands.copyLink', { key }), run: () => void copyLink(key) },
       )
     }
 

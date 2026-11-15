@@ -28,6 +28,7 @@ Use the arrow keys to choose and `Enter` to run. `Escape` closes it.
 | `?` | Show keyboard shortcuts |
 | `C` | Create an item |
 | `Escape` | Close the item panel |
+| `F` | Expand the open item to the full page, or collapse it back to the panel |
 
 ## Go to
 

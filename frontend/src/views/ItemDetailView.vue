@@ -1,31 +1,21 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { ArrowLeft } from '@lucide/vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useItemPeek } from '@/composables/useItemPeek'
 import ItemDetail from '@/components/items/ItemDetail.vue'
 
-/** `/w/:slug/items/:key`: the same content as the side panel, full page. */
+/** `/w/:slug/items/:key`: the side panel's content expanded to the full page, with an address of its own. */
 const route = useRoute()
 const router = useRouter()
-const { t } = useI18n()
+const { open, collapse } = useItemPeek()
 
 const itemKey = computed(() => String(route.params.key).toUpperCase())
 const itemsRoute = computed(() => ({ name: 'items', params: { slug: route.params.slug } }))
-
-function open(key: string) {
-  void router.push({ name: 'item-detail', params: { slug: route.params.slug, key } })
-}
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl space-y-3">
-    <RouterLink
-      :to="itemsRoute"
-      class="inline-flex items-center gap-1.5 rounded text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    ><ArrowLeft class="h-4 w-4" />{{ t('items.title') }}</RouterLink>
-    <div class="flex flex-col rounded-lg border bg-card">
-      <ItemDetail :key="itemKey" :item-key="itemKey" variant="page" @open="open" @deleted="router.push(itemsRoute)" />
-    </div>
+  <!-- Capped so the text column stays readable on a wide window. -->
+  <div class="mx-auto max-w-6xl">
+    <ItemDetail :key="itemKey" :item-key="itemKey" variant="page" @open="open" @collapse="collapse" @deleted="router.push(itemsRoute)" />
   </div>
 </template>

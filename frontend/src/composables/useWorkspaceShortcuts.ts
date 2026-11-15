@@ -12,7 +12,7 @@ export function useWorkspaceShortcuts() {
   const slug = useSlug()
   const ui = useUiStore()
   const canEdit = useCanEdit()
-  const { activeKey, peekKey, close } = useItemPeek()
+  const { activeKey, peekKey, isDetailPage, close, expand, collapse, expandedFromPeek } = useItemPeek()
   const { assignToMe } = useCommands()
 
   const go = (name: string) => () => void router.push({ name, params: { slug: slug.value } })
@@ -28,10 +28,16 @@ export function useWorkspaceShortcuts() {
     { keys: '?', group: 'shortcuts.group.general', description: 'shortcuts.help', handler: () => { ui.shortcutsHelpOpen = true } },
     { keys: 'c', group: 'shortcuts.group.general', description: 'shortcuts.create', when: () => canEdit.value, handler: () => ui.openQuickCapture() },
     { keys: 'escape', group: 'shortcuts.group.general', description: 'shortcuts.close', when: () => peekKey.value !== null, handler: () => void close() },
+    // On a full page that was expanded from the panel, Escape steps back to the panel.
+    { keys: 'escape', group: 'shortcuts.group.general', description: 'shortcuts.close', hidden: true, when: expandedFromPeek, handler: () => void collapse() },
     { keys: 'g i', group: 'shortcuts.group.navigate', description: 'shortcuts.go.items', handler: go('items') },
     { keys: 'g p', group: 'shortcuts.group.navigate', description: 'shortcuts.go.projects', handler: go('projects') },
     { keys: 'g m', group: 'shortcuts.group.navigate', description: 'shortcuts.go.members', handler: go('workspace-members') },
     { keys: 'g n', group: 'shortcuts.group.navigate', description: 'shortcuts.go.inbox', handler: go('inbox') },
+    {
+      keys: 'f', group: 'shortcuts.group.item', description: 'shortcuts.item.toggleFull', when: () => peekKey.value !== null || isDetailPage.value,
+      handler: () => void (peekKey.value ? expand() : collapse()),
+    },
     property('s', 'state'),
     property('p', 'priority'),
     property('a', 'assignee'),
