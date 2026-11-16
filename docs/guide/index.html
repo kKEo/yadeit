@@ -29,6 +29,7 @@
     background: var(--card); border: 1px solid var(--border); border-radius: 14px;
     padding: 24px 26px; transition: border-color .15s, transform .15s;
   }
+  .card + .card { margin-top: 16px; }
   .card:hover, .card:focus-visible { border-color: var(--accent); transform: translateY(-1px); outline: none; }
   .tag {
     display: inline-block; font-size: .78rem; font-weight: 600; text-transform: uppercase;
@@ -71,11 +72,21 @@
     </ul>
   </a>
 
+  <a class="card" href="operator/">
+    <div class="tag">For operators</div>
+    <h2>Operator guide</h2>
+    <p>Run your own installation: how it works inside, every setting, monitoring, backups and day-two operations.</p>
+    <ul>
+      <li>System overview, data model and background work</li>
+      <li>Deploy with Docker Compose, HTTPS and proxies</li>
+      <li>Complete configuration reference</li>
+      <li>Health report, logs and alerts</li>
+      <li>Backup, restore and upgrades</li>
+      <li>Commands and troubleshooting</li>
+    </ul>
+  </a>
+
   <div class="more">
-    <a href="https://github.com/kKEo/yadeit/blob/master/docs/deployment.md">
-      <strong>Running your own installation</strong>
-      <span>Docker image, settings, backups and monitoring.</span>
-    </a>
     <a href="https://github.com/kKEo/yadeit/blob/master/README.md">
       <strong>For developers and agents</strong>
       <span>The API, the MCP server, webhooks and local setup.</span>

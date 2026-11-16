@@ -63,6 +63,33 @@ Choose **Edit description**. You write in Markdown: `**bold**`, `- lists`,
 `[links](https://…)`, code in backticks. **Preview** shows how it will look.
 Comments and docs use the same format.
 
+## Draw it on a whiteboard
+
+Some work is easier to draw than to write: a flow, a screen, how parts fit
+together. Next to **Description**, switch from **Text** to **Whiteboard** and
+choose **Draw on a whiteboard**. The whiteboard opens over the whole window
+with shapes, arrows, free drawing, text and pictures. **Save** keeps it; closing without
+saving asks first.
+
+The whiteboard is optional and does not replace the text: an item can have
+either, both or neither, and the switch only chooses which one you look at. A
+dot on **Whiteboard** shows that the item has one. In the side panel and on
+the full page you see a picture of it; select the picture or **Edit
+whiteboard** to change it, **Remove** to delete it.
+
+Good to know:
+
+- Pictures can be placed on a whiteboard: paste a screenshot or use the
+  picture tool. PNG, JPEG, GIF and WebP are accepted. Each picture is kept as
+  an attachment of the item, so it also appears under **Attachments**. While a
+  picture is on the whiteboard its attachment cannot be removed; take it off
+  the drawing first. Pictures stay attached when they are taken off the
+  drawing or when the whiteboard is removed, until you remove them yourself.
+- Two people do not draw on the same whiteboard at once. If someone saved a
+  change while you were drawing, Yadeit tells you and does not overwrite it.
+- Agents and AI help read the words written on a whiteboard, not the shapes.
+  Keep what must not be missed in the text or the checklist.
+
 ## Checklist
 
 Use the **Checklist** for the steps or the acceptance criteria of the work.

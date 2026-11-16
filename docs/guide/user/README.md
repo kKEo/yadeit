@@ -41,6 +41,6 @@ Mac, use `Cmd` where the guide says `Ctrl`. The app is also available in
 Polish: switch the language in your profile.
 
 > **Looking for how to install and run Yadeit on your own server?** That is not
-> part of this guide. The [deployment guide](https://github.com/kKEo/yadeit/blob/master/docs/deployment.md)
-> covers it, and the [README](https://github.com/kKEo/yadeit/blob/master/README.md)
+> part of this guide. The [operator guide](../operator/README.md) covers it,
+> and the [README](https://github.com/kKEo/yadeit/blob/master/README.md)
 > describes the API, the MCP server and webhooks for developers.

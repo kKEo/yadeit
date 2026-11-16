@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="13">
+  <title>The parts of a Yadeit installation</title>
+  <rect width="760" height="400" rx="12" fill="#ffffff"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <g fill="#f5f3ff" stroke="#6d28d9" stroke-width="1.5">
+    <rect x="20" y="40" width="150" height="56" rx="8"/>
+    <rect x="20" y="132" width="150" height="56" rx="8"/>
+    <rect x="20" y="224" width="150" height="56" rx="8"/>
+  </g>
+  <g fill="#1f2937" text-anchor="middle">
+    <text x="95" y="64" font-weight="600">Browsers</text><text x="95" y="82" fill="#6b7280">web app, cookie session</text>
+    <text x="95" y="156" font-weight="600">Scripts and agents</text><text x="95" y="174" fill="#6b7280">REST, bearer token</text>
+    <text x="95" y="248" font-weight="600">MCP clients</text><text x="95" y="266" fill="#6b7280">/mcp, token or OAuth</text>
+  </g>
+  <rect x="240" y="30" width="230" height="260" rx="10" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
+  <text x="355" y="54" text-anchor="middle" font-weight="700" fill="#1f2937">app (FrankenPHP + Caddy)</text>
+  <g fill="#ffffff" stroke="#4338ca">
+    <rect x="258" y="70" width="194" height="44" rx="6"/>
+    <rect x="258" y="124" width="194" height="44" rx="6"/>
+    <rect x="258" y="178" width="194" height="44" rx="6"/>
+    <rect x="258" y="232" width="194" height="44" rx="6"/>
+  </g>
+  <g fill="#1f2937" text-anchor="middle">
+    <text x="355" y="96">web app (Vue, /app/spa)</text>
+    <text x="355" y="150">/api/v1 (Laravel)</text>
+    <text x="355" y="204">/mcp, /oauth, /health, /up</text>
+    <text x="355" y="258">/app → Reverb (realtime)</text>
+  </g>
+  <g fill="#ecfdf5" stroke="#047857" stroke-width="1.5">
+    <rect x="560" y="40" width="180" height="56" rx="8"/>
+    <rect x="560" y="132" width="180" height="56" rx="8"/>
+    <rect x="560" y="224" width="180" height="56" rx="8"/>
+    <rect x="560" y="316" width="180" height="56" rx="8"/>
+    <rect x="240" y="316" width="230" height="56" rx="8"/>
+  </g>
+  <g fill="#1f2937" text-anchor="middle">
+    <text x="650" y="64" font-weight="600">db (PostgreSQL 17)</text><text x="650" y="82" fill="#6b7280">data, sessions, cache, queue</text>
+    <text x="650" y="156" font-weight="600">worker</text><text x="650" y="174" fill="#6b7280">email, webhooks</text>
+    <text x="650" y="248" font-weight="600">scheduler</text><text x="650" y="266" fill="#6b7280">cycles, mail, heartbeat</text>
+    <text x="650" y="340" font-weight="600">backup</text><text x="650" y="358" fill="#6b7280">dump + uploads archive</text>
+    <text x="355" y="340" font-weight="600">reverb (optional)</text><text x="355" y="358" fill="#6b7280">WebSocket signals, ids only</text>
+  </g>
+  <g stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#a)">
+    <path d="M170 68 H238"/>
+    <path d="M170 160 H238"/>
+    <path d="M170 252 H238"/>
+    <path d="M472 68 H558"/>
+    <path d="M650 130 V98"/>
+    <path d="M650 222 V190"/>
+    <path d="M650 314 V282"/>
+    <path d="M355 292 V314"/>
+  </g>
+  <text x="20" y="22" font-weight="700" fill="#1f2937">One address, one image, five services</text>
+</svg>

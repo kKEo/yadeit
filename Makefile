@@ -130,9 +130,10 @@ db-down: ## Stop the development database
 	docker compose stop $(DB)
 
 ##@ Documentation
-docs-build: ## Build the user guide and the landing page into site/
+docs-build: ## Build the user and operator guides and the landing page into site/
 	@command -v mdbook >/dev/null || { echo "mdbook is not installed: https://rust-lang.github.io/mdBook/guide/installation.html"; exit 1; }
 	mdbook build docs/guide/user
+	mdbook build docs/guide/operator
 	cp docs/guide/index.html $(SITE)/index.html
 
 docs-site: docs-build ## Build, then serve the docs on http://localhost:8000 (PORT=9000 to change)

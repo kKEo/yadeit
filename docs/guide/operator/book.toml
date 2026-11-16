@@ -1,0 +1,14 @@
+[book]
+title = "Yadeit operator guide"
+description = "Running Yadeit: how it works inside, installing and upgrading it, every setting, monitoring, backups and day-two operations."
+authors = ["Yadeit"]
+language = "en"
+src = "."
+
+[build]
+build-dir = "../../../site/operator"
+create-missing = false
+
+[output.html]
+site-url = "/yadeit/operator/"
+git-repository-url = "https://github.com/kKEo/yadeit"

@@ -143,7 +143,7 @@ jobs:
         if: failure()
         run: docker compose -p yadeit-local --env-file .env.docker -f compose.prod.yaml -f compose.sim.yaml logs --tail=200 app worker
 
-  # The documentation site: the landing page above the user guide (make docs-build).
+  # The documentation site: the landing page above the user and operator guides (make docs-build).
   # Built on every push and pull request, so a broken SUMMARY.md fails the check.
   docs:
     runs-on: ubuntu-latest

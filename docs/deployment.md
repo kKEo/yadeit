@@ -1,5 +1,7 @@
 # Running Yadeit in production
 
+> The [operator guide](guide/operator/README.md) covers all of this in more depth: every setting, the health checks, restore drills, upgrades and troubleshooting.
+
 This is the supported way to run Yadeit for real use: one Docker image for the
 whole application, PostgreSQL, a queue worker, a scheduler and a backup job,
 started together with Docker Compose.
