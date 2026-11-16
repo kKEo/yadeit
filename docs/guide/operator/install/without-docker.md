@@ -1,7 +1,10 @@
 # Install without Docker
 
-The same parts as the Docker setup, assembled by hand. Use this when your
-platform does not run containers, or as a reference for what the image does.
+The same parts as the Docker setup, assembled by hand. Use this when you have
+your own server without containers, or as a reference for what the image does.
+On ordinary PHP hosting without root, follow
+[Deploy on shared hosting](shared-hosting.md) instead.
+
 `docker/prod/Caddyfile` and `docker/prod/entrypoint.sh` are the exact routing
 and start-up steps.
 

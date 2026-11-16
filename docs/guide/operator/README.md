@@ -20,7 +20,8 @@ does not assume you know Laravel or Vue.
 | [Appendix](appendix/README.md) | look up a word |
 
 If you have ten minutes, read [System overview](intro/overview.md) and
-[Deploy with Docker Compose](install/docker.md).
+[Deploy with Docker Compose](install/docker.md). On ordinary PHP hosting such
+as Zenbox, read [Deploy on shared hosting](install/shared-hosting.md) instead.
 
 ## Conventions
 

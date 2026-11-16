@@ -11,6 +11,7 @@
   - [Deploy with Docker Compose](install/docker.md)
   - [HTTPS and proxies](install/https.md)
   - [Install without Docker](install/without-docker.md)
+  - [Deploy on shared hosting (Zenbox)](install/shared-hosting.md)
   - [Local development](install/local-development.md)
 - [Part III: Configuration reference](config/README.md)
   - [Environment variables](config/environment.md)
