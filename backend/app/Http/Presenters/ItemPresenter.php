@@ -71,7 +71,7 @@ class ItemPresenter
     public function detail(WorkItem $item, ?int $viewerId = null): array
     {
         $item->loadMissing([
-            ...self::LIST_RELATIONS, 'checklist', 'links', 'attachments', 'children.project', 'children.state',
+            ...self::LIST_RELATIONS, 'checklist', 'links', 'attachments', 'whiteboard', 'children.project', 'children.state',
             'outgoingRelations.related.project', 'outgoingRelations.related.state',
             'incomingRelations.item.project', 'incomingRelations.item.state',
         ]);
@@ -91,6 +91,8 @@ class ItemPresenter
                 ])->all(),
             ],
             'attachments' => $item->attachments->map(fn (Attachment $a) => $a->summary())->all(),
+            // Whether the item is also described by a drawing, and the words on it; the drawing is at items/{key}/whiteboard.
+            'whiteboard' => $item->whiteboard?->reference(),
             'comment_count' => $item->comments()->count(),
             'subscribed' => $viewerId !== null && $item->subscribers()->where('users.id', $viewerId)->exists(),
         ];

@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { API_BASE_PATH, request, workspacePath } from './client'
 import type {
   ActivityEntry, AgentRun, Attachment, SearchResult, ChecklistEntry, Comment, CreateItemRequest, Item, ItemDetail, ItemLink,
-  ItemResponse, LinkKind, ListItemsParams, ListResponse, RelationType, UpdateItemRequest,
+  ItemResponse, LinkKind, ListItemsParams, ListResponse, RelationType, SaveWhiteboardRequest, UpdateItemRequest, Whiteboard,
 } from './types'
 
 const itemsPath = (slug: string) => `${workspacePath(slug)}/items`
@@ -137,4 +137,16 @@ export async function removeAttachment(slug: string, key: string, id: number): P
 /** Same-origin URL served with the session cookie: images render inline, other files download. */
 export function attachmentUrl(slug: string, key: string, id: number): string {
   return `${API_BASE_PATH}${itemPath(slug, key)}/attachments/${id}/download`
+}
+
+export async function getWhiteboard(slug: string, key: string): Promise<Whiteboard> {
+  return (await request<ItemResponse<Whiteboard>>('GET', `${itemPath(slug, key)}/whiteboard`)).data
+}
+
+export async function saveWhiteboard(slug: string, key: string, req: SaveWhiteboardRequest): Promise<Whiteboard> {
+  return (await request<ItemResponse<Whiteboard>>('PUT', `${itemPath(slug, key)}/whiteboard`, { body: req })).data
+}
+
+export async function deleteWhiteboard(slug: string, key: string): Promise<void> {
+  await request<void>('DELETE', `${itemPath(slug, key)}/whiteboard`)
 }

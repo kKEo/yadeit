@@ -27,6 +27,7 @@ use App\Http\Controllers\SavedViewController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\WhiteboardController;
 use App\Http\Controllers\WorkItemController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceExportController;
@@ -263,6 +264,10 @@ Route::middleware(['auth:sanctum', 'throttle:api', 'active', 'token.scope'])->gr
             Route::post('comments', [CommentController::class, 'store'])->middleware('idempotent')->name('comments.store');
             Route::patch('comments/{comment}', [CommentController::class, 'update'])->whereNumber('comment')->name('comments.update');
             Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->whereNumber('comment')->name('comments.destroy');
+
+            Route::get('whiteboard', [WhiteboardController::class, 'show'])->name('whiteboard.show');
+            Route::put('whiteboard', [WhiteboardController::class, 'update'])->name('whiteboard.update');
+            Route::delete('whiteboard', [WhiteboardController::class, 'destroy'])->name('whiteboard.destroy');
 
             Route::post('checklist', [ItemPartsController::class, 'addChecklistItem'])->name('checklist.store');
             Route::patch('checklist/{entry}', [ItemPartsController::class, 'updateChecklistItem'])->whereNumber('entry')->name('checklist.update');

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -232,6 +233,25 @@ class WorkItem extends Model
     public function incomingRelations(): HasMany
     {
         return $this->hasMany(ItemRelation::class, 'related_item_id');
+    }
+
+    /**
+     * The optional drawing that describes the item.
+     *
+     * @return HasOne<ItemWhiteboard, $this>
+     */
+    public function whiteboard(): HasOne
+    {
+        return $this->hasOne(ItemWhiteboard::class);
+    }
+
+    /** Everything that describes the work in words: the description and what is written on the whiteboard. */
+    public function describedText(): ?string
+    {
+        $board = $this->whiteboard?->text;
+        $parts = array_filter([$this->description, $board ? "On the whiteboard:\n{$board}" : null]);
+
+        return $parts === [] ? null : implode("\n\n", $parts);
     }
 
     /** @return HasMany<Comment, $this> */

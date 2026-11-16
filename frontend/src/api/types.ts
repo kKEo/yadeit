@@ -76,7 +76,26 @@ export interface ItemDetail extends Item {
   attachments: Attachment[]
   comment_count: number
   subscribed: boolean
+  /** Set when the item is also described by a drawing; the drawing itself is read separately. */
+  whiteboard: WhiteboardRef | null
 }
+
+/** What an item says about its whiteboard: the words on it, and the version to send back when saving. */
+export interface WhiteboardRef { version: number; text: string | null; updated_at: string }
+/** An Excalidraw scene: the drawn elements and the background. */
+export interface WhiteboardScene {
+  elements: unknown[]
+  appState?: { viewBackgroundColor?: string }
+  /** Pictures on the board, by the file id of their image element: each is an attachment of the item. */
+  files?: Record<string, { attachment_id: number; mime_type?: string }>
+}
+export interface Whiteboard extends WhiteboardRef {
+  scene: WhiteboardScene
+  /** Untrusted markup: only ever shown as an image. */
+  preview_svg: string
+  updated_by: UserRef | null
+}
+export interface SaveWhiteboardRequest { scene: WhiteboardScene; preview_svg: string; expected_version: number }
 
 export interface CreateItemRequest {
   project: string

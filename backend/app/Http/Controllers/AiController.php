@@ -96,7 +96,7 @@ class AiController extends Controller
         $this->allowed($request);
 
         return $this->suggest($request, $workspace, Prompts::splitItem(
-            $item->title, $item->description, $item->children()->pluck('title')->all(),
+            $item->title, $item->describedText(), $item->children()->pluck('title')->all(),
         ));
     }
 
@@ -109,7 +109,7 @@ class AiController extends Controller
             ->map(fn (Comment $c) => ['author' => $c->author->name ?? 'someone', 'body' => $c->body])
             ->all();
 
-        return $this->suggest($request, $workspace, Prompts::summariseItem($item->title, $item->description, $comments));
+        return $this->suggest($request, $workspace, Prompts::summariseItem($item->title, $item->describedText(), $comments));
     }
 
     /** Summarises a page: a few sentences and its key points. */

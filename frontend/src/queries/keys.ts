@@ -17,6 +17,7 @@ export const keys = {
   itemComments: (slug: string, key: string): EntryKey => ['w', slug, 'item', key, 'comments'],
   itemActivity: (slug: string, key: string): EntryKey => ['w', slug, 'item', key, 'activity'],
   itemRuns: (slug: string, key: string): EntryKey => ['w', slug, 'item', key, 'runs'],
+  itemWhiteboard: (slug: string, key: string): EntryKey => ['w', slug, 'item', key, 'whiteboard'],
   projects: (slug: string): EntryKey => ['w', slug, 'projects'],
   projectList: (slug: string): EntryKey => ['w', slug, 'projects', 'list'],
   project: (slug: string, key: string): EntryKey => ['w', slug, 'projects', 'detail', key.toUpperCase()],

@@ -103,3 +103,17 @@ export function useSearch(q: MaybeRefOrGetter<string>) {
     }
   })
 }
+
+/** The item's drawing. Only asked for when the item says it has one. */
+export function useItemWhiteboard(itemKey: MaybeRefOrGetter<string>, enabled: MaybeRefOrGetter<boolean> = true) {
+  const slug = useSlug()
+  return useQuery(() => {
+    const key = toValue(itemKey)
+    const workspace = slug.value
+    return {
+      key: keys.itemWhiteboard(workspace, key),
+      query: () => api.getWhiteboard(workspace, key),
+      enabled: toValue(enabled) && key !== '' && workspace !== '',
+    }
+  })
+}

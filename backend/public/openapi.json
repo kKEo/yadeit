@@ -6187,6 +6187,7 @@
                                             "properties": {
                                                 "workspaces": {
                                                     "type": "integer",
+                                                    "description": "What the Traffic lab created is not part of the installation's numbers.",
                                                     "minimum": 0
                                                 },
                                                 "suspended_workspaces": {
@@ -6236,7 +6237,7 @@
         "/admin/workspaces": {
             "get": {
                 "operationId": "admin.workspaces.index",
-                "summary": "Filters: q (name or web address), suspended (true/false)",
+                "summary": "Filters: q (name or web address), suspended (true/false), simulated (true shows what the Traffic lab created instead)",
                 "tags": [
                     "Operator"
                 ],
@@ -6251,6 +6252,19 @@
                     },
                     {
                         "name": "suspended",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false",
+                                "1",
+                                "0"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "simulated",
                         "in": "query",
                         "schema": {
                             "type": "string",
@@ -6310,6 +6324,9 @@
                                                     "items": {
                                                         "type": "integer"
                                                     },
+                                                    "simulated": {
+                                                        "type": "boolean"
+                                                    },
                                                     "suspended_at": {
                                                         "type": [
                                                             "string",
@@ -6332,6 +6349,7 @@
                                                     "plan",
                                                     "members",
                                                     "items",
+                                                    "simulated",
                                                     "suspended_at",
                                                     "created_at"
                                                 ]
@@ -6429,6 +6447,9 @@
                                                     "type": "integer",
                                                     "minimum": 0
                                                 },
+                                                "simulated": {
+                                                    "type": "boolean"
+                                                },
                                                 "suspended_at": {
                                                     "type": [
                                                         "string",
@@ -6451,6 +6472,7 @@
                                                 "plan",
                                                 "members",
                                                 "items",
+                                                "simulated",
                                                 "suspended_at",
                                                 "created_at"
                                             ]
@@ -6475,7 +6497,7 @@
         "/admin/users": {
             "get": {
                 "operationId": "admin.users.index",
-                "summary": "Filters: q (name or email), suspended (true/false). People only; agents belong to their workspace",
+                "summary": "Filters: q (name or email), suspended (true/false), simulated (true/false). People only; agents belong to their workspace",
                 "tags": [
                     "Operator"
                 ],
@@ -6490,6 +6512,19 @@
                     },
                     {
                         "name": "suspended",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false",
+                                "1",
+                                "0"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "simulated",
                         "in": "query",
                         "schema": {
                             "type": "string",
@@ -6549,6 +6584,9 @@
                                                     "workspaces": {
                                                         "type": "integer"
                                                     },
+                                                    "simulated": {
+                                                        "type": "boolean"
+                                                    },
                                                     "suspended_at": {
                                                         "type": [
                                                             "string",
@@ -6571,6 +6609,7 @@
                                                     "email_verified",
                                                     "is_operator",
                                                     "workspaces",
+                                                    "simulated",
                                                     "suspended_at",
                                                     "created_at"
                                                 ]
@@ -6664,6 +6703,9 @@
                                                 "workspaces": {
                                                     "type": "integer"
                                                 },
+                                                "simulated": {
+                                                    "type": "boolean"
+                                                },
                                                 "suspended_at": {
                                                     "type": [
                                                         "string",
@@ -6686,6 +6728,7 @@
                                                 "email_verified",
                                                 "is_operator",
                                                 "workspaces",
+                                                "simulated",
                                                 "suspended_at",
                                                 "created_at"
                                             ]
@@ -10797,6 +10840,326 @@
                 }
             }
         },
+        "/workspaces/{workspace}/items/{item}/whiteboard": {
+            "get": {
+                "operationId": "whiteboard.show",
+                "summary": "The drawing (an Excalidraw scene), a picture of it as SVG, and the words on it. 404 when the item has none",
+                "tags": [
+                    "Whiteboard"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "description": "The item ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "version": {
+                                                    "type": "integer"
+                                                },
+                                                "text": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "format": "date-time"
+                                                },
+                                                "scene": {
+                                                    "type": "object",
+                                                    "additionalProperties": {}
+                                                },
+                                                "preview_svg": {
+                                                    "type": "string",
+                                                    "description": "Untrusted markup: show it as an image, never put it into a page as HTML."
+                                                },
+                                                "updated_by": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "version",
+                                                "text",
+                                                "updated_at",
+                                                "scene",
+                                                "preview_svg",
+                                                "updated_by"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "whiteboard.update",
+                "description": "A picture on the board is an attachment of the item: upload it first\n(POST items/{key}/attachments; PNG, JPEG, GIF or WebP), then name it in\n`scene.files` under the `fileId` of its image element, as\n`{\"<fileId>\": {\"attachment_id\": 12}}`.",
+                "summary": "Creates or replaces the whiteboard. Send the version you last saw as\n`expected_version` to avoid overwriting someone else's drawing; a\nmismatch answers 412",
+                "tags": [
+                    "Whiteboard"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "description": "The item ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "scene": {
+                                        "type": "object",
+                                        "properties": {
+                                            "elements": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "minItems": 1,
+                                                "maxItems": 5000
+                                            },
+                                            "appState": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "viewBackgroundColor": {
+                                                        "type": "string",
+                                                        "maxLength": 30
+                                                    }
+                                                }
+                                            },
+                                            "files": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "attachment_id": {
+                                                            "type": "integer"
+                                                        }
+                                                    }
+                                                },
+                                                "maxItems": 200
+                                            }
+                                        },
+                                        "required": [
+                                            "elements"
+                                        ]
+                                    },
+                                    "preview_svg": {
+                                        "type": "string",
+                                        "maxLength": 2000000
+                                    },
+                                    "expected_version": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "scene",
+                                    "preview_svg"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "version": {
+                                                    "type": "integer"
+                                                },
+                                                "text": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "format": "date-time"
+                                                },
+                                                "scene": {
+                                                    "type": "object",
+                                                    "additionalProperties": {}
+                                                },
+                                                "preview_svg": {
+                                                    "type": "string",
+                                                    "description": "Untrusted markup: show it as an image, never put it into a page as HTML."
+                                                },
+                                                "updated_by": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "version",
+                                                "text",
+                                                "updated_at",
+                                                "scene",
+                                                "preview_svg",
+                                                "updated_by"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "whiteboard.destroy",
+                "summary": "Pictures that were on the board stay attached to the item",
+                "tags": [
+                    "Whiteboard"
+                ],
+                "parameters": [
+                    {
+                        "name": "workspace",
+                        "in": "path",
+                        "required": true,
+                        "description": "The workspace slug",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "description": "The item ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/workspaces/{workspace}/items": {
             "get": {
                 "operationId": "items.index",
@@ -11391,6 +11754,36 @@
                                                         "type": "string"
                                                     }
                                                 },
+                                                "whiteboard": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "description": "Whether the item is also described by a drawing, and the words on it; the drawing is at items/{key}/whiteboard.",
+                                                    "properties": {
+                                                        "version": {
+                                                            "type": "integer"
+                                                        },
+                                                        "text": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "updated_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "version",
+                                                        "text",
+                                                        "updated_at"
+                                                    ]
+                                                },
                                                 "comment_count": {
                                                     "type": "integer",
                                                     "minimum": 0
@@ -11403,6 +11796,7 @@
                                                 "children",
                                                 "relations",
                                                 "attachments",
+                                                "whiteboard",
                                                 "comment_count",
                                                 "subscribed"
                                             ],
@@ -11803,6 +12197,36 @@
                                                         "type": "string"
                                                     }
                                                 },
+                                                "whiteboard": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "description": "Whether the item is also described by a drawing, and the words on it; the drawing is at items/{key}/whiteboard.",
+                                                    "properties": {
+                                                        "version": {
+                                                            "type": "integer"
+                                                        },
+                                                        "text": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "updated_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "version",
+                                                        "text",
+                                                        "updated_at"
+                                                    ]
+                                                },
                                                 "comment_count": {
                                                     "type": "integer",
                                                     "minimum": 0
@@ -11815,6 +12239,7 @@
                                                 "children",
                                                 "relations",
                                                 "attachments",
+                                                "whiteboard",
                                                 "comment_count",
                                                 "subscribed"
                                             ],
@@ -11986,6 +12411,36 @@
                                                         "type": "string"
                                                     }
                                                 },
+                                                "whiteboard": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "description": "Whether the item is also described by a drawing, and the words on it; the drawing is at items/{key}/whiteboard.",
+                                                    "properties": {
+                                                        "version": {
+                                                            "type": "integer"
+                                                        },
+                                                        "text": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "updated_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "version",
+                                                        "text",
+                                                        "updated_at"
+                                                    ]
+                                                },
                                                 "comment_count": {
                                                     "type": "integer",
                                                     "minimum": 0
@@ -11998,6 +12453,7 @@
                                                 "children",
                                                 "relations",
                                                 "attachments",
+                                                "whiteboard",
                                                 "comment_count",
                                                 "subscribed"
                                             ],
@@ -12269,6 +12725,36 @@
                                                         "type": "string"
                                                     }
                                                 },
+                                                "whiteboard": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "description": "Whether the item is also described by a drawing, and the words on it; the drawing is at items/{key}/whiteboard.",
+                                                    "properties": {
+                                                        "version": {
+                                                            "type": "integer"
+                                                        },
+                                                        "text": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "updated_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "version",
+                                                        "text",
+                                                        "updated_at"
+                                                    ]
+                                                },
                                                 "comment_count": {
                                                     "type": "integer",
                                                     "minimum": 0
@@ -12281,6 +12767,7 @@
                                                 "children",
                                                 "relations",
                                                 "attachments",
+                                                "whiteboard",
                                                 "comment_count",
                                                 "subscribed"
                                             ],
@@ -12370,6 +12857,36 @@
                                                         "type": "string"
                                                     }
                                                 },
+                                                "whiteboard": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "description": "Whether the item is also described by a drawing, and the words on it; the drawing is at items/{key}/whiteboard.",
+                                                    "properties": {
+                                                        "version": {
+                                                            "type": "integer"
+                                                        },
+                                                        "text": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "updated_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "version",
+                                                        "text",
+                                                        "updated_at"
+                                                    ]
+                                                },
                                                 "comment_count": {
                                                     "type": "integer",
                                                     "minimum": 0
@@ -12382,6 +12899,7 @@
                                                 "children",
                                                 "relations",
                                                 "attachments",
+                                                "whiteboard",
                                                 "comment_count",
                                                 "subscribed"
                                             ],
@@ -12492,6 +13010,36 @@
                                                         "type": "string"
                                                     }
                                                 },
+                                                "whiteboard": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "description": "Whether the item is also described by a drawing, and the words on it; the drawing is at items/{key}/whiteboard.",
+                                                    "properties": {
+                                                        "version": {
+                                                            "type": "integer"
+                                                        },
+                                                        "text": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "updated_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "version",
+                                                        "text",
+                                                        "updated_at"
+                                                    ]
+                                                },
                                                 "comment_count": {
                                                     "type": "integer",
                                                     "minimum": 0
@@ -12504,6 +13052,7 @@
                                                 "children",
                                                 "relations",
                                                 "attachments",
+                                                "whiteboard",
                                                 "comment_count",
                                                 "subscribed"
                                             ],
@@ -12896,6 +13445,36 @@
                                                         "type": "string"
                                                     }
                                                 },
+                                                "whiteboard": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "description": "Whether the item is also described by a drawing, and the words on it; the drawing is at items/{key}/whiteboard.",
+                                                    "properties": {
+                                                        "version": {
+                                                            "type": "integer"
+                                                        },
+                                                        "text": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "updated_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "version",
+                                                        "text",
+                                                        "updated_at"
+                                                    ]
+                                                },
                                                 "comment_count": {
                                                     "type": "integer",
                                                     "minimum": 0
@@ -12908,6 +13487,7 @@
                                                 "children",
                                                 "relations",
                                                 "attachments",
+                                                "whiteboard",
                                                 "comment_count",
                                                 "subscribed"
                                             ],

@@ -74,7 +74,7 @@ export function makeItem(overrides: Partial<Item> = {}): Item {
 export function makeDetail(overrides: Partial<ItemDetail> = {}): ItemDetail {
   return {
     ...makeItem(), description: null, checklist: [], links: [], children: [], relations: [], attachments: [],
-    comment_count: 0, subscribed: false, ...overrides,
+    comment_count: 0, subscribed: false, whiteboard: null, ...overrides,
   }
 }
 

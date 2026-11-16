@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\WorkspaceRole;
+use App\Exceptions\ApiException;
 use App\Models\Attachment;
 use App\Models\WorkItem;
 use App\Models\Workspace;
@@ -79,6 +80,11 @@ class AttachmentController extends Controller
     {
         $current->requireRole(WorkspaceRole::Member);
         $model = $this->find($item, $attachment);
+
+        // A picture drawn into the whiteboard would leave a hole there.
+        if (in_array($model->id, $item->whiteboard?->attachmentIds() ?? [], true)) {
+            throw new ApiException(409, 'in_use', 'This picture is on the whiteboard of the item. Remove it from the drawing first.');
+        }
 
         Storage::disk($model->disk)->delete($model->path);
         $model->delete();

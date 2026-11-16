@@ -27,6 +27,7 @@ import ItemHeader from './ItemHeader.vue'
 import ItemLinks from './ItemLinks.vue'
 import ItemProperties from './ItemProperties.vue'
 import ItemRelations from './ItemRelations.vue'
+import ItemWhiteboard from './ItemWhiteboard.vue'
 
 /**
  * Everything about one item; the side panel and the full page both show this.
@@ -97,7 +98,12 @@ const notFound = () => detail.error.value instanceof ApiError && detail.error.va
       <Alert v-else-if="!detail.data.value" variant="destructive" :title="notFound() ? t('items.detail.notFound') : (detail.error.value?.message ?? t('errors.fetchOne'))" />
       <div v-else class="grid gap-8" :class="variant === 'page' ? 'lg:grid-cols-[minmax(0,1fr)_18rem]' : ''">
         <div class="min-w-0 space-y-6">
-          <ItemDescription :description="detail.data.value.description" :can-edit="canEdit" @save="update(itemKey, { description: $event })" />
+          <ItemDescription
+            :description="detail.data.value.description" :can-edit="canEdit" :has-whiteboard="detail.data.value.whiteboard !== null"
+            @save="update(itemKey, { description: $event })"
+          >
+            <template #whiteboard><ItemWhiteboard :item="detail.data.value" :can-edit="canEdit" /></template>
+          </ItemDescription>
           <ItemAi :item="detail.data.value" />
           <ItemChecklist :item="detail.data.value" :can-edit="canEdit" />
           <ItemChildren :item="detail.data.value" :can-edit="canEdit" @open="emit('open', $event)" />

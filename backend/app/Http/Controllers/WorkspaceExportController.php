@@ -35,7 +35,7 @@ class WorkspaceExportController extends Controller
             echo ',"items":[';
             $first = true;
             WorkItem::query()
-                ->with(['project', 'state', 'assignee', 'delegate', 'creator', 'parent.project', 'labels', 'cycle', 'checklist', 'links', 'outgoingRelations.related.project', 'comments.author', 'attachments'])
+                ->with(['project', 'state', 'assignee', 'delegate', 'creator', 'parent.project', 'labels', 'cycle', 'checklist', 'links', 'outgoingRelations.related.project', 'comments.author', 'attachments', 'whiteboard'])
                 ->orderBy('id')
                 ->chunkById(200, function ($items) use (&$first): void {
                     foreach ($items as $item) {
@@ -124,6 +124,7 @@ class WorkspaceExportController extends Controller
             'links' => $item->links->map(fn ($l) => ['kind' => $l->kind, 'url' => $l->url, 'title' => $l->title]),
             'relations' => $item->outgoingRelations->map(fn ($r) => ['type' => $r->type, 'item' => $r->related?->key]),
             'comments' => $item->comments->map(fn ($c) => ['author' => $c->author?->name, 'body' => $c->body, 'created_at' => $c->created_at]),
+            'whiteboard' => $item->whiteboard?->scene,
             'attachments' => $item->attachments->map(fn ($a) => ['name' => $a->name, 'mime_type' => $a->mime_type, 'size' => $a->size]),
         ];
     }
